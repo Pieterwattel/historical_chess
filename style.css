@@ -1,0 +1,35 @@
+body {
+  background-color: grey;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+#boardEdge {
+  background-color: black;
+  height: min(90vh, 90vw);
+  width: min(90vh, 90vw);
+  border: 3px solid black;
+  display: grid;
+  grid-template-rows: repeat(8, 1fr);
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  resize: both;
+}
+
+#boardEdge :nth-child(odd) {
+  background-color: chocolate;
+}
+
+#boardEdge :nth-child(even) {
+  background-color: beige;
+}
+
+#boardEdge > :hover {
+  background-color: black;
+  box-shadow: 0px 0px 8px white;
+}
+
+#boardEdge > :active {
+  background-color: white;
+}
