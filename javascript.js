@@ -62,9 +62,9 @@ Object.assign(board, {
       //CREATE tile object through tileFactory
       // decide on the color of the tile
       if ((x == 0 && y == 0) || (x + y) % 2 == 0) {
-        color = "beige";
+        color = "lightTile";
       } else {
-        color = "rgb(58, 35, 35)";
+        color = "darkTile";
       }
       // create the tile object through tile factory
       let tileData = this.tileFactory(x, y, color);
@@ -89,8 +89,8 @@ Object.assign(board, {
 
   createTileNode: function (tileObj) {
     let tileNode = document.createElement("div");
-    tileNode.style.backgroundColor = tileObj.color;
     tileNode.addEventListener("click", () => gamePlay.checkTileAction(tileObj));
+    tileNode.classList.add(tileObj.color);
     return tileNode;
   },
   /*
