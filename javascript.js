@@ -138,6 +138,29 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
+    {
+      name: "pawn",
+      image: "./files/pawnBlack.svg",
+      player: "black",
+      movement: {
+        directions: [[0, 1]],
+        stepAmount: "1",
+        jump: false,
+        attack: [
+          [1, 1],
+          [-1, 1],
+        ],
+        firstMove: {
+          directions: [[0, 1]],
+          stepAmount: "2",
+          jump: false,
+        },
+        attack: [
+          [1, 1],
+          [-1, 1],
+        ],
+      },
+    },
     /*
       {
       name: "",
@@ -153,15 +176,26 @@ Object.assign(pieces, {
         },
       },*/
     {
-      name: "",
-      image: (src = ""),
-      player: "",
-      movement: "",
-      moves: [[]],
-      stepAmount: "",
-      jump: false,
-      attack: "same as directions",
-      firstMove: false,
+      name: "knight",
+      image: (src = "./files/knightWhite.svg"),
+      player: "white",
+      movement: {
+        directions: [
+          [1, -3],
+          [3, -1],
+          [3, 1],
+          [1, 3],
+          [-1, 3],
+          [-3, 1],
+          [-3, -1],
+          [-1, -3],
+        ],
+        stepAmount: "1",
+        jump: true,
+        attack: "same as directions",
+        firstMove: false,
+        attack: "same as directions",
+      },
     },
   ],
 
@@ -175,7 +209,7 @@ Object.assign(pieces, {
     // 8d
     "",
     // 8e
-    "",
+    "pawn",
     // 8f
     "",
     // 8g
@@ -200,9 +234,9 @@ Object.assign(pieces, {
     "",
 
     // 2a
-    "",
+    "knight",
     // 2b
-    "",
+    "knight",
     // 2c
     "",
     // 2d
@@ -228,9 +262,9 @@ Object.assign(pieces, {
     // 1f
     "",
     // 1g
-    "",
+    "knight",
     // 1h
-    "",
+    "knight",
   ],
 });
 
@@ -397,21 +431,23 @@ Object.assign(preparation, {
       i++;
     } while (i <= 15);
 
-    //change index to the start of the white pieces placement
-    i = 48;
-    //place black pieces
+    //change board index to the start of the white pieces placement
+    j = 48;
+    //place white pieces
     do {
       if (pieces.placement[i]) {
         let currentPiece = this.getPieceFromNameAndColor(
           pieces.placement[i],
           "white"
         );
-        let currentTile = this.boardTilesObj[i];
+        let currentTile = this.boardTilesObj[j];
         currentTile.content = currentPiece;
+        console.log(currentTile);
         console.log(`placing ${currentPiece.player} ${currentPiece.name}`);
       }
       i++;
-    } while (i <= 62);
+      j++;
+    } while (i <= 31);
   },
 });
 
