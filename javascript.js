@@ -82,11 +82,15 @@ Object.assign(board, {
   },
   */
   update: function () {
+    console.log("board.update() accessed");
     //first empty the entire board
     let i = 0;
     this.boardNodeList.forEach((node) => {
       tileData = this.boardTiles[i];
-      node.innerHTML = `<img src="./files/rookBlack.svg" alt="rook">`;
+      if (tileData.content) {
+        console.log("update-if accessed");
+        node.innerHTML = `<img src="${tileData.piece.image}" alt="image??">`;
+      }
       this.boardEdgeNode.appendChild(node);
       i++;
     });
@@ -223,3 +227,5 @@ let preparation = (function () {
   //  declareDOMelements();
   board.createTiles();
 })();
+
+board.update();
