@@ -2,6 +2,10 @@ const centralData = {
   boardTilesObj: [],
   boardNodeList: [],
   selectedTile: "",
+  availableTiles: {
+    move: [],
+    attack: [],
+  },
 
   getTileObjXY: function (x, y) {
     this.boardTilesObj.forEach((element) => {
@@ -27,6 +31,7 @@ const centralData = {
 const board = Object.create(centralData);
 const pieces = Object.create(centralData);
 const gamePlay = Object.create(centralData);
+const movementLogic = Object.create(gamePlay);
 const preparation = Object.create(centralData);
 
 Object.assign(board, {
@@ -96,26 +101,6 @@ Object.assign(board, {
       this.boardEdgeNode.appendChild(node);
       i++;
     });
-  },
-});
-
-Object.assign(gamePlay, {
-  checkTileAction: function (clickedTile) {
-    let selectedTile = this.selectedTile;
-    //see if there was already a piece selected
-    if (!selectedTile) {
-      this.startMove(clickedTile);
-    } else {
-      this.endMove(clickedTile);
-    }
-  },
-
-  startMove: function (clickedTile) {
-    console.log("startMove initiated");
-  },
-
-  endMove: function (clickedTile) {
-    console.log("endMove initiated");
   },
 });
 
@@ -237,6 +222,119 @@ Object.assign(pieces, {
     // 1h
     "",
   ],
+});
+
+Object.assign(gamePlay, {
+  checkTileAction: function (clickedTile) {
+    let selectedTile = this.selectedTile;
+    //see if there was already a piece selected
+    if (!selectedTile && clickedTile.content.player == this.playerTurn) {
+      this.startMove(clickedTile);
+    } else if (selectedTile /*&& clickedTile is available*/) {
+      this.endMove(clickedTile);
+    }
+  },
+
+  startMove: function (clickedTile) {
+    this.selectPiece(clickedTile);
+    movementLogic.updateAvailableTiles(clickedTile);
+    board.update();
+  },
+
+  endMove: function (clickedTile) {
+    console.log("endMove initiated");
+    //if clickedTile is in available tiles
+    //placePiece()
+
+    //else if clickedTile is in attackTiles
+    //doAttack()
+
+    //else if clickedTile.content.player is the same as playerTurn, then do a startMove again.
+
+    //else deselect the piece
+
+    board.update();
+  },
+
+  selectPiece: function (clickedTile) {
+    centralData.selectedTile = clickedTile;
+    //updateAvailableTiles()
+  },
+
+  deselectPiece: function () {
+    centralData.selectedTile = "";
+    //updateAvailableTiles();
+  },
+
+  placePiece: function () {
+    console.log("placing piece");
+    let piece = tile.content;
+    piece.hasMoved = true;
+  },
+
+  doAttack: function (tile) {
+    console.log("doing attack");
+    let piece = tile.content;
+    piece.hasMoved = true;
+  },
+
+  playerTurn: "black",
+});
+
+Object.assign(movementLogic, {
+  updateAvailableTiles: function () {
+    let tile = centralData.selectedTile;
+    let piece = tile.content;
+    console.log(piece);
+    movementData = this.getMovementData(piece);
+    attackData = this.getAttackData(piece);
+    let stepAmount = this.getStepAmount(piece);
+    this.availableTiles.move = this.calcMovement(
+      movementData,
+      tile,
+      stepAmount
+    );
+    this.availableTiles.attack = this.calcAttack(attackData, tile, stepAmount);
+  },
+
+  getMovementData: function (piece) {
+    if (Array.isArray(piece.movement.firstMove) && !piece.movement.hasMoved) {
+      console.log("getmovementdata() firstmove initiated");
+      return piece.movement.firstMove;
+    } else {
+      return piece.movement.moves;
+    }
+  },
+
+  getAttackData: function (piece) {
+    if (Array.isArray(piece.movement.attack)) {
+      return piece.movement.attack;
+    } else {
+      return piece.movement.moves;
+    }
+  },
+
+  getStepAmount(piece) {
+    if (Number(piece.movement.stepAmount)) {
+      return piece.movement.stepAmount;
+    } else {
+      return true;
+    }
+  },
+
+  calcMovement: function (movementData, tile, stepAmount) {
+    console.log("calculating movement");
+    let currentTile = tile;
+    let newTile;
+    let i = stepAmount;
+    movementData.forEach((move) => {
+      console.log("yes");
+    });
+  },
+
+  calcAttack: function (movementData, tile, stepAmount) {
+    console.log("calculating attack");
+  },
 });
 
 Object.assign(preparation, {
