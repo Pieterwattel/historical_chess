@@ -2,7 +2,11 @@ const centralData = {
   boardTiles: [],
 
   getTileXY: function (x, y) {
-    return this.boardTiles.find(tile.x === x && tile.y === y);
+    this.boardTiles.forEach((element) => {
+      if (element.x == x && element.y == y) {
+        console.log(element);
+      }
+    });
   },
 
   checkFunction: function () {
@@ -11,6 +15,7 @@ const centralData = {
 };
 
 const board = Object.create(centralData);
+const pieces = Object.create(centralData);
 
 Object.assign(board, {
   boardEdgeNode: document.getElementById("boardEdge"),
@@ -36,6 +41,7 @@ Object.assign(board, {
       }
       let tileData = this.tileFactory(x, y, color);
       this.createTileNode(tileData);
+      this.boardTiles.push(tileData);
       if (x < 7) {
         x++;
       } else if (y < 7) {
@@ -70,3 +76,31 @@ let preparation = (function () {
   //  declareDOMelements();
   board.createTiles();
 })();
+
+Object.assign(pieces, {
+  constructor: function (name, image, player, movement) {
+    let hasMoved = false;
+    return { name, image, player, movement, hasMoved };
+  },
+
+  list: [
+    {
+      name: "rook",
+      image: (src = "./files/rookBlack"),
+      player: "black",
+      movement: {
+        moves: [
+          [0, -1],
+          [1, 0],
+          [0, 1],
+          [-1, 0],
+        ],
+        stepAmount: "continuous",
+        jump: false,
+        attack: "moves",
+        firstMove: false,
+      },
+    },
+    {},
+  ],
+});
