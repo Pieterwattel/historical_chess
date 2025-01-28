@@ -271,8 +271,12 @@ Object.assign(pieces, {
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTile) {
     let selectedTile = this.selectedTile;
-    //see if there was already a piece selected
-    if (!selectedTile && clickedTile.content.player == this.playerTurn) {
+    console.log(Boolean(!selectedTile));
+    //check if this is the start of a move, if there was already a piece selected
+    if (
+      !selectedTile &&
+      true /*clickedTile.content.player == this.playerTurn*/
+    ) {
       this.startMove(clickedTile);
     } else if (selectedTile /*&& clickedTile is available*/) {
       this.endMove(clickedTile);
@@ -280,6 +284,7 @@ Object.assign(gamePlay, {
   },
 
   startMove: function (clickedTile) {
+    console.log("startmove initiated");
     this.selectPiece(clickedTile);
     movementLogic.updateAvailableTiles(clickedTile);
     board.update();
