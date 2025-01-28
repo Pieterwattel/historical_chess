@@ -101,6 +101,18 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
-    {},
+    /*
+    {
+      name: "",
+      image: (src = ""),
+      player: "",
+      movement: "",
+      moves: [[]],
+      stepAmount: "",
+      jump: false,
+      attack: "moves",
+      firstMove: false,
+    },
+    */
   ],
 });
