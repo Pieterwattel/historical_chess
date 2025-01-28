@@ -1,6 +1,7 @@
 const centralData = {
   boardTilesObj: [],
   boardNodeList: [],
+  selectedTile: "",
 
   getTileObjXY: function (x, y) {
     this.boardTilesObj.forEach((element) => {
@@ -90,7 +91,6 @@ Object.assign(board, {
       //edit tile node depending on the corresponding object data
       if (tileData.content) {
         // check if there is anything standing on the tile
-        console.log("tile has content");
         node.innerHTML = `<img src="${tileData.content.image}" alt="image">`;
       }
       this.boardEdgeNode.appendChild(node);
@@ -100,8 +100,22 @@ Object.assign(board, {
 });
 
 Object.assign(gamePlay, {
-  checkTileAction: function (tileObj) {
-    console.log("checkTileAction", tileObj);
+  checkTileAction: function (clickedTile) {
+    let selectedTile = this.selectedTile;
+    //see if there was already a piece selected
+    if (!selectedTile) {
+      this.startMove(clickedTile);
+    } else {
+      this.endMove(clickedTile);
+    }
+  },
+
+  startMove: function (clickedTile) {
+    console.log("startMove initiated");
+  },
+
+  endMove: function (clickedTile) {
+    console.log("endMove initiated");
   },
 });
 
