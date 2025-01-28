@@ -23,17 +23,28 @@ Object.assign(board, {
   },
 
   createTiles: function () {
-    let color = "white";
     let x = 0;
     let y = 0;
     let i = 8;
+    let color;
     do {
       //CREATE tile object through tileFactory
+      if ((x == 0 && y == 0) || (x + y) % 2 == 0) {
+        color = "beige";
+      } else {
+        color = "saddlebrown";
+      }
       let tileData = this.tileFactory(x, y, color);
       this.createTileNode(tileData);
-      x++;
-      i--;
-    } while (i > 0);
+      if (x < 7) {
+        x++;
+      } else if (y < 7) {
+        x = 0;
+        y++;
+      } else {
+        break;
+      }
+    } while (true);
   },
 
   createTileNode: function (tileObj) {
