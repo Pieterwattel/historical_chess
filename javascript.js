@@ -87,26 +87,25 @@ Object.assign(pieces, {
     return { name, image, player, movement, hasMoved };
   },
 
-  list: {
-    black: [
-      {
-        name: "rook",
-        image: (src = "./files/rookBlack"),
-        player: "black",
-        movement: {
-          moves: [
-            [0, -1],
-            [1, 0],
-            [0, 1],
-            [-1, 0],
-          ],
-          stepAmount: "continuous",
-          jump: false,
-          attack: "moves",
-          firstMove: false,
-        },
+  list: [
+    {
+      name: "rook",
+      image: (src = "./files/rookBlack"),
+      player: "black",
+      movement: {
+        moves: [
+          [0, -1],
+          [1, 0],
+          [0, 1],
+          [-1, 0],
+        ],
+        stepAmount: "continuous",
+        jump: false,
+        attack: "moves",
+        firstMove: false,
       },
-      /*
+    },
+    /*
       {
         name: "",
         image: (src = ""),
@@ -120,21 +119,86 @@ Object.assign(pieces, {
       },
     ]
       */
-    ],
-    white: [
-      {
-        name: "",
-        image: (src = ""),
-        player: "",
-        movement: "",
-        moves: [[]],
-        stepAmount: "",
-        jump: false,
-        attack: "moves",
-        firstMove: false,
-      },
-    ],
-  },
+    {
+      name: "",
+      image: (src = ""),
+      player: "",
+      movement: "",
+      moves: [[]],
+      stepAmount: "",
+      jump: false,
+      attack: "moves",
+      firstMove: false,
+    },
+  ],
+
+  placement: [
+    // 8a
+    ["rook", "black"],
+    // 8b
+    ["", "black"],
+    // 8c
+    ["", "black"],
+    // 8d
+    ["", "black"],
+    // 8e
+    ["", "black"],
+    // 8f
+    ["", "black"],
+    // 8g
+    ["", "black"],
+    // 8h
+    ["", "black"],
+    // 7a
+    ["", "black"],
+    // 7b
+    ["", "black"],
+    // 7c
+    ["", "black"],
+    // 7d
+    ["", "black"],
+    // 7e
+    ["", "black"],
+    // 7f
+    ["", "black"],
+    // 7g
+    ["", "black"],
+    // 7h
+    ["", "black"],
+
+    // 2a
+    ["", "white"],
+    // 2b
+    ["", "white"],
+    // 2c
+    ["", "white"],
+    // 2d
+    ["", "white"],
+    // 2e
+    ["", "white"],
+    // 2f
+    ["", "white"],
+    // 2g
+    ["", "white"],
+    // 2h
+    ["", "white"],
+    // 1a
+    ["", "white"],
+    // 1b
+    ["", "white"],
+    // 1c
+    ["", "white"],
+    // 1d
+    ["", "white"],
+    // 1e
+    ["", "white"],
+    // 1f
+    ["", "white"],
+    // 1g
+    ["", "white"],
+    // 1h
+    ["", "white"],
+  ],
 });
 
 let preparation = (function () {
