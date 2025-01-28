@@ -36,6 +36,34 @@ const centralData = {
   checkFunction: function () {
     console.log("this function has been called");
   },
+
+  highlightNodes: function () {
+    if (this.availableTiles.move) {
+      this.availableTiles.move.forEach((item) => {
+        item.classList.add("highlightMove");
+      });
+    }
+    if (this.availableTiles.attack)
+      this.availableTiles.attack.forEach((item) => {
+        console.log(item);
+        item.classList.add("highlightAttack");
+      });
+    board.update();
+  },
+
+  unHighlightNodes: function () {
+    if (this.availableTiles.move) {
+      this.availableTiles.move.forEach((item) => {
+        item.classList.remove("highlightMove");
+      });
+    }
+    if (this.availableTiles.attack)
+      this.availableTiles.attack.forEach((item) => {
+        console.log(item);
+        item.classList.remove("highlightAttack");
+      });
+    board.update();
+  },
 };
 
 const board = Object.create(centralData);
@@ -181,14 +209,14 @@ Object.assign(pieces, {
       player: "white",
       movement: {
         directions: [
-          [1, -3],
-          [3, -1],
-          [3, 1],
-          [1, 3],
-          [-1, 3],
-          [-3, 1],
-          [-3, -1],
-          [-1, -3],
+          [1, -2],
+          [2, -1],
+          [2, 1],
+          [1, 2],
+          [-1, 2],
+          [-2, 1],
+          [-2, -1],
+          [-1, -2],
         ],
         stepAmount: "1",
         jump: true,
@@ -286,12 +314,15 @@ Object.assign(gamePlay, {
   startMove: function (clickedTile) {
     console.log("startmove initiated");
     this.selectPiece(clickedTile);
+    centralData.selectedTile = clickedTile;
     movementLogic.updateAvailableTiles(clickedTile);
     board.update();
   },
 
   endMove: function (clickedTile) {
     console.log("endMove initiated");
+    centralData.selectedTile = "";
+    centralData.unHighlightNodes(this.availableTiles);
     //if clickedTile is in available tiles
     //placePiece()
 
@@ -306,7 +337,6 @@ Object.assign(gamePlay, {
   },
 
   selectPiece: function (clickedTile) {
-    centralData.selectedTile = clickedTile;
     //updateAvailableTiles()
   },
 
@@ -372,15 +402,14 @@ Object.assign(movementLogic, {
   },
 
   calcMovement: function (movementData, tile, stepAmount) {
+    let availableTiles = [];
     console.log("calculating movement");
     movementData.forEach((direction) => {
       currentTile = Object.assign({}, tile);
-      console.log(tile);
       // iterate through every direction that piece can move
       let directionX = direction[0];
       let directionY = direction[1];
       let i = stepAmount;
-      console.log("new Direction");
       for (; i; ) {
         //follow that direction until something blocks the path
         let newX = currentTile.x + directionX;
@@ -389,13 +418,12 @@ Object.assign(movementLogic, {
         if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
           console.log("tile is out of bounds");
           currentTile = Object.assign({}, tile);
-          console.log(tile);
           break;
         }
-        console.log(newX);
         //take a new step in the direction
         let node = this.getNodeXY(newX, newY);
-        node.style.backgroundColor = "green";
+        node.classList.add("highlightMove");
+        availableTiles.push(node);
         currentTile.x = newX;
         currentTile.y = newY;
 
@@ -404,6 +432,7 @@ Object.assign(movementLogic, {
         }
       }
     });
+    return availableTiles;
   },
 
   calcAttack: function (movementData, tile, stepAmount) {
