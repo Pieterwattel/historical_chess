@@ -249,6 +249,22 @@ Object.assign(preparation, {
       }
       i++;
     } while (i <= 15);
+
+    //change index to the start of the white pieces placement
+    i = 48;
+    //place black pieces
+    do {
+      if (pieces.placement[i]) {
+        let currentPiece = this.getPieceFromNameAndColor(
+          pieces.placement[i],
+          "white"
+        );
+        let currentTile = this.boardTilesObj[i];
+        currentTile.content = currentPiece;
+        console.log(`placing ${currentPiece.player} ${currentPiece.name}`);
+      }
+      i++;
+    } while (i <= 62);
   },
 });
 
