@@ -32,7 +32,7 @@ Object.assign(board, {
       if ((x == 0 && y == 0) || (x + y) % 2 == 0) {
         color = "beige";
       } else {
-        color = "saddlebrown";
+        color = "rgb(58, 35, 35)";
       }
       let tileData = this.tileFactory(x, y, color);
       this.createTileNode(tileData);
