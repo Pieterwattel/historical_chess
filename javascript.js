@@ -1,21 +1,21 @@
 const centralData = {
-  boardTiles: [],
+  boardTilesObj: [],
   boardNodeList: [],
 
   getTileObjXY: function (x, y) {
-    this.boardTiles.forEach((element) => {
+    this.boardTilesObj.forEach((element) => {
       if (element.x == x && element.y == y) {
         console.log(element);
       }
     });
   },
 
-  getPieceFromName: function (nameString, player) {
-    pieces.list.forEach((piece) => {
-      if (piece.name == nameString && piece.player == player) {
-        return piece;
-      }
-    });
+  getPieceFromNameAndColor: function (nameString, player) {
+    return (
+      pieces.list.find(
+        (piece) => piece.name === nameString && piece.player === player
+      ) || null
+    );
   },
 
   checkFunction: function () {
@@ -26,6 +26,7 @@ const centralData = {
 const board = Object.create(centralData);
 const pieces = Object.create(centralData);
 const gamePlay = Object.create(centralData);
+const preparation = Object.create(centralData);
 
 Object.assign(board, {
   boardEdgeNode: document.getElementById("boardEdge"),
@@ -56,7 +57,7 @@ Object.assign(board, {
       //append the tile to the board
       this.boardEdgeNode.appendChild(tileNode);
       //save the tile data
-      this.boardTiles.push(tileData);
+      this.boardTilesObj.push(tileData);
       if (x < 7) {
         x++;
       } else if (y < 7) {
@@ -82,14 +83,15 @@ Object.assign(board, {
   },
   */
   update: function () {
-    console.log("board.update() accessed");
-    //first empty the entire board
     let i = 0;
     this.boardNodeList.forEach((node) => {
-      tileData = this.boardTiles[i];
+      //run through each tile node
+      tileData = this.boardTilesObj[i];
+      //edit tile node depending on the corresponding object data
       if (tileData.content) {
-        console.log("update-if accessed");
-        node.innerHTML = `<img src="${tileData.piece.image}" alt="image??">`;
+        // check if there is anything standing on the tile
+        console.log("tile has content");
+        node.innerHTML = `<img src="${tileData.content.image}" alt="image">`;
       }
       this.boardEdgeNode.appendChild(node);
       i++;
@@ -112,7 +114,7 @@ Object.assign(pieces, {
   list: [
     {
       name: "rook",
-      image: (src = "./files/rookBlack"),
+      image: "./files/rookBlack.svg",
       player: "black",
       movement: {
         moves: [
@@ -156,76 +158,101 @@ Object.assign(pieces, {
 
   placement: [
     // 8a
-    ["rook", "black"],
+    "rook",
     // 8b
-    ["", "black"],
+    "",
     // 8c
-    ["", "black"],
+    "",
     // 8d
-    ["", "black"],
+    "",
     // 8e
-    ["", "black"],
+    "",
     // 8f
-    ["", "black"],
+    "",
     // 8g
-    ["", "black"],
+    "",
     // 8h
-    ["", "black"],
+    "",
     // 7a
-    ["", "black"],
+    "",
     // 7b
-    ["", "black"],
+    "",
     // 7c
-    ["", "black"],
+    "",
     // 7d
-    ["", "black"],
+    "",
     // 7e
-    ["", "black"],
+    "",
     // 7f
-    ["", "black"],
+    "",
     // 7g
-    ["", "black"],
+    "",
     // 7h
-    ["", "black"],
+    "",
 
     // 2a
-    ["", "white"],
+    "",
     // 2b
-    ["", "white"],
+    "",
     // 2c
-    ["", "white"],
+    "",
     // 2d
-    ["", "white"],
+    "",
     // 2e
-    ["", "white"],
+    "",
     // 2f
-    ["", "white"],
+    "",
     // 2g
-    ["", "white"],
+    "",
     // 2h
-    ["", "white"],
+    "",
     // 1a
-    ["", "white"],
+    "",
     // 1b
-    ["", "white"],
+    "",
     // 1c
-    ["", "white"],
+    "",
     // 1d
-    ["", "white"],
+    "",
     // 1e
-    ["", "white"],
+    "",
     // 1f
-    ["", "white"],
+    "",
     // 1g
-    ["", "white"],
+    "",
     // 1h
-    ["", "white"],
+    "",
   ],
 });
 
-let preparation = (function () {
-  //  declareDOMelements();
-  board.createTiles();
-})();
+Object.assign(preparation, {
+  // Method to initialize the game
+  initializeGame: function () {
+    board.createTiles(); // Create the board tiles
+    this.setupBoard(); // Call setupBoard on the preparation object
+    board.update(); // Update/render the board
+  },
 
-board.update();
+  // Method to set up the board and pieces
+  setupBoard: function () {
+    let i = 0;
+    //place black pieces
+    do {
+      if (pieces.placement[i]) {
+        let currentPiece = this.getPieceFromNameAndColor(
+          pieces.placement[i],
+          "black"
+        );
+        let currentTile = this.boardTilesObj[i];
+        currentTile.content = currentPiece;
+        console.log(`placing ${currentPiece.player} ${currentPiece.name}`);
+      }
+      i++;
+    } while (i <= 15);
+  },
+});
+
+// Call initializeGame to start
+let startGame = (function () {
+  preparation.initializeGame(); // Ensure correct `this` context
+})();
