@@ -8,16 +8,18 @@ html {
 }
 
 #boardEdge {
-  background-color: black;
   height: min(90vh, 90vw);
   width: min(90vh, 90vw);
   border: 3px solid black;
+  padding: 0.3%;
+
+  background-color: black;
   display: grid;
   grid-template-rows: repeat(8, 1fr);
   grid-template-columns: repeat(8, 1fr);
   gap: 5px;
   resize: both;
-  border-radius: 0.3em;
+  border-radius: 0.6em;
 }
 
 #boardEdge > :hover {
@@ -32,4 +34,16 @@ html {
 
 #boardEdge > * {
   border-radius: 0.2em;
+}
+
+#yes {
+  height: 100px;
+  width: 100px;
+  background-color: green;
+  border: 5px solid red;
+}
+
+div > * {
+  height: 100%;
+  width: 100%;
 }

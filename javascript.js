@@ -1,5 +1,6 @@
 const centralData = {
   boardTiles: [],
+  boardNodeList: [],
 
   getTileObjXY: function (x, y) {
     this.boardTiles.forEach((element) => {
@@ -30,7 +31,6 @@ Object.assign(board, {
   boardEdgeNode: document.getElementById("boardEdge"),
 
   tileFactory: function (x, y, color) {
-    console.log("tilefactory");
     let content = false;
     let available = false;
     return { x, y, color, content, available };
@@ -43,13 +43,19 @@ Object.assign(board, {
     let color;
     do {
       //CREATE tile object through tileFactory
+      // decide on the color of the tile
       if ((x == 0 && y == 0) || (x + y) % 2 == 0) {
         color = "beige";
       } else {
         color = "rgb(58, 35, 35)";
       }
+      // create the tile object through tile factory
       let tileData = this.tileFactory(x, y, color);
-      this.createTileNode(tileData);
+      //create the tile node
+      let tileNode = this.createTileNode(tileData);
+      //append the tile to the board
+      this.boardEdgeNode.appendChild(tileNode);
+      //save the tile data
       this.boardTiles.push(tileData);
       if (x < 7) {
         x++;
@@ -60,19 +66,31 @@ Object.assign(board, {
         break;
       }
     } while (true);
+    //save the tile node
+    this.boardNodeList = this.boardEdgeNode.querySelectorAll("div");
   },
 
   createTileNode: function (tileObj) {
     let tileNode = document.createElement("div");
     tileNode.style.backgroundColor = tileObj.color;
     tileNode.addEventListener("click", () => gamePlay.checkTileAction(tileObj));
-    this.boardEdgeNode.appendChild(tileNode);
+    return tileNode;
   },
   /*
   run: function () {
     this.checkFunction();
   },
   */
+  update: function () {
+    //first empty the entire board
+    let i = 0;
+    this.boardNodeList.forEach((node) => {
+      tileData = this.boardTiles[i];
+      node.innerHTML = `<img src="./files/rookBlack.svg" alt="rook">`;
+      this.boardEdgeNode.appendChild(node);
+      i++;
+    });
+  },
 });
 
 Object.assign(gamePlay, {
