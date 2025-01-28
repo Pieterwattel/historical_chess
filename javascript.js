@@ -1,10 +1,18 @@
 const centralData = {
   boardTiles: [],
 
-  getTileXY: function (x, y) {
+  getTileObjXY: function (x, y) {
     this.boardTiles.forEach((element) => {
       if (element.x == x && element.y == y) {
         console.log(element);
+      }
+    });
+  },
+
+  getPieceFromName: function (nameString, player) {
+    pieces.list.forEach((piece) => {
+      if (piece.name == nameString && piece.player == player) {
+        return piece;
       }
     });
   },
@@ -16,6 +24,7 @@ const centralData = {
 
 const board = Object.create(centralData);
 const pieces = Object.create(centralData);
+const gamePlay = Object.create(centralData);
 
 Object.assign(board, {
   boardEdgeNode: document.getElementById("boardEdge"),
@@ -66,16 +75,11 @@ Object.assign(board, {
   */
 });
 
-const gamePlay = {
+Object.assign(gamePlay, {
   checkTileAction: function (tileObj) {
     console.log("checkTileAction", tileObj);
   },
-};
-
-let preparation = (function () {
-  //  declareDOMelements();
-  board.createTiles();
-})();
+});
 
 Object.assign(pieces, {
   constructor: function (name, image, player, movement) {
@@ -83,36 +87,57 @@ Object.assign(pieces, {
     return { name, image, player, movement, hasMoved };
   },
 
-  list: [
-    {
-      name: "rook",
-      image: (src = "./files/rookBlack"),
-      player: "black",
-      movement: {
-        moves: [
-          [0, -1],
-          [1, 0],
-          [0, 1],
-          [-1, 0],
-        ],
-        stepAmount: "continuous",
+  list: {
+    black: [
+      {
+        name: "rook",
+        image: (src = "./files/rookBlack"),
+        player: "black",
+        movement: {
+          moves: [
+            [0, -1],
+            [1, 0],
+            [0, 1],
+            [-1, 0],
+          ],
+          stepAmount: "continuous",
+          jump: false,
+          attack: "moves",
+          firstMove: false,
+        },
+      },
+      /*
+      {
+        name: "",
+        image: (src = ""),
+        player: "",
+        movement: "",
+        moves: [[]],
+        stepAmount: "",
         jump: false,
         attack: "moves",
         firstMove: false,
       },
-    },
-    /*
-    {
-      name: "",
-      image: (src = ""),
-      player: "",
-      movement: "",
-      moves: [[]],
-      stepAmount: "",
-      jump: false,
-      attack: "moves",
-      firstMove: false,
-    },
-    */
-  ],
+    ]
+      */
+    ],
+    white: [
+      {
+        name: "",
+        image: (src = ""),
+        player: "",
+        movement: "",
+        moves: [[]],
+        stepAmount: "",
+        jump: false,
+        attack: "moves",
+        firstMove: false,
+      },
+    ],
+  },
 });
+
+let preparation = (function () {
+  //  declareDOMelements();
+  board.createTiles();
+})();
