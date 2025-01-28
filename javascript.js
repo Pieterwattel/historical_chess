@@ -10,9 +10,19 @@ const centralData = {
   getTileObjXY: function (x, y) {
     this.boardTilesObj.forEach((element) => {
       if (element.x == x && element.y == y) {
-        console.log(element);
+        return element;
       }
     });
+  },
+
+  getNodeXY: function (x, y) {
+    let i;
+    this.boardTilesObj.forEach((element, index) => {
+      if (element.x == x && element.y == y) {
+        i = index;
+      }
+    });
+    return this.boardNodeList[i];
   },
 
   getPieceFromNameAndColor: function (nameString, player) {
@@ -74,7 +84,7 @@ Object.assign(board, {
       }
     } while (true);
     //save the tile node
-    this.boardNodeList = this.boardEdgeNode.querySelectorAll("div");
+    centralData.boardNodeList = this.boardEdgeNode.querySelectorAll("div");
   },
 
   createTileNode: function (tileObj) {
@@ -116,32 +126,32 @@ Object.assign(pieces, {
       image: "./files/rookBlack.svg",
       player: "black",
       movement: {
-        moves: [
+        directions: [
           [0, -1],
           [1, 0],
           [0, 1],
           [-1, 0],
         ],
-        stepAmount: "continuous",
+        stepAmount: 15,
         jump: false,
-        attack: "moves",
+        attack: "same as directions",
         firstMove: false,
       },
     },
     /*
       {
-        name: "",
-        image: (src = ""),
-        player: "",
-        movement: "",
-        moves: [[]],
-        stepAmount: "",
+      name: "",
+      image: "./files/.svg",
+      player: "",
+      movement: {
+        directions: [[],
+        ],
+        stepAmount: "continuous",
         jump: false,
-        attack: "moves",
+        attack: "same as directions",
         firstMove: false,
-      },
-    ]
-      */
+        },
+      },*/
     {
       name: "",
       image: (src = ""),
@@ -150,14 +160,14 @@ Object.assign(pieces, {
       moves: [[]],
       stepAmount: "",
       jump: false,
-      attack: "moves",
+      attack: "same as directions",
       firstMove: false,
     },
   ],
 
   placement: [
     // 8a
-    "rook",
+    "",
     // 8b
     "",
     // 8c
@@ -177,7 +187,7 @@ Object.assign(pieces, {
     // 7b
     "",
     // 7c
-    "",
+    "rook",
     // 7d
     "",
     // 7e
@@ -302,7 +312,7 @@ Object.assign(movementLogic, {
       console.log("getmovementdata() firstmove initiated");
       return piece.movement.firstMove;
     } else {
-      return piece.movement.moves;
+      return piece.movement.directions;
     }
   },
 
@@ -310,7 +320,7 @@ Object.assign(movementLogic, {
     if (Array.isArray(piece.movement.attack)) {
       return piece.movement.attack;
     } else {
-      return piece.movement.moves;
+      return piece.movement.diections;
     }
   },
 
@@ -324,11 +334,36 @@ Object.assign(movementLogic, {
 
   calcMovement: function (movementData, tile, stepAmount) {
     console.log("calculating movement");
-    let currentTile = tile;
-    let newTile;
-    let i = stepAmount;
-    movementData.forEach((move) => {
-      console.log("yes");
+    movementData.forEach((direction) => {
+      currentTile = Object.assign({}, tile);
+      console.log(tile);
+      // iterate through every direction that piece can move
+      let directionX = direction[0];
+      let directionY = direction[1];
+      let i = stepAmount;
+      console.log("new Direction");
+      for (; i; ) {
+        //follow that direction until something blocks the path
+        let newX = currentTile.x + directionX;
+        let newY = currentTile.y + directionY;
+        //check if current tile is out of bounds
+        if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
+          console.log("tile is out of bounds");
+          currentTile = Object.assign({}, tile);
+          console.log(tile);
+          break;
+        }
+        console.log(newX);
+        //take a new step in the direction
+        let node = this.getNodeXY(newX, newY);
+        node.style.backgroundColor = "green";
+        currentTile.x = newX;
+        currentTile.y = newY;
+
+        if (Number(i)) {
+          i--;
+        }
+      }
     });
   },
 
