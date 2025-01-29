@@ -283,9 +283,28 @@ Object.assign(pieces, {
           firstMove: false,
           },
         },*/
+
+    // white pieces:
+    {
+      name: "rook",
+      image: "./files/rookWhite.svg",
+      player: "white",
+      movement: {
+        directions: [
+          [0, -1],
+          [1, 0],
+          [0, 1],
+          [-1, 0],
+        ],
+        stepAmount: "continuous",
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
+      },
+    },
     {
       name: "knight",
-      image: (src = "./files/knightWhite.svg"),
+      image: "./files/knightWhite.svg",
       player: "white",
       movement: {
         directions: [
@@ -303,6 +322,91 @@ Object.assign(pieces, {
         attack: "same as directions",
         firstMove: false,
         attack: "same as directions",
+      },
+    },
+
+    {
+      name: "bishop",
+      image: "./files/bishopWhite.svg",
+      player: "white",
+      movement: {
+        directions: [
+          [1, 1],
+          [-1, 1],
+          [-1, -1],
+          [-1, 1],
+        ],
+        stepAmount: "continuous",
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
+      },
+    },
+
+    {
+      name: "king",
+      image: "./files/kingWhite.svg",
+      player: "white",
+      movement: {
+        directions: [
+          [1, 1],
+          [0, 1],
+          [-1, 1],
+          [-1, 0],
+          [-1, -1],
+          [0, -1],
+          [1, -1],
+          [1, 0],
+        ],
+        stepAmount: 1,
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
+      },
+    },
+
+    {
+      name: "queen",
+      image: "./files/queenWhite.svg",
+      player: "white",
+      movement: {
+        directions: [
+          [1, 1],
+          [0, 1],
+          [-1, 1],
+          [-1, 0],
+          [-1, -1],
+          [0, -1],
+          [1, -1],
+          [1, 0],
+        ],
+        stepAmount: "continuous",
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
+      },
+    },
+
+    {
+      name: "pawn",
+      image: "./files/pawnWhite.svg",
+      player: "white",
+      movement: {
+        directions: [[0, -1]],
+        stepAmount: "1",
+        jump: false,
+        attack: {
+          directions: [
+            [1, -1],
+            [-1, -1],
+          ],
+          stepAmount: "1",
+        },
+        firstMove: {
+          directions: [[0, -1]],
+          stepAmount: "2",
+          jump: false,
+        },
       },
     },
   ],
@@ -344,35 +448,35 @@ Object.assign(pieces, {
     // 2a
     "knight",
     // 2b
-    "",
+    "rook",
     // 2c
-    "",
+    "queen",
     // 2d
-    "knight",
+    "king",
     // 2e
-    "",
+    "bishop",
     // 2f
-    "",
+    "pawn",
     // 2g
-    "",
+    "pawn",
     // 2h
-    "",
+    "pawn",
     // 1a
-    "",
+    "rook",
     // 1b
-    "",
+    "knight",
     // 1c
-    "",
+    "bishop",
     // 1d
-    "",
+    "queen",
     // 1e
-    "",
+    "king",
     // 1f
-    "",
+    "bishop",
     // 1g
     "knight",
     // 1h
-    "knight",
+    "rook",
   ],
 });
 

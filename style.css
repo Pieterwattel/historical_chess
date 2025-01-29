@@ -36,13 +36,6 @@ html {
   border-radius: 0.2em;
 }
 
-#yes {
-  height: 100px;
-  width: 100px;
-  background-color: green;
-  border: 5px solid red;
-}
-
 #boardEdge > div > * {
   height: 90%;
   width: 90%;
