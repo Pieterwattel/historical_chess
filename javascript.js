@@ -417,15 +417,12 @@ Object.assign(movementLogic, {
         let newY = currentTile.y + directionY;
         //check if current tile is out of bounds
         if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
-          console.log("tile is out of bounds");
-          currentTile = Object.assign({}, tile);
+          currentTile = Object.assign({}, tileObj);
           break;
         }
         //take a new step in the direction
-        let node = this.getTileObjXY(newX, newY);
-        console.log(node);
-        node.classList.add("highlightMove");
-        availableTiles.push(node);
+        let availableTileObj = this.getTileObjXY(newX, newY);
+        availableTileObj.available = "move";
         currentTile.x = newX;
         currentTile.y = newY;
 
@@ -434,7 +431,6 @@ Object.assign(movementLogic, {
         }
       }
     });
-    return availableTiles;
   },
 
   calcAttack: function (movementData, tile, stepAmount) {
