@@ -163,6 +163,91 @@ Object.assign(pieces, {
       },
     },
     {
+      name: "knight",
+      image: "./files/knightBlack.svg",
+      player: "black",
+      movement: {
+        directions: [
+          [1, -2],
+          [2, -1],
+          [2, 1],
+          [1, 2],
+          [-1, 2],
+          [-2, 1],
+          [-2, -1],
+          [-1, -2],
+        ],
+        stepAmount: "1",
+        jump: true,
+        attack: "same as directions",
+        firstMove: false,
+        attack: "same as directions",
+      },
+    },
+
+    {
+      name: "bishop",
+      image: "./files/bishopBlack.svg",
+      player: "black",
+      movement: {
+        directions: [
+          [1, 1],
+          [-1, 1],
+          [-1, -1],
+          [-1, 1],
+        ],
+        stepAmount: "continuous",
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
+      },
+    },
+
+    {
+      name: "king",
+      image: "./files/kingBlack.svg",
+      player: "black",
+      movement: {
+        directions: [
+          [1, 1],
+          [0, 1],
+          [-1, 1],
+          [-1, 0],
+          [-1, -1],
+          [0, -1],
+          [1, -1],
+          [1, 0],
+        ],
+        stepAmount: 1,
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
+      },
+    },
+
+    {
+      name: "queen",
+      image: "./files/queenBlack.svg",
+      player: "black",
+      movement: {
+        directions: [
+          [1, 1],
+          [0, 1],
+          [-1, 1],
+          [-1, 0],
+          [-1, -1],
+          [0, -1],
+          [1, -1],
+          [1, 0],
+        ],
+        stepAmount: "continuous",
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
+      },
+    },
+
+    {
       name: "pawn",
       image: "./files/pawnBlack.svg",
       player: "black",
@@ -224,37 +309,37 @@ Object.assign(pieces, {
 
   placement: [
     // 8a
-    "",
-    // 8b
-    "",
-    // 8c
-    "",
-    // 8d
-    "",
-    // 8e
-    "pawn",
-    // 8f
-    "",
-    // 8g
-    "",
-    // 8h
-    "",
-    // 7a
-    "",
-    // 7b
-    "",
-    // 7c
     "rook",
+    // 8b
+    "knight",
+    // 8c
+    "bishop",
+    // 8d
+    "queen",
+    // 8e
+    "king",
+    // 8f
+    "bishop",
+    // 8g
+    "knight",
+    // 8h
+    "rook",
+    // 7a
+    "pawn",
+    // 7b
+    "pawn",
+    // 7c
+    "pawn",
     // 7d
-    "",
+    "pawn",
     // 7e
-    "",
+    "bishop",
     // 7f
-    "",
+    "queen",
     // 7g
-    "",
+    "pawn",
     // 7h
-    "",
+    "pawn",
 
     // 2a
     "knight",
