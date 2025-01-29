@@ -44,9 +44,9 @@ html {
   border: 5px solid red;
 }
 
-div > * {
-  height: 100%;
-  width: 100%;
+#boardEdge > div > * {
+  height: 90%;
+  width: 90%;
 }
 
 .darkTile {

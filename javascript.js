@@ -293,13 +293,13 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
+    console.log("checkTileAction");
     let selectedTile = this.selectedTile;
     if (clickedTileObj == selectedTile) {
+      console.log("if1");
       this.deselectTile();
       return;
     }
-    console.log(selectedTile);
-    console.log(clickedTileObj.available);
     if (
       // if there is not piece selected yet, this is the start of a move
       (!selectedTile && clickedTileObj.content) ||
@@ -312,6 +312,7 @@ Object.assign(gamePlay, {
       console.log("endTurn");
       this.endTurn(clickedTileObj);
     } else {
+      console.log("lastif");
       this.deselectTile();
     }
 
@@ -346,7 +347,7 @@ Object.assign(gamePlay, {
   },
 
   deselectTile: function (tile) {
-    centralData.selectedTile = "";
+    this.selectedTile = "";
     board.removeHighlights();
   },
 
