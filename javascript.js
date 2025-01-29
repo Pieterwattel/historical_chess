@@ -124,17 +124,17 @@ Object.assign(board, {
   },
 
   update: function () {
-    let i = 0;
-    this.boardNodeList.forEach((node) => {
-      //run through each tile node
-      tileData = this.boardTilesObj[i];
-      //edit tile node depending on the corresponding object data
-      if (tileData.content) {
+    //run through each tile object
+    this.boardTilesObj.forEach((tileObj) => {
+      //if the tile has content, place in tile node
+      if (tileObj.content) {
         // check if there is anything standing on the tile
-        node.innerHTML = `<img src="${tileData.content.image}" alt="image">`;
+        tileObj.node.innerHTML = `<img src="${tileObj.content.image}" alt="image">`;
       }
-      this.boardEdgeNode.appendChild(node);
-      i++;
+      //if not, empty the tile
+      else {
+        tileObj.node.innerHTML = "";
+      }
     });
   },
 
@@ -145,55 +145,54 @@ Object.assign(board, {
   },
 });
 
-if (false) {
-  Object.assign(pieces, {
-    constructor: function (name, image, player, movement) {
-      let hasMoved = false;
-      return { name, image, player, movement, hasMoved };
-    },
+Object.assign(pieces, {
+  constructor: function (name, image, player, movement) {
+    let hasMoved = false;
+    return { name, image, player, movement, hasMoved };
+  },
 
-    list: [
-      {
-        name: "rook",
-        image: "./files/rookBlack.svg",
-        player: "black",
-        movement: {
-          directions: [
-            [0, -1],
-            [1, 0],
-            [0, 1],
-            [-1, 0],
-          ],
-          stepAmount: 15,
-          jump: false,
-          attack: "same as directions",
-          firstMove: false,
-        },
+  list: [
+    {
+      name: "rook",
+      image: "./files/rookBlack.svg",
+      player: "black",
+      movement: {
+        directions: [
+          [0, -1],
+          [1, 0],
+          [0, 1],
+          [-1, 0],
+        ],
+        stepAmount: 15,
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
       },
-      {
-        name: "pawn",
-        image: "./files/pawnBlack.svg",
-        player: "black",
-        movement: {
+    },
+    {
+      name: "pawn",
+      image: "./files/pawnBlack.svg",
+      player: "black",
+      movement: {
+        directions: [[0, 1]],
+        stepAmount: "1",
+        jump: false,
+        attack: [
+          [1, 1],
+          [-1, 1],
+        ],
+        firstMove: {
           directions: [[0, 1]],
-          stepAmount: "1",
+          stepAmount: "2",
           jump: false,
-          attack: [
-            [1, 1],
-            [-1, 1],
-          ],
-          firstMove: {
-            directions: [[0, 1]],
-            stepAmount: "2",
-            jump: false,
-          },
-          attack: [
-            [1, 1],
-            [-1, 1],
-          ],
         },
+        attack: [
+          [1, 1],
+          [-1, 1],
+        ],
       },
-      /*
+    },
+    /*
         {
         name: "",
         image: "./files/.svg",
@@ -207,99 +206,100 @@ if (false) {
           firstMove: false,
           },
         },*/
-      {
-        name: "knight",
-        image: (src = "./files/knightWhite.svg"),
-        player: "white",
-        movement: {
-          directions: [
-            [1, -2],
-            [2, -1],
-            [2, 1],
-            [1, 2],
-            [-1, 2],
-            [-2, 1],
-            [-2, -1],
-            [-1, -2],
-          ],
-          stepAmount: "1",
-          jump: true,
-          attack: "same as directions",
-          firstMove: false,
-          attack: "same as directions",
-        },
+    {
+      name: "knight",
+      image: (src = "./files/knightWhite.svg"),
+      player: "white",
+      movement: {
+        directions: [
+          [1, -2],
+          [2, -1],
+          [2, 1],
+          [1, 2],
+          [-1, 2],
+          [-2, 1],
+          [-2, -1],
+          [-1, -2],
+        ],
+        stepAmount: "1",
+        jump: true,
+        attack: "same as directions",
+        firstMove: false,
+        attack: "same as directions",
       },
-    ],
+    },
+  ],
 
-    placement: [
-      // 8a
-      "",
-      // 8b
-      "",
-      // 8c
-      "",
-      // 8d
-      "",
-      // 8e
-      "pawn",
-      // 8f
-      "",
-      // 8g
-      "",
-      // 8h
-      "",
-      // 7a
-      "",
-      // 7b
-      "",
-      // 7c
-      "rook",
-      // 7d
-      "",
-      // 7e
-      "",
-      // 7f
-      "",
-      // 7g
-      "",
-      // 7h
-      "",
+  placement: [
+    // 8a
+    "",
+    // 8b
+    "",
+    // 8c
+    "",
+    // 8d
+    "",
+    // 8e
+    "pawn",
+    // 8f
+    "",
+    // 8g
+    "",
+    // 8h
+    "",
+    // 7a
+    "",
+    // 7b
+    "",
+    // 7c
+    "rook",
+    // 7d
+    "",
+    // 7e
+    "",
+    // 7f
+    "",
+    // 7g
+    "",
+    // 7h
+    "",
 
-      // 2a
-      "knight",
-      // 2b
-      "",
-      // 2c
-      "",
-      // 2d
-      "knight",
-      // 2e
-      "",
-      // 2f
-      "",
-      // 2g
-      "",
-      // 2h
-      "",
-      // 1a
-      "",
-      // 1b
-      "",
-      // 1c
-      "",
-      // 1d
-      "",
-      // 1e
-      "",
-      // 1f
-      "",
-      // 1g
-      "knight",
-      // 1h
-      "knight",
-    ],
-  });
+    // 2a
+    "knight",
+    // 2b
+    "",
+    // 2c
+    "",
+    // 2d
+    "knight",
+    // 2e
+    "",
+    // 2f
+    "",
+    // 2g
+    "",
+    // 2h
+    "",
+    // 1a
+    "",
+    // 1b
+    "",
+    // 1c
+    "",
+    // 1d
+    "",
+    // 1e
+    "",
+    // 1f
+    "",
+    // 1g
+    "knight",
+    // 1h
+    "knight",
+  ],
+});
 
+if (false) {
   Object.assign(gamePlay, {
     checkTileAction: function (clickedTile) {
       let selectedTile = this.selectedTile;
@@ -459,6 +459,8 @@ Object.assign(preparation, {
   },
 
   // Method to set up the board and pieces
+  // iterates at equal pace through the tiles on the board, and
+  // the order of pieces.placement, and connects the 2
   setupBoard: function () {
     let i = 0;
     //place black pieces
@@ -486,7 +488,6 @@ Object.assign(preparation, {
         );
         let currentTile = this.boardTilesObj[j];
         currentTile.content = currentPiece;
-        console.log(currentTile);
         console.log(`placing ${currentPiece.player} ${currentPiece.name}`);
       }
       i++;
