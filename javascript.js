@@ -396,7 +396,7 @@ Object.assign(movementLogic, {
   },
 
   getMovementData: function (piece) {
-    if (Boolean(piece.movement.firstMove) && !piece.movement.hasMoved) {
+    if (Boolean(piece.movement.firstMove) && !piece.hasMoved) {
       return piece.movement.firstMove;
     } else {
       return piece.movement;
