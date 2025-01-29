@@ -302,7 +302,8 @@ Object.assign(gamePlay, {
     }
     if (
       // if there is not piece selected yet, this is the start of a move
-      (!selectedTile && clickedTileObj.content) ||
+      !selectedTile &&
+      clickedTileObj.content &&
       //also re-initiate the turn if this some other piece of the current playerTurn's
       clickedTileObj.content.player == this.playerTurn
     ) {
@@ -368,7 +369,6 @@ Object.assign(gamePlay, {
   },
 
   closeTurn: function () {
-    /*
     console.log(`${this.playerTurn}'s turn has ended`);
     switch (this.playerTurn) {
       case "white":
@@ -378,7 +378,6 @@ Object.assign(gamePlay, {
       case "black":
         this.playerTurn = "white";
     }
-    */
   },
 
   playerTurn: "black",
