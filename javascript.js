@@ -139,21 +139,6 @@ Object.assign(board, {
       }
     });
   },
-
-  /*
-    if (this.availableTiles.move) {
-      this.availableTiles.move.forEach((item) => {
-        item.classList.add("highlightMove");
-      });
-    }
-    if (this.availableTiles.attack)
-      this.availableTiles.attack.forEach((item) => {
-        console.log(item);
-        item.classList.add("highlightAttack");
-      });
-    board.update();
-  },
-  */
 });
 
 Object.assign(pieces, {
@@ -196,11 +181,11 @@ Object.assign(pieces, {
           directions: [[0, 1]],
           stepAmount: "2",
           jump: false,
+          attack: [
+            [1, 1],
+            [-1, 1],
+          ],
         },
-        attack: [
-          [1, 1],
-          [-1, 1],
-        ],
       },
     },
     /*
@@ -312,7 +297,6 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
-    let tileNode = clickedTileObj.node;
     let selectedTile = this.selectedTile;
     //check if this is the start of a move, if there was already a piece selected
     if (
@@ -390,11 +374,11 @@ Object.assign(movementLogic, {
   },
 
   getMovementData: function (piece) {
-    if (Array.isArray(piece.movement.firstMove) && !piece.movement.hasMoved) {
+    if (Boolean(piece.movement.firstMove) && !piece.movement.hasMoved) {
       console.log("getmovementdata() firstmove initiated");
       return piece.movement.firstMove;
     } else {
-      return piece.movement.directions;
+      return piece.movement;
     }
   },
 
@@ -402,7 +386,7 @@ Object.assign(movementLogic, {
     if (Array.isArray(piece.movement.attack)) {
       return piece.movement.attack;
     } else {
-      return piece.movement.diections;
+      return piece.movement.dirctions;
     }
   },
 
@@ -416,13 +400,14 @@ Object.assign(movementLogic, {
 
   calcMovement: function (movementData, stepAmount, tileObj) {
     console.log("calculating movement...");
-    movementData.forEach((direction) => {
+    console.log(movementData);
+    movementData.directions.forEach((direction) => {
       // make the currentTile equal tileObj, without linking the two
       currentTile = Object.assign({}, tileObj);
       // iterate through every direction that piece can move
       let directionX = direction[0];
       let directionY = direction[1];
-      let i = stepAmount;
+      let i = movementData.stepAmount;
       //for as many steps as it can do
       for (; i; ) {
         //follow that direction until something blocks the path
