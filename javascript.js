@@ -8,21 +8,21 @@ const centralData = {
   },
 
   getTileObjXY: function (x, y) {
-    this.boardTilesObj.forEach((element) => {
-      if (element.x == x && element.y == y) {
-        return element;
+    let array = this.boardTilesObj;
+    for (i = array.length; i > 0; i--) {
+      if (array[i - 1].x == x && array[i - 1].y == y) {
+        return array[i - 1];
+        break;
       }
-    });
+    }
   },
 
   getNodeXY: function (x, y) {
-    let i;
-    this.boardTilesObj.forEach((element, index) => {
+    this.boardTilesObj.forEach((element) => {
       if (element.x == x && element.y == y) {
-        i = index;
+        return element.node;
       }
     });
-    return this.boardNodeList[i];
   },
 
   getPieceFromNameAndColor: function (nameString, player) {
@@ -364,16 +364,16 @@ Object.assign(gamePlay, {
 });
 
 Object.assign(movementLogic, {
-  updateAvailableTiles: function (clickedTileObj) {
-    let clickedNode = clickedTileObj.node;
-    let piece = clickedTileObj.content;
-    console.log(clickedNode);
+  updateAvailableTiles: function (tileObj) {
+    let node = tileObj.node;
+    let piece = tileObj.content;
+    console.log(node);
     console.log(piece);
     movementData = this.getMovementData(piece);
     attackData = this.getAttackData(piece);
     let stepAmount = this.getStepAmount(piece);
-    this.calcMovement(movementData, tile, stepAmount);
-    this.availableTiles.attack = this.calcAttack(attackData, tile, stepAmount);
+    this.calcMovement(movementData, stepAmount, tileObj);
+    //    this.availableTiles.attack = this.calcAttack(attackData, tile, stepAmount);
   },
 
   getMovementData: function (piece) {
@@ -401,15 +401,16 @@ Object.assign(movementLogic, {
     }
   },
 
-  calcMovement: function (movementData, tile, stepAmount) {
-    let availableTiles = [];
-    console.log("calculating movement");
+  calcMovement: function (movementData, stepAmount, tileObj) {
+    console.log("calculating movement...");
     movementData.forEach((direction) => {
-      currentTile = Object.assign({}, tile);
+      // make the currentTile equal tileObj, without linking the two
+      currentTile = Object.assign({}, tileObj);
       // iterate through every direction that piece can move
       let directionX = direction[0];
       let directionY = direction[1];
       let i = stepAmount;
+      //for as many steps as it can do
       for (; i; ) {
         //follow that direction until something blocks the path
         let newX = currentTile.x + directionX;
@@ -421,7 +422,8 @@ Object.assign(movementLogic, {
           break;
         }
         //take a new step in the direction
-        let node = this.getNodeXY(newX, newY);
+        let node = this.getTileObjXY(newX, newY);
+        console.log(node);
         node.classList.add("highlightMove");
         availableTiles.push(node);
         currentTile.x = newX;
