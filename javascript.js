@@ -1,6 +1,7 @@
 const centralData = {
   boardTilesObj: [],
   boardNodeList: [],
+  lostPieces: [],
   selectedTile: "",
   availableTiles: {
     move: [],
@@ -334,7 +335,7 @@ Object.assign(gamePlay, {
       //or attack the tile
       clickedTile.available == "attack"
     ) {
-      this.attackTile(this.selectedTile, clickedTile);
+      this.doAttack(this.selectedTile, clickedTile);
     }
     centralData.selectedTile = "";
     board.removeHighlights();
@@ -358,11 +359,9 @@ Object.assign(gamePlay, {
     this.closeTurn();
   },
 
-  doAttack: function (tile) {
-    /*
-    let piece = tile.content;
-    piece.hasMoved = true;
-    */
+  doAttack: function (oldTile, newTile) {
+    this.lostPieces.push(newTile.content);
+    this.placePiece(oldTile, newTile);
   },
 
   closeTurn: function () {
