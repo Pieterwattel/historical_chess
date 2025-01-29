@@ -24,8 +24,7 @@ html {
 
 #boardEdge > :hover {
   box-shadow: 0px 0px 4px white;
-  transform: scale(1.02);
-  background-color: rgba(0, 255, 0, 0.1);
+  transform: scale(1.03);
   z-index: 1;
 }
 

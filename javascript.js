@@ -155,7 +155,7 @@ Object.assign(pieces, {
           [0, 1],
           [-1, 0],
         ],
-        stepAmount: 15,
+        stepAmount: "continuous",
         jump: false,
         attack: "same as directions",
         firstMove: false,
@@ -386,10 +386,11 @@ Object.assign(gamePlay, {
 Object.assign(movementLogic, {
   updateAvailableTiles: function (tileObj) {
     let piece = tileObj.content;
-    movementData = this.getMovementData(piece);
-    attackData = this.getAttackData(piece);
-    this.calcMovement(movementData, tileObj);
-    this.calcAttack(attackData, tileObj);
+    let stepAmount = this.getStepAmount(piece);
+    let movementData = this.getMovementData(piece);
+    let attackData = this.getAttackData(piece);
+    this.calcMovement(movementData, tileObj, stepAmount);
+    this.calcAttack(attackData, tileObj, stepAmount);
   },
 
   getMovementData: function (piece) {
@@ -401,7 +402,7 @@ Object.assign(movementLogic, {
   },
 
   getAttackData: function (piece) {
-    console.log(piece.movement.attack);
+    console.log(piece.movement);
     console.log(typeof piece.movement.attack);
     if (typeof piece.movement.attack == "object") {
       return piece.movement.attack;
@@ -418,14 +419,14 @@ Object.assign(movementLogic, {
     }
   },
 
-  calcMovement: function (movementData, tileObj) {
+  calcMovement: function (movementData, tileObj, stepAmount) {
     movementData.directions.forEach((direction) => {
       // make the currentTile equal tileObj, without linking the two
       currentTile = Object.assign({}, tileObj);
       // iterate through every direction that piece can move
       let directionX = direction[0];
       let directionY = direction[1];
-      let i = movementData.stepAmount;
+      let i = stepAmount;
       //for as many steps as it can do
       for (; i; ) {
         //now follow that direction until something blocks the path
@@ -444,52 +445,55 @@ Object.assign(movementLogic, {
         if (!availableTileObj.content) {
           availableTileObj.available = "move";
         } else if (!tileObj.content.movement.jump) {
+          console.log("move path piece in the way");
+
           // or else if there is a piece, and the moving piece can't jump, end direction
           break;
         }
 
-        //now initaite the checking of the new tile
+        //now initiate the checking of the new tile
         currentTile.x = newX;
         currentTile.y = newY;
 
-        if (Number(i)) {
+        if (i === true) {
+        } else {
           i--;
         }
       }
     });
   },
 
-  calcAttack: function (movementData, tileObj) {
-    console.log(movementData.directions);
+  calcAttack: function (movementData, tileObj, stepAmount) {
     movementData.directions.forEach((direction) => {
       // make the currentTile equal tileObj, without linking the two
       currentTile = Object.assign({}, tileObj);
-      console.log("yes");
-
+      console.log("goto new direction");
       // iterate through every direction that piece can move
       let directionX = direction[0];
       let directionY = direction[1];
-      let i = movementData.stepAmount;
+      let i = stepAmount;
       //for as many steps as it can do
       for (; i; ) {
+        console.log("continue direction..");
         //now follow that direction until something blocks the path
         let newX = currentTile.x + directionX;
         let newY = currentTile.y + directionY;
         //check if current tile is out of bounds
         if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
+          console.log("if1");
           currentTile = Object.assign({}, tileObj);
           break;
         }
 
         //new tile is at least existing, lets check it out further
         let availableTileObj = this.getTileObjXY(newX, newY);
-
+        console.log(availableTileObj);
         //if there is an enemy piece blocking the tile, make it available
-        if (availableTileObj.content.player == gamePlay.otherPlayer) {
-          console.log("if1");
+        if (!availableTileObj.content) {
+          // if the tile is empty, just skip it and go check the next one!
+        } else if (availableTileObj.content.player == gamePlay.otherPlayer) {
           availableTileObj.available = "attack";
         } else if (!tileObj.content.movement.jump) {
-          console.log("if2");
           // or else if there is a piece, and the moving piece can't jump, end direction
           break;
         }
@@ -498,9 +502,11 @@ Object.assign(movementLogic, {
         currentTile.x = newX;
         currentTile.y = newY;
 
-        if (Number(i)) {
+        if (i === true) {
+        } else {
           i--;
         }
+        console.log(i);
       }
     });
   },
