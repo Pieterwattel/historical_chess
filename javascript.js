@@ -412,7 +412,9 @@ Object.assign(movementLogic, {
   },
 
   getStepAmount(piece) {
-    if (Number(piece.movement.stepAmount)) {
+    if (Boolean(piece.movement.firstMove) && !piece.hasMoved) {
+      return piece.movement.firstMove.stepAmount;
+    } else if (Number(piece.movement.stepAmount)) {
       return piece.movement.stepAmount;
     } else {
       return true;
