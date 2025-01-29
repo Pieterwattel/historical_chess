@@ -58,8 +58,12 @@ div > * {
   background-color: beige;
 }
 
-.highlightMove {
-  background-color: green !important;
+.darkTile.highlightMove {
+  background-color: rgb(53, 109, 28) !important;
+}
+
+.lightTile.highlightMove {
+  background-color: rgb(105, 180, 62) !important;
 }
 
 .highlightAttack {
