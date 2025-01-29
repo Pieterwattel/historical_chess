@@ -174,19 +174,12 @@ Object.assign(pieces, {
             [1, 1],
             [-1, 1],
           ],
+          stepAmount: "1",
         },
-        stepAmount: "1",
         firstMove: {
           directions: [[0, 1]],
           stepAmount: "2",
           jump: false,
-          attack: {
-            directions: [
-              [1, 1],
-              [-1, 1],
-            ],
-            stepAmount: "1",
-          },
         },
       },
     },
@@ -377,14 +370,17 @@ Object.assign(gamePlay, {
     switch (this.playerTurn) {
       case "white":
         this.playerTurn = "black";
+        this.otherPlayer = "white";
         break;
 
       case "black":
         this.playerTurn = "white";
+        this.otherPlayer = "black";
     }
   },
 
   playerTurn: "white",
+  otherPlayer: "black",
 });
 
 Object.assign(movementLogic, {
@@ -405,7 +401,9 @@ Object.assign(movementLogic, {
   },
 
   getAttackData: function (piece) {
-    if (Array.isArray(piece.movement.attack)) {
+    console.log(piece.movement.attack);
+    console.log(typeof piece.movement.attack);
+    if (typeof piece.movement.attack == "object") {
       return piece.movement.attack;
     } else {
       return piece.movement;
@@ -462,10 +460,11 @@ Object.assign(movementLogic, {
   },
 
   calcAttack: function (movementData, tileObj) {
-    console.log(movementData);
+    console.log(movementData.directions);
     movementData.directions.forEach((direction) => {
       // make the currentTile equal tileObj, without linking the two
       currentTile = Object.assign({}, tileObj);
+      console.log("yes");
 
       // iterate through every direction that piece can move
       let directionX = direction[0];
@@ -485,10 +484,12 @@ Object.assign(movementLogic, {
         //new tile is at least existing, lets check it out further
         let availableTileObj = this.getTileObjXY(newX, newY);
 
-        //if there is a piece blocking the tile, make it available
-        if (!availableTileObj.content) {
+        //if there is an enemy piece blocking the tile, make it available
+        if (availableTileObj.content.player == gamePlay.otherPlayer) {
+          console.log("if1");
           availableTileObj.available = "attack";
         } else if (!tileObj.content.movement.jump) {
+          console.log("if2");
           // or else if there is a piece, and the moving piece can't jump, end direction
           break;
         }
