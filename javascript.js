@@ -293,7 +293,7 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
-    console.log("checkTileAction");
+    console.log(`${clickedTileObj}`);
     let selectedTile = this.selectedTile;
     if (clickedTileObj == selectedTile) {
       console.log("if1");
@@ -428,7 +428,7 @@ Object.assign(movementLogic, {
       let i = movementData.stepAmount;
       //for as many steps as it can do
       for (; i; ) {
-        //follow that direction until something blocks the path
+        //now follow that direction until something blocks the path
         let newX = currentTile.x + directionX;
         let newY = currentTile.y + directionY;
         //check if current tile is out of bounds
@@ -436,9 +436,21 @@ Object.assign(movementLogic, {
           currentTile = Object.assign({}, tileObj);
           break;
         }
-        //take a new step in the direction
+
+        //new tile is at least existing, lets check it out further
         let availableTileObj = this.getTileObjXY(newX, newY);
-        availableTileObj.available = "move";
+
+        //if there is no a piece blocking the tile, make it available
+        if (!availableTileObj.content) {
+          console.log("if1");
+          availableTileObj.available = "move";
+        } else if (!tileObj.content.movement.jump) {
+          console.log("if2");
+          // or else if there is a piece, and the moving piece can't jump, end direction
+          break;
+        }
+
+        //now initaite the checking of the new tile
         currentTile.x = newX;
         currentTile.y = newY;
 
