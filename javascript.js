@@ -32,10 +32,6 @@ const centralData = {
       ) || null
     );
   },
-
-  checkFunction: function () {
-    console.log("this function has been called");
-  },
 };
 
 const board = Object.create(centralData);
@@ -297,47 +293,51 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
-    console.log(clickedTileObj);
     let selectedTile = this.selectedTile;
+    if (clickedTileObj == selectedTile) {
+      this.deselectTile();
+      return;
+    }
+    console.log(selectedTile);
+    console.log(clickedTileObj.available);
     if (
-      //check if this is the start of a move, if there was already a piece selected
+      // if there is not piece selected yet, this is the start of a move
       (!selectedTile && clickedTileObj.content) ||
       //also re-initiate the turn if this some other piece of the current playerTurn's
       clickedTileObj.content.player == this.playerTurn
     ) {
+      console.log("startturn");
       this.startTurn(clickedTileObj);
     } else if (selectedTile && clickedTileObj.available) {
+      console.log("endTurn");
       this.endTurn(clickedTileObj);
     } else {
       this.deselectTile();
     }
+
+    board.update();
   },
 
   startTurn: function (clickedTile) {
-    console.log("startTurn initiated");
-    centralData.selectedTile = clickedTile;
+    this.selectedTile = clickedTile;
+    console.log(this.selectedTile);
     board.removeHighlights();
     movementLogic.updateAvailableTiles(clickedTile);
     board.addHighlights();
-    board.update();
   },
 
   endTurn: function (clickedTile) {
-    console.log("endTurn initiated");
+    //either move to the tile
+    if (clickedTile.available == "move") {
+      this.placePiece(this.selectedTile, clickedTile);
+    } else if (
+      //or attack the tile
+      clickedTile.available == "attack"
+    ) {
+      this.attackTile(this.selectedTile, clickedTile);
+    }
     centralData.selectedTile = "";
     board.removeHighlights();
-    //if clickedTile is in available tiles
-    //placePiece()
-
-    //else if clickedTile is in attackTiles
-    //doAttack()
-
-    //else if clickedTile.content.player is the same as playerTurn, then do a startTurn again.
-
-    //else deselect the piece, run checkTileAction again
-    this.checkTileAction(clickedTile);
-
-    board.update();
   },
   /*
    */
@@ -350,16 +350,34 @@ Object.assign(gamePlay, {
     board.removeHighlights();
   },
 
-  placePiece: function () {
-    console.log("placing piece");
-    let piece = tile.content;
-    piece.hasMoved = true;
+  placePiece: function (oldTile, newTile) {
+    console.log("placePiece");
+    newTile.content = oldTile.content;
+    oldTile.content = "";
+    newTile.content.hasMoved = true;
+    this.selectedTile = "";
+    this.closeTurn();
   },
 
   doAttack: function (tile) {
-    console.log("doing attack");
+    /*
     let piece = tile.content;
     piece.hasMoved = true;
+    */
+  },
+
+  closeTurn: function () {
+    /*
+    console.log(`${this.playerTurn}'s turn has ended`);
+    switch (this.playerTurn) {
+      case "white":
+        this.playerTurn = "black";
+        break;
+
+      case "black":
+        this.playerTurn = "white";
+    }
+    */
   },
 
   playerTurn: "black",
@@ -369,8 +387,6 @@ Object.assign(movementLogic, {
   updateAvailableTiles: function (tileObj) {
     let node = tileObj.node;
     let piece = tileObj.content;
-    console.log(node);
-    console.log(piece);
     movementData = this.getMovementData(piece);
     attackData = this.getAttackData(piece);
     let stepAmount = this.getStepAmount(piece);
@@ -380,7 +396,6 @@ Object.assign(movementLogic, {
 
   getMovementData: function (piece) {
     if (Boolean(piece.movement.firstMove) && !piece.movement.hasMoved) {
-      console.log("getmovementdata() firstmove initiated");
       return piece.movement.firstMove;
     } else {
       return piece.movement;
@@ -404,8 +419,6 @@ Object.assign(movementLogic, {
   },
 
   calcMovement: function (movementData, stepAmount, tileObj) {
-    console.log("calculating movement...");
-    console.log(movementData);
     movementData.directions.forEach((direction) => {
       // make the currentTile equal tileObj, without linking the two
       currentTile = Object.assign({}, tileObj);
@@ -436,9 +449,7 @@ Object.assign(movementLogic, {
     });
   },
 
-  calcAttack: function (movementData, tile, stepAmount) {
-    console.log("calculating attack");
-  },
+  calcAttack: function (movementData, tile, stepAmount) {},
 });
 
 Object.assign(preparation, {
