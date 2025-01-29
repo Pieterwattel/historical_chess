@@ -303,22 +303,22 @@ Object.assign(gamePlay, {
       !selectedTile &&
       true /*clickedTile.content.player == this.playerTurn*/
     ) {
-      this.startMove(clickedTileObj);
+      this.startTurn(clickedTileObj);
     } else if (selectedTile /*&& clickedTile is available*/) {
-      this.endMove(clickedTileObj);
+      this.endTurn(clickedTileObj);
     }
   },
 
-  startMove: function (clickedTile) {
-    console.log("startmove initiated");
+  startTurn: function (clickedTile) {
+    console.log("startTurn initiated");
     centralData.selectedTile = clickedTile;
     movementLogic.updateAvailableTiles(clickedTile);
     board.addHighlights();
     board.update();
   },
 
-  endMove: function (clickedTile) {
-    console.log("endMove initiated");
+  endTurn: function (clickedTile) {
+    console.log("endTurn initiated");
     centralData.selectedTile = "";
     board.removeHighlights();
     //if clickedTile is in available tiles
@@ -327,7 +327,7 @@ Object.assign(gamePlay, {
     //else if clickedTile is in attackTiles
     //doAttack()
 
-    //else if clickedTile.content.player is the same as playerTurn, then do a startMove again.
+    //else if clickedTile.content.player is the same as playerTurn, then do a startTurn again.
 
     //else deselect the piece, run checkTileAction again
     this.checkTileAction(clickedTile);
