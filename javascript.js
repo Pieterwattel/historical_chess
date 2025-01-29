@@ -36,20 +36,6 @@ const centralData = {
   checkFunction: function () {
     console.log("this function has been called");
   },
-
-  unHighlightNodes: function () {
-    if (this.availableTiles.move) {
-      this.availableTiles.move.forEach((item) => {
-        item.classList.remove("highlightMove");
-      });
-    }
-    if (this.availableTiles.attack)
-      this.availableTiles.attack.forEach((item) => {
-        console.log(item);
-        item.classList.remove("highlightAttack");
-      });
-    board.update();
-  },
 };
 
 const board = Object.create(centralData);
@@ -130,15 +116,25 @@ Object.assign(board, {
     });
   },
 
-  updateHighlights: function () {
+  addHighlights: function () {
     let array = this.boardTilesObj;
     array.forEach((tile) => {
       if (tile.available == "move") {
         tile.node.classList.add("highlightMove");
       } else if (tile.available == "attack") {
         tile.node.classList.add("highlightAttack");
-      } else {
+      }
+    });
+  },
+
+  removeHighlights: function () {
+    let array = this.boardTilesObj;
+    array.forEach((tile) => {
+      if (tile.available == "move") {
+        tile.available = "";
         tile.node.classList.remove("highlightMove");
+      } else if (tile.available == "attack") {
+        tile.available = "";
         tile.node.classList.remove("highlightAttack");
       }
     });
@@ -333,14 +329,14 @@ Object.assign(gamePlay, {
     console.log("startmove initiated");
     centralData.selectedTile = clickedTile;
     movementLogic.updateAvailableTiles(clickedTile);
-    board.updateHighlights();
+    board.addHighlights();
     board.update();
   },
 
   endMove: function (clickedTile) {
     console.log("endMove initiated");
     centralData.selectedTile = "";
-    centralData.unHighlightNodes(this.availableTiles);
+    board.removeHighlights();
     //if clickedTile is in available tiles
     //placePiece()
 
@@ -349,7 +345,8 @@ Object.assign(gamePlay, {
 
     //else if clickedTile.content.player is the same as playerTurn, then do a startMove again.
 
-    //else deselect the piece
+    //else deselect the piece, run checkTileAction again
+    this.checkTileAction(clickedTile);
 
     board.update();
   },
