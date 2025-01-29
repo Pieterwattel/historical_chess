@@ -37,20 +37,6 @@ const centralData = {
     console.log("this function has been called");
   },
 
-  highlightNodes: function () {
-    if (this.availableTiles.move) {
-      this.availableTiles.move.forEach((item) => {
-        item.classList.add("highlightMove");
-      });
-    }
-    if (this.availableTiles.attack)
-      this.availableTiles.attack.forEach((item) => {
-        console.log(item);
-        item.classList.add("highlightAttack");
-      });
-    board.update();
-  },
-
   unHighlightNodes: function () {
     if (this.availableTiles.move) {
       this.availableTiles.move.forEach((item) => {
@@ -143,6 +129,35 @@ Object.assign(board, {
       this.boardEdgeNode.appendChild(tileObj.node);
     });
   },
+
+  updateHighlights: function () {
+    let array = this.boardTilesObj;
+    array.forEach((tile) => {
+      if (tile.available == "move") {
+        tile.node.classList.add("highlightMove");
+      } else if (tile.available == "attack") {
+        tile.node.classList.add("highlightAttack");
+      } else {
+        tile.node.classList.remove("highlightMove");
+        tile.node.classList.remove("highlightAttack");
+      }
+    });
+  },
+
+  /*
+    if (this.availableTiles.move) {
+      this.availableTiles.move.forEach((item) => {
+        item.classList.add("highlightMove");
+      });
+    }
+    if (this.availableTiles.attack)
+      this.availableTiles.attack.forEach((item) => {
+        console.log(item);
+        item.classList.add("highlightAttack");
+      });
+    board.update();
+  },
+  */
 });
 
 Object.assign(pieces, {
@@ -318,6 +333,7 @@ Object.assign(gamePlay, {
     console.log("startmove initiated");
     centralData.selectedTile = clickedTile;
     movementLogic.updateAvailableTiles(clickedTile);
+    board.updateHighlights();
     board.update();
   },
 
