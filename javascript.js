@@ -169,18 +169,24 @@ Object.assign(pieces, {
         directions: [[0, 1]],
         stepAmount: "1",
         jump: false,
-        attack: [
-          [1, 1],
-          [-1, 1],
-        ],
+        attack: {
+          directions: [
+            [1, 1],
+            [-1, 1],
+          ],
+        },
+        stepAmount: "1",
         firstMove: {
           directions: [[0, 1]],
           stepAmount: "2",
           jump: false,
-          attack: [
-            [1, 1],
-            [-1, 1],
-          ],
+          attack: {
+            directions: [
+              [1, 1],
+              [-1, 1],
+            ],
+            stepAmount: "1",
+          },
         },
       },
     },
@@ -296,7 +302,7 @@ Object.assign(gamePlay, {
     console.log(`${clickedTileObj}`);
     let selectedTile = this.selectedTile;
     if (clickedTileObj == selectedTile) {
-      console.log("if1");
+      //   console.log("if1");
       this.deselectTile();
       return;
     }
@@ -307,13 +313,13 @@ Object.assign(gamePlay, {
       //also re-initiate the turn if this some other piece of the current playerTurn's
       clickedTileObj.content.player == this.playerTurn
     ) {
-      console.log("startturn");
+      //   console.log("startturn");
       this.startTurn(clickedTileObj);
     } else if (selectedTile && clickedTileObj.available) {
-      console.log("endTurn");
+      //   console.log("endTurn");
       this.endTurn(clickedTileObj);
     } else {
-      console.log("lastif");
+      //   console.log("lastif");
       this.deselectTile();
     }
 
@@ -322,7 +328,6 @@ Object.assign(gamePlay, {
 
   startTurn: function (clickedTile) {
     this.selectedTile = clickedTile;
-    console.log(this.selectedTile);
     board.removeHighlights();
     movementLogic.updateAvailableTiles(clickedTile);
     board.addHighlights();
@@ -353,7 +358,6 @@ Object.assign(gamePlay, {
   },
 
   placePiece: function (oldTile, newTile) {
-    console.log("placePiece");
     newTile.content = oldTile.content;
     oldTile.content = "";
     newTile.content.hasMoved = true;
@@ -380,18 +384,16 @@ Object.assign(gamePlay, {
     }
   },
 
-  playerTurn: "black",
+  playerTurn: "white",
 });
 
 Object.assign(movementLogic, {
   updateAvailableTiles: function (tileObj) {
-    let node = tileObj.node;
     let piece = tileObj.content;
     movementData = this.getMovementData(piece);
     attackData = this.getAttackData(piece);
-    let stepAmount = this.getStepAmount(piece);
-    this.calcMovement(movementData, stepAmount, tileObj);
-    //    this.availableTiles.attack = this.calcAttack(attackData, tile, stepAmount);
+    this.calcMovement(movementData, tileObj);
+    this.calcAttack(attackData, tileObj);
   },
 
   getMovementData: function (piece) {
@@ -406,7 +408,7 @@ Object.assign(movementLogic, {
     if (Array.isArray(piece.movement.attack)) {
       return piece.movement.attack;
     } else {
-      return piece.movement.dirctions;
+      return piece.movement;
     }
   },
 
@@ -418,7 +420,7 @@ Object.assign(movementLogic, {
     }
   },
 
-  calcMovement: function (movementData, stepAmount, tileObj) {
+  calcMovement: function (movementData, tileObj) {
     movementData.directions.forEach((direction) => {
       // make the currentTile equal tileObj, without linking the two
       currentTile = Object.assign({}, tileObj);
@@ -442,10 +444,8 @@ Object.assign(movementLogic, {
 
         //if there is no a piece blocking the tile, make it available
         if (!availableTileObj.content) {
-          console.log("if1");
           availableTileObj.available = "move";
         } else if (!tileObj.content.movement.jump) {
-          console.log("if2");
           // or else if there is a piece, and the moving piece can't jump, end direction
           break;
         }
@@ -461,7 +461,48 @@ Object.assign(movementLogic, {
     });
   },
 
-  calcAttack: function (movementData, tile, stepAmount) {},
+  calcAttack: function (movementData, tileObj) {
+    console.log(movementData);
+    movementData.directions.forEach((direction) => {
+      // make the currentTile equal tileObj, without linking the two
+      currentTile = Object.assign({}, tileObj);
+
+      // iterate through every direction that piece can move
+      let directionX = direction[0];
+      let directionY = direction[1];
+      let i = movementData.stepAmount;
+      //for as many steps as it can do
+      for (; i; ) {
+        //now follow that direction until something blocks the path
+        let newX = currentTile.x + directionX;
+        let newY = currentTile.y + directionY;
+        //check if current tile is out of bounds
+        if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
+          currentTile = Object.assign({}, tileObj);
+          break;
+        }
+
+        //new tile is at least existing, lets check it out further
+        let availableTileObj = this.getTileObjXY(newX, newY);
+
+        //if there is a piece blocking the tile, make it available
+        if (!availableTileObj.content) {
+          availableTileObj.available = "attack";
+        } else if (!tileObj.content.movement.jump) {
+          // or else if there is a piece, and the moving piece can't jump, end direction
+          break;
+        }
+
+        //now initaite the checking of the new tile
+        currentTile.x = newX;
+        currentTile.y = newY;
+
+        if (Number(i)) {
+          i--;
+        }
+      }
+    });
+  },
 });
 
 Object.assign(preparation, {
