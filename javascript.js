@@ -299,155 +299,146 @@ Object.assign(pieces, {
   ],
 });
 
-if (false) {
-  Object.assign(gamePlay, {
-    checkTileAction: function (clickedTile) {
-      let selectedTile = this.selectedTile;
-      console.log(Boolean(!selectedTile));
-      //check if this is the start of a move, if there was already a piece selected
-      if (
-        !selectedTile &&
-        true /*clickedTile.content.player == this.playerTurn*/
-      ) {
-        this.startMove(clickedTile);
-      } else if (selectedTile /*&& clickedTile is available*/) {
-        this.endMove(clickedTile);
-      }
-    },
+Object.assign(gamePlay, {
+  checkTileAction: function (clickedTileObj) {
+    let tileNode = clickedTileObj.node;
+    let selectedTile = this.selectedTile;
+    //check if this is the start of a move, if there was already a piece selected
+    if (
+      !selectedTile &&
+      true /*clickedTile.content.player == this.playerTurn*/
+    ) {
+      this.startMove(clickedTileObj);
+    } else if (selectedTile /*&& clickedTile is available*/) {
+      this.endMove(clickedTileObj);
+    }
+  },
 
-    startMove: function (clickedTile) {
-      console.log("startmove initiated");
-      this.selectPiece(clickedTile);
-      centralData.selectedTile = clickedTile;
-      movementLogic.updateAvailableTiles(clickedTile);
-      board.update();
-    },
+  startMove: function (clickedTile) {
+    console.log("startmove initiated");
+    centralData.selectedTile = clickedTile;
+    movementLogic.updateAvailableTiles(clickedTile);
+    board.update();
+  },
 
-    endMove: function (clickedTile) {
-      console.log("endMove initiated");
-      centralData.selectedTile = "";
-      centralData.unHighlightNodes(this.availableTiles);
-      //if clickedTile is in available tiles
-      //placePiece()
+  endMove: function (clickedTile) {
+    console.log("endMove initiated");
+    centralData.selectedTile = "";
+    centralData.unHighlightNodes(this.availableTiles);
+    //if clickedTile is in available tiles
+    //placePiece()
 
-      //else if clickedTile is in attackTiles
-      //doAttack()
+    //else if clickedTile is in attackTiles
+    //doAttack()
 
-      //else if clickedTile.content.player is the same as playerTurn, then do a startMove again.
+    //else if clickedTile.content.player is the same as playerTurn, then do a startMove again.
 
-      //else deselect the piece
+    //else deselect the piece
 
-      board.update();
-    },
+    board.update();
+  },
+  /*
+   */
+  selectPiece: function (clickedTile) {
+    //updateAvailableTiles()
+  },
 
-    selectPiece: function (clickedTile) {
-      //updateAvailableTiles()
-    },
+  deselectPiece: function () {
+    centralData.selectedTile = "";
+    //updateAvailableTiles();
+  },
 
-    deselectPiece: function () {
-      centralData.selectedTile = "";
-      //updateAvailableTiles();
-    },
+  placePiece: function () {
+    console.log("placing piece");
+    let piece = tile.content;
+    piece.hasMoved = true;
+  },
 
-    placePiece: function () {
-      console.log("placing piece");
-      let piece = tile.content;
-      piece.hasMoved = true;
-    },
+  doAttack: function (tile) {
+    console.log("doing attack");
+    let piece = tile.content;
+    piece.hasMoved = true;
+  },
 
-    doAttack: function (tile) {
-      console.log("doing attack");
-      let piece = tile.content;
-      piece.hasMoved = true;
-    },
+  playerTurn: "black",
+});
 
-    playerTurn: "black",
-  });
+Object.assign(movementLogic, {
+  updateAvailableTiles: function (clickedTileObj) {
+    let clickedNode = clickedTileObj.node;
+    let piece = clickedTileObj.content;
+    console.log(clickedNode);
+    console.log(piece);
+    movementData = this.getMovementData(piece);
+    attackData = this.getAttackData(piece);
+    let stepAmount = this.getStepAmount(piece);
+    this.calcMovement(movementData, tile, stepAmount);
+    this.availableTiles.attack = this.calcAttack(attackData, tile, stepAmount);
+  },
 
-  Object.assign(movementLogic, {
-    updateAvailableTiles: function () {
-      let tile = centralData.selectedTile;
-      let piece = tile.content;
-      console.log(piece);
-      movementData = this.getMovementData(piece);
-      attackData = this.getAttackData(piece);
-      let stepAmount = this.getStepAmount(piece);
-      this.availableTiles.move = this.calcMovement(
-        movementData,
-        tile,
-        stepAmount
-      );
-      this.availableTiles.attack = this.calcAttack(
-        attackData,
-        tile,
-        stepAmount
-      );
-    },
+  getMovementData: function (piece) {
+    if (Array.isArray(piece.movement.firstMove) && !piece.movement.hasMoved) {
+      console.log("getmovementdata() firstmove initiated");
+      return piece.movement.firstMove;
+    } else {
+      return piece.movement.directions;
+    }
+  },
 
-    getMovementData: function (piece) {
-      if (Array.isArray(piece.movement.firstMove) && !piece.movement.hasMoved) {
-        console.log("getmovementdata() firstmove initiated");
-        return piece.movement.firstMove;
-      } else {
-        return piece.movement.directions;
-      }
-    },
+  getAttackData: function (piece) {
+    if (Array.isArray(piece.movement.attack)) {
+      return piece.movement.attack;
+    } else {
+      return piece.movement.diections;
+    }
+  },
 
-    getAttackData: function (piece) {
-      if (Array.isArray(piece.movement.attack)) {
-        return piece.movement.attack;
-      } else {
-        return piece.movement.diections;
-      }
-    },
+  getStepAmount(piece) {
+    if (Number(piece.movement.stepAmount)) {
+      return piece.movement.stepAmount;
+    } else {
+      return true;
+    }
+  },
 
-    getStepAmount(piece) {
-      if (Number(piece.movement.stepAmount)) {
-        return piece.movement.stepAmount;
-      } else {
-        return true;
-      }
-    },
-
-    calcMovement: function (movementData, tile, stepAmount) {
-      let availableTiles = [];
-      console.log("calculating movement");
-      movementData.forEach((direction) => {
-        currentTile = Object.assign({}, tile);
-        // iterate through every direction that piece can move
-        let directionX = direction[0];
-        let directionY = direction[1];
-        let i = stepAmount;
-        for (; i; ) {
-          //follow that direction until something blocks the path
-          let newX = currentTile.x + directionX;
-          let newY = currentTile.y + directionY;
-          //check if current tile is out of bounds
-          if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
-            console.log("tile is out of bounds");
-            currentTile = Object.assign({}, tile);
-            break;
-          }
-          //take a new step in the direction
-          let node = this.getNodeXY(newX, newY);
-          node.classList.add("highlightMove");
-          availableTiles.push(node);
-          currentTile.x = newX;
-          currentTile.y = newY;
-
-          if (Number(i)) {
-            i--;
-          }
+  calcMovement: function (movementData, tile, stepAmount) {
+    let availableTiles = [];
+    console.log("calculating movement");
+    movementData.forEach((direction) => {
+      currentTile = Object.assign({}, tile);
+      // iterate through every direction that piece can move
+      let directionX = direction[0];
+      let directionY = direction[1];
+      let i = stepAmount;
+      for (; i; ) {
+        //follow that direction until something blocks the path
+        let newX = currentTile.x + directionX;
+        let newY = currentTile.y + directionY;
+        //check if current tile is out of bounds
+        if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
+          console.log("tile is out of bounds");
+          currentTile = Object.assign({}, tile);
+          break;
         }
-      });
-      return availableTiles;
-    },
+        //take a new step in the direction
+        let node = this.getNodeXY(newX, newY);
+        node.classList.add("highlightMove");
+        availableTiles.push(node);
+        currentTile.x = newX;
+        currentTile.y = newY;
 
-    calcAttack: function (movementData, tile, stepAmount) {
-      console.log("calculating attack");
-    },
-  });
-}
+        if (Number(i)) {
+          i--;
+        }
+      }
+    });
+    return availableTiles;
+  },
+
+  calcAttack: function (movementData, tile, stepAmount) {
+    console.log("calculating attack");
+  },
+});
 
 Object.assign(preparation, {
   // Method to initialize the game
