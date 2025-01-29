@@ -297,21 +297,26 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
+    console.log(clickedTileObj);
     let selectedTile = this.selectedTile;
-    //check if this is the start of a move, if there was already a piece selected
     if (
-      !selectedTile &&
-      true /*clickedTile.content.player == this.playerTurn*/
+      //check if this is the start of a move, if there was already a piece selected
+      (!selectedTile && clickedTileObj.content) ||
+      //also re-initiate the turn if this some other piece of the current playerTurn's
+      clickedTileObj.content.player == this.playerTurn
     ) {
       this.startTurn(clickedTileObj);
-    } else if (selectedTile /*&& clickedTile is available*/) {
+    } else if (selectedTile && clickedTileObj.available) {
       this.endTurn(clickedTileObj);
+    } else {
+      this.deselectTile();
     }
   },
 
   startTurn: function (clickedTile) {
     console.log("startTurn initiated");
     centralData.selectedTile = clickedTile;
+    board.removeHighlights();
     movementLogic.updateAvailableTiles(clickedTile);
     board.addHighlights();
     board.update();
@@ -340,9 +345,9 @@ Object.assign(gamePlay, {
     //updateAvailableTiles()
   },
 
-  deselectPiece: function () {
+  deselectTile: function (tile) {
     centralData.selectedTile = "";
-    //updateAvailableTiles();
+    board.removeHighlights();
   },
 
   placePiece: function () {

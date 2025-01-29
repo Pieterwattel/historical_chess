@@ -71,9 +71,5 @@ div > * {
 }
 
 .lightTile.highlightAttack {
-  background-color: rgb(255, 144, 100); !important;
-}
-
-.highlightAttack {
-  background-color: red;
+  background-color: rgb(255, 144, 100) !important;
 }
