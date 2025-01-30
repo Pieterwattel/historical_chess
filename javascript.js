@@ -8,8 +8,8 @@ const centralData = {
     attack: [],
   },
 
-  blackCiv: "standard",
-  whiteCiv: "mongols",
+  blackCiv: "french",
+  whiteCiv: "sparta",
 
   getTileObjXY: function (x, y) {
     let array = this.boardTilesObj;
@@ -412,8 +412,24 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    standard: "R BQKBNRPPPPPPPP",
-    mongols: "NNNKKNNNPNPNPNPN",
+    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
+    romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
+    aztecs: " PQQQQP   PPPP  ", // Ritualistic battle lines
+    french: " NQBBQN   P  P  ", // Bishop-heavy strategy
+    sparta: " BQQKQB  PPPPPP ", // Strong phalanx formation
+
+    // New radical setups:
+    chaos: " QQQQQQQQKKKKKKKK", // Pure power, no pawns
+    mayans: " P  K  P QQQQQQ  ", // Mysticism, center control
+    huns: " NNNNNNNN PPPPPP  ", // Pure cavalry charge
+    revolution: "   QK  RRRRPPPP", // Royalty under siege
+    ww1: " R B Q K B R PPPP ", // Trench-like symmetry
+    pirates: "    QK   RRRPPP ", // Scattered ship-like attack
+    mutants: " BBBBBKBBPPP P  ", // Mutated bishops, asymmetric pawns
+    aliens: "    QK   NNNNNNN ", // High mobility, no symmetry
+    shadow: "        QKPPPPPP", // All power hidden in the back
+    apocalypse: " K K  QQQQQQ  ", // No clear front line, chaos reigns
   },
 });
 
@@ -638,9 +654,18 @@ Object.assign(preparation, {
   initializeGame: function () {
     board.createTiles(); // Create the board tiles
     board.appendTiles();
+    /*
     let blackCiv = centralData.blackCiv;
     let whiteCiv = centralData.whiteCiv;
     this.setupBoard(pieces.placement[blackCiv], pieces.placement[whiteCiv]);
+    */
+    let civs = Object.keys(pieces.placement);
+    let randCiv1 = civs[Math.floor(Math.random() * civs.length)];
+    let randCiv2 = civs[Math.floor(Math.random() * civs.length)];
+    console.log(randCiv1);
+    console.log(randCiv2);
+    this.setupBoard(pieces.placement[randCiv1], pieces.placement[randCiv2]);
+
     // Call setupBoard on the preparation object
     board.update(); // Update the board
   },
@@ -668,9 +693,11 @@ Object.assign(preparation, {
     t = 63;
     while (i < 16) {
       let symbol = whiteSetup.at(i);
-      let currentPiece = this.getPieceFromSymbolAndColor(symbol, "white");
-      let currentTile = this.boardTilesObj[t];
-      currentTile.content = currentPiece;
+      if (symbol != " ") {
+        let currentPiece = this.getPieceFromSymbolAndColor(symbol, "white");
+        let currentTile = this.boardTilesObj[t];
+        currentTile.content = currentPiece;
+      }
       i++;
       t--;
     }
