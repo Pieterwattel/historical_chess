@@ -146,6 +146,7 @@ Object.assign(pieces, {
   list: [
     {
       name: "rook",
+
       image: "./files/rookBlack.svg",
       player: "black",
       movement: {
@@ -268,20 +269,6 @@ Object.assign(pieces, {
         },
       },
     },
-    /*
-        {
-        name: "",
-        image: "./files/.svg",
-        player: "",
-        movement: {
-          directions: [[],
-          ],
-          stepAmount: "continuous",
-          jump: false,
-          attack: "same as directions",
-          firstMove: false,
-          },
-        },*/
 
     // white pieces:
     {
@@ -484,24 +471,20 @@ Object.assign(gamePlay, {
     console.log(clickedTileObj.content);
     let selectedTile = this.selectedTile;
     if (clickedTileObj == selectedTile) {
-      //   console.log("if1");
       this.deselectTile();
       return;
     }
+
     if (
       // if there is not piece selected yet, this is the start of a move
-      !selectedTile &&
-      clickedTileObj.content &&
+      (!selectedTile && clickedTileObj.content) ||
       //also re-initiate the turn if this some other piece of the current playerTurn's
       clickedTileObj.content.player == this.playerTurn
     ) {
-      //   console.log("startturn");
       this.startTurn(clickedTileObj);
     } else if (selectedTile && clickedTileObj.available) {
-      //   console.log("endTurn");
       this.endTurn(clickedTileObj);
     } else {
-      //   console.log("lastif");
       this.deselectTile();
     }
 
@@ -527,11 +510,6 @@ Object.assign(gamePlay, {
     }
     centralData.selectedTile = "";
     board.removeHighlights();
-  },
-  /*
-   */
-  selectPiece: function (clickedTile) {
-    //updateAvailableTiles()
   },
 
   deselectTile: function (tile) {
