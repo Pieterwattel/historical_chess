@@ -470,7 +470,14 @@ Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
     console.log(clickedTileObj.content);
     let selectedTile = this.selectedTile;
+    // deselect the piece if clicked twice
     if (clickedTileObj == selectedTile) {
+      this.deselectTile();
+      return;
+    }
+
+    // this is to make sure that only the pieces of the persons turn can be moved
+    if (!selectedTile && clickedTileObj.content.player == this.otherPlayer) {
       this.deselectTile();
       return;
     }
@@ -518,6 +525,7 @@ Object.assign(gamePlay, {
   },
 
   placePiece: function (oldTile, newTile) {
+    console.log("placing piece..");
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
     newTile.content = { ...oldTile.content, hasMoved: true };
     oldTile.content = "";
@@ -647,6 +655,8 @@ Object.assign(movementLogic, {
 
         //new tile is at least existing, lets check it out further
         let availableTileObj = this.getTileObjXY(newX, newY);
+        console.log(availableTileObj.content.player);
+        console.log(gamePlay.otherPlayer);
 
         if (!availableTileObj.content) {
           // if the tile is empty, just skip it and go check the next one!
