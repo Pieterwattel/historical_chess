@@ -8,6 +8,8 @@ const centralData = {
     attack: [],
   },
 
+  blackCiv: "standard",
+
   getTileObjXY: function (x, y) {
     let array = this.boardTilesObj;
     for (i = array.length; i > 0; i--) {
@@ -408,73 +410,10 @@ Object.assign(pieces, {
     },
   ],
 
-  placement: [
-    // 8a
-    "R",
-    // 8b
-    "N",
-    // 8c
-    "B",
-    // 8d
-    "Q",
-    // 8e
-    "K",
-    // 8f
-    "B",
-    // 8g
-    "K",
-    // 8h
-    "R",
-    // 7a
-    "P",
-    // 7b
-    "P",
-    // 7c
-    "P",
-    // 7d
-    "P",
-    // 7e
-    "P",
-    // 7f
-    "P",
-    // 7g
-    "P",
-    // 7h
-    "P",
-
-    // 2a
-    "P",
-    // 2b
-    "P",
-    // 2c
-    "P",
-    // 2d
-    "P",
-    // 2e
-    "P",
-    // 2f
-    "P",
-    // 2g
-    "P",
-    // 2h
-    "P",
-    // 1a
-    "R",
-    // 1b
-    "N",
-    // 1c
-    "B",
-    // 1d
-    "Q",
-    // 1e
-    "K",
-    // 1f
-    "B",
-    // 1g
-    "N",
-    // 1h
-    "R",
-  ],
+  placement: {
+    standard: "RNBQKBNRPPPPPPPP",
+    mongols: "NNNKKNNNPNPNPNPN",
+  },
 });
 
 Object.assign(gamePlay, {
@@ -698,14 +637,39 @@ Object.assign(preparation, {
   initializeGame: function () {
     board.createTiles(); // Create the board tiles
     board.appendTiles();
-    this.setupBoard(); // Call setupBoard on the preparation object
+    this.setupBoard(pieces.placement.standard, pieces.placement.mongols); // Call setupBoard on the preparation object
     board.update(); // Update/render the board
   },
 
   // Method to set up the board and pieces
   // iterates at equal pace through the tiles on the board, and
   // the order of pieces.placement, and connects the 2
-  setupBoard: function () {
+  setupBoard: function (blackSetup, whiteSetup) {
+    //setup black pieces
+    let i = 0;
+    let t = 0;
+    while (i < 16) {
+      let symbol = blackSetup.at(i);
+      let currentPiece = this.getPieceFromSymbolAndColor(symbol, "black");
+      let currentTile = this.boardTilesObj[t];
+      currentTile.content = currentPiece;
+      i++;
+      t++;
+    }
+
+    //setup white pieces
+    i = 0;
+    t = 63;
+    while (i < 16) {
+      let symbol = whiteSetup.at(i);
+      let currentPiece = this.getPieceFromSymbolAndColor(symbol, "white");
+      let currentTile = this.boardTilesObj[t];
+      currentTile.content = currentPiece;
+      i++;
+      t--;
+    }
+
+    /*
     let i = 0;
     //place black pieces
     do {
@@ -735,6 +699,7 @@ Object.assign(preparation, {
       i++;
       j++;
     } while (i <= 31);
+    */
   },
 });
 
