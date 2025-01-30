@@ -26,10 +26,10 @@ const centralData = {
     });
   },
 
-  getPieceFromNameAndColor: function (nameString, player) {
+  getPieceFromSymbolAndColor: function (nameString, player) {
     return (
       pieces.list.find(
-        (piece) => piece.name === nameString && piece.player === player
+        (piece) => piece.symbol === nameString && piece.player === player
       ) || null
     );
   },
@@ -146,7 +146,7 @@ Object.assign(pieces, {
   list: [
     {
       name: "rook",
-
+      symbol: "R",
       image: "./files/rookBlack.svg",
       player: "black",
       movement: {
@@ -164,6 +164,7 @@ Object.assign(pieces, {
     },
     {
       name: "knight",
+      symbol: "N",
       image: "./files/knightBlack.svg",
       player: "black",
       movement: {
@@ -187,6 +188,7 @@ Object.assign(pieces, {
 
     {
       name: "bishop",
+      symbol: "B",
       image: "./files/bishopBlack.svg",
       player: "black",
       movement: {
@@ -205,6 +207,7 @@ Object.assign(pieces, {
 
     {
       name: "king",
+      symbol: "K",
       image: "./files/kingBlack.svg",
       player: "black",
       movement: {
@@ -227,6 +230,7 @@ Object.assign(pieces, {
 
     {
       name: "queen",
+      symbol: "Q",
       image: "./files/queenBlack.svg",
       player: "black",
       movement: {
@@ -249,6 +253,7 @@ Object.assign(pieces, {
 
     {
       name: "pawn",
+      symbol: "P",
       image: "./files/pawnBlack.svg",
       player: "black",
       movement: {
@@ -273,6 +278,7 @@ Object.assign(pieces, {
     // white pieces:
     {
       name: "rook",
+      symbol: "r",
       image: "./files/rookWhite.svg",
       player: "white",
       movement: {
@@ -290,6 +296,7 @@ Object.assign(pieces, {
     },
     {
       name: "knight",
+      symbol: "N",
       image: "./files/knightWhite.svg",
       player: "white",
       movement: {
@@ -313,6 +320,7 @@ Object.assign(pieces, {
 
     {
       name: "bishop",
+      symbol: "B",
       image: "./files/bishopWhite.svg",
       player: "white",
       movement: {
@@ -331,6 +339,7 @@ Object.assign(pieces, {
 
     {
       name: "king",
+      symbol: "K",
       image: "./files/kingWhite.svg",
       player: "white",
       movement: {
@@ -353,6 +362,7 @@ Object.assign(pieces, {
 
     {
       name: "queen",
+      symbol: "Q",
       image: "./files/queenWhite.svg",
       player: "white",
       movement: {
@@ -375,6 +385,7 @@ Object.assign(pieces, {
 
     {
       name: "pawn",
+      symbol: "P",
       image: "./files/pawnWhite.svg",
       player: "white",
       movement: {
@@ -399,70 +410,70 @@ Object.assign(pieces, {
 
   placement: [
     // 8a
-    "rook",
+    "R",
     // 8b
-    "knight",
+    "N",
     // 8c
-    "bishop",
+    "B",
     // 8d
-    "queen",
+    "Q",
     // 8e
-    "king",
+    "K",
     // 8f
-    "bishop",
+    "B",
     // 8g
-    "knight",
+    "K",
     // 8h
-    "rook",
+    "R",
     // 7a
-    "pawn",
+    "P",
     // 7b
-    "pawn",
+    "P",
     // 7c
-    "pawn",
+    "P",
     // 7d
-    "pawn",
+    "P",
     // 7e
-    "pawn",
+    "P",
     // 7f
-    "pawn",
+    "P",
     // 7g
-    "pawn",
+    "P",
     // 7h
-    "pawn",
+    "P",
 
     // 2a
-    "pawn",
+    "P",
     // 2b
-    "pawn",
+    "P",
     // 2c
-    "pawn",
+    "P",
     // 2d
-    "pawn",
+    "P",
     // 2e
-    "pawn",
+    "P",
     // 2f
-    "pawn",
+    "P",
     // 2g
-    "pawn",
+    "P",
     // 2h
-    "pawn",
+    "P",
     // 1a
-    "rook",
+    "R",
     // 1b
-    "knight",
+    "N",
     // 1c
-    "bishop",
+    "B",
     // 1d
-    "queen",
+    "Q",
     // 1e
-    "king",
+    "K",
     // 1f
-    "bishop",
+    "B",
     // 1g
-    "knight",
+    "N",
     // 1h
-    "rook",
+    "R",
   ],
 });
 
@@ -699,7 +710,7 @@ Object.assign(preparation, {
     //place black pieces
     do {
       if (pieces.placement[i]) {
-        let currentPiece = this.getPieceFromNameAndColor(
+        let currentPiece = this.getPieceFromSymbolAndColor(
           pieces.placement[i],
           "black"
         );
@@ -714,7 +725,7 @@ Object.assign(preparation, {
     //place white pieces
     do {
       if (pieces.placement[i]) {
-        let currentPiece = this.getPieceFromNameAndColor(
+        let currentPiece = this.getPieceFromSymbolAndColor(
           pieces.placement[i],
           "white"
         );
