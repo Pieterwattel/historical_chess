@@ -65,7 +65,7 @@ Object.assign(board, {
       }
 
       // create the tile object through tile factory
-      let tileData = this.tileFactory(x, y, color);
+      let tileData = structuredClone(this.tileFactory(x, y, color));
 
       //create the tile node
       let tileNode = this.createTileNode(tileData);
@@ -140,8 +140,7 @@ Object.assign(board, {
 
 Object.assign(pieces, {
   constructor: function (name, image, player, movement) {
-    let hasMoved = false;
-    return { name, image, player, movement, hasMoved };
+    return { name, image, player, movement };
   },
 
   list: [
@@ -194,7 +193,7 @@ Object.assign(pieces, {
           [1, 1],
           [-1, 1],
           [-1, -1],
-          [-1, 1],
+          [1, -1],
         ],
         stepAmount: "continuous",
         jump: false,
@@ -334,7 +333,7 @@ Object.assign(pieces, {
           [1, 1],
           [-1, 1],
           [-1, -1],
-          [-1, 1],
+          [1, -1],
         ],
         stepAmount: "continuous",
         jump: false,
@@ -437,24 +436,24 @@ Object.assign(pieces, {
     // 7d
     "pawn",
     // 7e
-    "bishop",
+    "pawn",
     // 7f
-    "queen",
+    "pawn",
     // 7g
     "pawn",
     // 7h
     "pawn",
 
     // 2a
-    "knight",
+    "pawn",
     // 2b
-    "rook",
+    "pawn",
     // 2c
-    "queen",
+    "pawn",
     // 2d
-    "king",
+    "pawn",
     // 2e
-    "bishop",
+    "pawn",
     // 2f
     "pawn",
     // 2g
@@ -482,7 +481,7 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
-    console.log(`${clickedTileObj}`);
+    console.log(clickedTileObj.content);
     let selectedTile = this.selectedTile;
     if (clickedTileObj == selectedTile) {
       //   console.log("if1");
@@ -541,7 +540,8 @@ Object.assign(gamePlay, {
   },
 
   placePiece: function (oldTile, newTile) {
-    newTile.content = oldTile.content;
+    //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
+    newTile.content = { ...oldTile.content, hasMoved: true };
     oldTile.content = "";
     newTile.content.hasMoved = true;
     this.selectedTile = "";
@@ -554,7 +554,6 @@ Object.assign(gamePlay, {
   },
 
   closeTurn: function () {
-    console.log(`${this.playerTurn}'s turn has ended`);
     switch (this.playerTurn) {
       case "white":
         this.playerTurn = "black";
@@ -590,8 +589,6 @@ Object.assign(movementLogic, {
   },
 
   getAttackData: function (piece) {
-    console.log(piece.movement);
-    console.log(typeof piece.movement.attack);
     if (typeof piece.movement.attack == "object") {
       return piece.movement.attack;
     } else {
@@ -635,8 +632,6 @@ Object.assign(movementLogic, {
         if (!availableTileObj.content) {
           availableTileObj.available = "move";
         } else if (!tileObj.content.movement.jump) {
-          console.log("move path piece in the way");
-
           // or else if there is a piece, and the moving piece can't jump, end direction
           break;
         }
@@ -657,20 +652,17 @@ Object.assign(movementLogic, {
     movementData.directions.forEach((direction) => {
       // make the currentTile equal tileObj, without linking the two
       currentTile = Object.assign({}, tileObj);
-      console.log("goto new direction");
       // iterate through every direction that piece can move
       let directionX = direction[0];
       let directionY = direction[1];
       let i = stepAmount;
       //for as many steps as it can do
       for (; i; ) {
-        console.log("continue direction..");
         //now follow that direction until something blocks the path
         let newX = currentTile.x + directionX;
         let newY = currentTile.y + directionY;
         //check if current tile is out of bounds
         if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
-          console.log("if1");
           currentTile = Object.assign({}, tileObj);
           break;
         }
@@ -697,7 +689,6 @@ Object.assign(movementLogic, {
         } else {
           i--;
         }
-        console.log(i);
       }
     });
   },
@@ -726,7 +717,6 @@ Object.assign(preparation, {
         );
         let currentTile = this.boardTilesObj[i];
         currentTile.content = currentPiece;
-        console.log(`placing ${currentPiece.player} ${currentPiece.name}`);
       }
       i++;
     } while (i <= 15);
@@ -742,7 +732,6 @@ Object.assign(preparation, {
         );
         let currentTile = this.boardTilesObj[j];
         currentTile.content = currentPiece;
-        console.log(`placing ${currentPiece.player} ${currentPiece.name}`);
       }
       i++;
       j++;
