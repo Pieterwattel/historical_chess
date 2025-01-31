@@ -7,8 +7,8 @@ const centralData = {
     attack: [],
   },
 
-  blackCiv: "french",
-  whiteCiv: "sparta",
+  blackCiv: "standard",
+  whiteCiv: "standard",
 
   getTileObjXY: function (x, y) {
     let array = this.boardTilesArray;
@@ -290,7 +290,7 @@ Object.assign(pieces, {
     //rook
     {
       name: "rook",
-      symbol: "r",
+      symbol: "R",
       image: "./files/rookWhite.svg",
       player: "white",
       movement: {
@@ -469,7 +469,6 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
-    console.log(clickedTileObj.content);
     let selectedTile = this.selectedTile;
     // deselect the piece if clicked twice
     if (clickedTileObj == selectedTile) {
@@ -518,7 +517,6 @@ Object.assign(gamePlay, {
     ) {
       this.doAttack(oldTile, newTile);
     }
-    console.log(oldTile);
     pieces.update(oldTile, newTile);
 
     oldTile.content = "";
@@ -526,7 +524,7 @@ Object.assign(gamePlay, {
     board.removeHighlights();
 
     //save the move in history of moves
-    history.moves.push(newTile.content);
+    //   history.moves.push("aa");
   },
 
   placePiece: function (oldTile, newTile) {
@@ -534,7 +532,7 @@ Object.assign(gamePlay, {
     newTile.content = {
       ...oldTile.content,
     };
-    this.closeTurn();
+    this.switchTurn();
   },
 
   doAttack: function (oldTile, newTile) {
@@ -547,7 +545,7 @@ Object.assign(gamePlay, {
     board.removeHighlights();
   },
 
-  closeTurn: function () {
+  switchTurn: function () {
     switch (this.playerTurn) {
       case "white":
         this.playerTurn = "black";
@@ -663,8 +661,6 @@ Object.assign(movementLogic, {
 
         //new tile is at least existing, lets check it out further
         let availableTileObj = this.getTileObjXY(newX, newY);
-        console.log(availableTileObj.content.player);
-        console.log(gamePlay.otherPlayer);
 
         if (!availableTileObj.content) {
           // if the tile is empty, just skip it and go check the next one!
@@ -695,18 +691,19 @@ Object.assign(preparation, {
   initializeGame: function () {
     board.createTiles();
     board.appendTiles();
-    /*
+
     let blackCiv = centralData.blackCiv;
     let whiteCiv = centralData.whiteCiv;
     this.setupBoard(pieces.placement[blackCiv], pieces.placement[whiteCiv]);
-    */
+    /*
     let civs = Object.keys(pieces.placement);
     let randCiv1 = civs[Math.floor(Math.random() * civs.length)];
     let randCiv2 = civs[Math.floor(Math.random() * civs.length)];
     console.log(randCiv1);
     console.log(randCiv2);
+    
     this.setupBoard(pieces.placement[randCiv1], pieces.placement[randCiv2]);
-
+  */
     // Call setupBoard on the preparation object
     board.update(); // Update the board
 
@@ -720,11 +717,12 @@ Object.assign(preparation, {
   // iterates at equal pace through the tiles on the board, and
   // the order of pieces.placement, and connects the 2
   setupBoard: function (blackSetup, whiteSetup) {
+    console.log(whiteSetup);
     //setup black pieces
     let i = 0;
     let t = 0;
     while (i < 16) {
-      let symbol = blackSetup.at(i + 1);
+      let symbol = blackSetup.at(i);
       if (symbol != " ") {
         let currentPiece = this.getPieceFromSymbolAndColor(symbol, "black");
         let currentTile = this.boardTilesArray[t];
@@ -739,6 +737,7 @@ Object.assign(preparation, {
     t = 63;
     while (i < 16) {
       let symbol = whiteSetup.at(i);
+      console.log(symbol);
       if (symbol != " ") {
         let currentPiece = this.getPieceFromSymbolAndColor(symbol, "white");
         let currentTile = this.boardTilesArray[t];
@@ -753,4 +752,47 @@ Object.assign(preparation, {
 // Call initializeGame to start
 let startGame = (function () {
   preparation.initializeGame(); // Ensure correct `this` context
+  //doTimeOut();
 })();
+
+/*
+let i = 0;
+
+function callTimeout() {
+  doTimeOut();
+}
+
+function doTimeOut() {
+  setTimeout(() => {
+    console.log(i++);
+    callTimeout();
+    makeMove(gamePlay.playerTurn);
+  }, 1000);
+}
+
+function makeMove(player) {
+  let boardArray = centralData.boardTilesArray;
+  let availableArray = [];
+  let foundPiece = false;
+  for (; Boolean(foundPiece) == false; ) {
+    let randIndex = Math.floor(Math.random() * 63);
+    if (boardArray[randIndex].content.player == player) {
+      foundPiece = boardArray[randIndex];
+      gamePlay.checkTileAction(foundPiece);
+      centralData.boardTilesArray.forEach((element) => {
+        if (Boolean(element.available)) {
+          availableArray.push(element);
+        }
+      });
+      let randomTileIndex;
+      if (availableArray.length != 0) {
+        randomTileIndex = Math.floor(Math.random() * availableArray.length);
+      } else {
+        makeMove(player);
+      }
+      gamePlay.checkTileAction(availableArray[randomTileIndex]);
+    }
+  }
+}
+
+*/
