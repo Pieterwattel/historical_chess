@@ -1,6 +1,5 @@
 const centralData = {
-  boardTilesObj: [],
-  boardNodeList: [],
+  boardTilesArray: [],
   lostPieces: [],
   selectedTile: "",
   availableTiles: {
@@ -12,21 +11,13 @@ const centralData = {
   whiteCiv: "sparta",
 
   getTileObjXY: function (x, y) {
-    let array = this.boardTilesObj;
+    let array = this.boardTilesArray;
     for (i = array.length; i > 0; i--) {
       if (array[i - 1].x == x && array[i - 1].y == y) {
         return array[i - 1];
         break;
       }
     }
-  },
-
-  getNodeXY: function (x, y) {
-    this.boardTilesObj.forEach((element) => {
-      if (element.x == x && element.y == y) {
-        return element.node;
-      }
-    });
   },
 
   getPieceFromSymbolAndColor: function (nameString, player) {
@@ -74,7 +65,7 @@ Object.assign(board, {
       let tileNode = this.createTileNode(tileData);
 
       //save the tile object
-      this.boardTilesObj.push(tileData);
+      this.boardTilesArray.push(tileData);
       //create the value for the next tile object
       if (x < 7) {
         x++;
@@ -97,7 +88,7 @@ Object.assign(board, {
 
   update: function () {
     //run through each tile object
-    this.boardTilesObj.forEach((tileObj) => {
+    this.boardTilesArray.forEach((tileObj) => {
       //if the tile has content, place in tile node
       if (tileObj.content) {
         // check if there is anything standing on the tile
@@ -111,13 +102,13 @@ Object.assign(board, {
   },
 
   appendTiles: function () {
-    this.boardTilesObj.forEach((tileObj) => {
+    this.boardTilesArray.forEach((tileObj) => {
       this.boardEdgeNode.appendChild(tileObj.node);
     });
   },
 
   addHighlights: function () {
-    let array = this.boardTilesObj;
+    let array = this.boardTilesArray;
     array.forEach((tile) => {
       if (tile.available == "move") {
         tile.node.classList.add("highlightMove");
@@ -128,7 +119,7 @@ Object.assign(board, {
   },
 
   removeHighlights: function () {
-    let array = this.boardTilesObj;
+    let array = this.boardTilesArray;
     array.forEach((tile) => {
       if (tile.available == "move") {
         tile.available = "";
@@ -419,17 +410,32 @@ Object.assign(pieces, {
     french: " NQBBQN   P  P  ", // Bishop-heavy strategy
     sparta: " BQQKQB  PPPPPP ", // Strong phalanx formation
 
-    // New radical setups:
-    chaos: " QQQQQQQQKKKKKKKK", // Pure power, no pawns
-    mayans: " P  K  P QQQQQQ  ", // Mysticism, center control
-    huns: " NNNNNNNN PPPPPP  ", // Pure cavalry charge
-    revolution: "   QK  RRRRPPPP", // Royalty under siege
-    ww1: " R B Q K B R PPPP ", // Trench-like symmetry
-    pirates: "    QK   RRRPPP ", // Scattered ship-like attack
-    mutants: " BBBBBKBBPPP P  ", // Mutated bishops, asymmetric pawns
-    aliens: "    QK   NNNNNNN ", // High mobility, no symmetry
-    shadow: "        QKPPPPPP", // All power hidden in the back
-    apocalypse: " K K  QQQQQQ  ", // No clear front line, chaos reigns
+    vikings: " RBBKBBR PPPPPPPP", // Shield wall, heavy frontline
+    samurai: " NNQKQNN PPPPPPPP", // Honor-based cavalry
+    egyptians: " QQBBKBBQQPPPPPP ", // Pharaoh & divine influence
+    persians: " RNQKQNR PPPPPPPP", // Strategic, cavalry-driven
+    byzantines: " BNRKQRNB PPPPPPPP", // Eastern-Western hybrid
+    zulu: " NNKKNN  PPPPPPPP", // Agile, fast-moving warriors
+    ottomans: " RNBKQBNRPPPPPPPP", // Elite Janissary focus
+    celts: " NQBBQNN PPPPPPPP", // Guerrilla tactics, druidic power
+    chinese: " BBQKQBB PPPPPPPP", // Strategic elephants, rigid lines
+
+    napoleon: " R B K Q B R PPPP ", // Artillery + disciplined army
+    huns: " NNNNNNNN PPPPPP  ", // Pure cavalry, fast attacks
+    mayans: " P  K  P QQQQQQ  ", // Ritualistic center control
+    crusaders: " R K Q K R PPPP ", // Heavy knight-based force
+    templars: "  K Q K R RPPP  ", // Religious and militaristic
+    ww1: " R B Q K B R PPPP ", // Trench warfare, symmetrical
+    pirates: "    QK   RRRPPP ", // Ship formations, chaotic
+    redcoats: " RNKQKNR PPPPPP  ", // British line infantry
+    mongol_horde: " NNKKNNNN PPPPPP ", // Pure mounted archery dominance
+    spartacus: "   KQQQ   PPPPPP ", // Slave uprising, sudden power
+    attila: " NNQKQNN PPPPPPPP ", // Unpredictable barbarian charge
+    carthage: "  R QKQ R PPPPP  ", // Elephants & naval strategy
+    normans: " RNKQBNR PPPPPPPP ", // Knight-based feudal power
+    holy_roman: " B K Q K B PPPP ", // Church & state influence
+    cossacks: "  NN K Q NN PPPP ", // Highly mobile raiders
+    ragnarok: "  QQ K Q QQ PPPP ", // Norse myth, end-of-days chaos
   },
 });
 
@@ -486,11 +492,6 @@ Object.assign(gamePlay, {
     board.removeHighlights();
   },
 
-  deselectTile: function (tile) {
-    this.selectedTile = "";
-    board.removeHighlights();
-  },
-
   placePiece: function (oldTile, newTile) {
     console.log("placing piece..");
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
@@ -504,6 +505,11 @@ Object.assign(gamePlay, {
   doAttack: function (oldTile, newTile) {
     this.lostPieces.push(newTile.content);
     this.placePiece(oldTile, newTile);
+  },
+
+  deselectTile: function (tile) {
+    this.selectedTile = "";
+    board.removeHighlights();
   },
 
   closeTurn: function () {
@@ -652,7 +658,7 @@ Object.assign(movementLogic, {
 Object.assign(preparation, {
   // Method to initialize the game
   initializeGame: function () {
-    board.createTiles(); // Create the board tiles
+    board.createTiles();
     board.appendTiles();
     /*
     let blackCiv = centralData.blackCiv;
@@ -678,10 +684,10 @@ Object.assign(preparation, {
     let i = 0;
     let t = 0;
     while (i < 16) {
-      let symbol = blackSetup.at(i);
+      let symbol = blackSetup.at(i + 1);
       if (symbol != " ") {
         let currentPiece = this.getPieceFromSymbolAndColor(symbol, "black");
-        let currentTile = this.boardTilesObj[t];
+        let currentTile = this.boardTilesArray[t];
         currentTile.content = currentPiece;
       }
       i++;
@@ -695,7 +701,7 @@ Object.assign(preparation, {
       let symbol = whiteSetup.at(i);
       if (symbol != " ") {
         let currentPiece = this.getPieceFromSymbolAndColor(symbol, "white");
-        let currentTile = this.boardTilesObj[t];
+        let currentTile = this.boardTilesArray[t];
         currentTile.content = currentPiece;
       }
       i++;
