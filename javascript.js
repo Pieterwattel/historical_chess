@@ -452,6 +452,22 @@ Object.assign(pieces, {
     }
     //save the previous tile location
     newTile.content.previousTileXY = [oldTile.x, oldTile.y];
+    //remove the other pieces previous location (they did not move)
+    this.boardTilesArray.forEach((tile) => {
+      //check if there is anything on the tile
+      if (tile.content == "") {
+        return;
+      }
+
+      if (
+        //check if piece is the current players
+        tile.content.player == gamePlay.playerTurn &&
+        //check if the piece did not just move
+        tile != newTile
+      ) {
+        tile.content.previousTileXY = "";
+      }
+    });
   },
 });
 
@@ -515,7 +531,6 @@ Object.assign(gamePlay, {
   },
 
   placePiece: function (oldTile, newTile) {
-    console.log("placing piece..");
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
     newTile.content = {
       ...oldTile.content,
