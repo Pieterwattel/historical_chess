@@ -442,6 +442,17 @@ Object.assign(pieces, {
     cossacks: "  NN K Q NN PPPP ", // Highly mobile raiders
     ragnarok: "  QQ K Q QQ PPPP ", // Norse myth, end-of-days chaos
   },
+
+  update: function (oldTile, newTile) {
+    //update amount of moves
+    if (!newTile.content.hasMoved) {
+      newTile.content.hasMoved = 1;
+    } else {
+      newTile.content.hasMoved += 1;
+    }
+    //save the previous tile location
+    newTile.content.previousTileXY = [oldTile.x, oldTile.y];
+  },
 });
 
 Object.assign(gamePlay, {
@@ -484,35 +495,31 @@ Object.assign(gamePlay, {
   },
 
   endTurn: function (clickedTile) {
+    let oldTile = this.selectedTile;
+    let newTile = clickedTile;
     //either move to the tile
-    if (clickedTile.available == "move") {
-      this.placePiece(this.selectedTile, clickedTile);
+    if (newTile.available == "move") {
+      this.placePiece(oldTile, newTile);
     } else if (
       //or attack the tile
-      clickedTile.available == "attack"
+      newTile.available == "attack"
     ) {
-      this.doAttack(this.selectedTile, clickedTile);
+      this.doAttack(oldTile, newTile);
     }
+    console.log(oldTile);
+    pieces.update(oldTile, newTile);
 
+    oldTile.content = "";
     centralData.selectedTile = "";
     board.removeHighlights();
   },
 
   placePiece: function (oldTile, newTile) {
     console.log("placing piece..");
-    let hasMoved;
-    if (!oldTile.content.hasMoved) {
-      oldTile.content.hasMoved = 1;
-    } else {
-      oldTile.content.hasMoved += 1;
-    }
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
     newTile.content = {
       ...oldTile.content,
-      previousTileXY: [oldTile.x, oldTile.y],
     };
-    oldTile.content = "";
-    this.selectedTile = "";
     this.closeTurn();
   },
 
