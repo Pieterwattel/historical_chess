@@ -27,6 +27,20 @@ const centralData = {
       ) || null
     );
   },
+
+  history: {
+    startPlacement: {},
+    moves: [],
+  },
+
+  getMoveDataObj: function (move, index) {
+    let moveNum = index + 1;
+    let player = moveNum % 2 == 0 ? "black" : "white";
+    let startTile = getTileObjXY(move[1][0], move[1][0]);
+    let endTile = getTileObjXY(move[2][0], move[2][0]);
+    let piece = getPieceFromSymbolAndColor(move[0], player);
+    return { moveNum, player, startTile, endTile, piece };
+  },
 };
 
 const board = Object.create(centralData);
@@ -510,6 +524,9 @@ Object.assign(gamePlay, {
     oldTile.content = "";
     centralData.selectedTile = "";
     board.removeHighlights();
+
+    //save the move in history of moves
+    history.moves.push(newTile.content);
   },
 
   placePiece: function (oldTile, newTile) {
@@ -692,6 +709,11 @@ Object.assign(preparation, {
 
     // Call setupBoard on the preparation object
     board.update(); // Update the board
+
+    this.history.startPlacement = {
+      black: pieces.placement[this.blackCiv],
+      white: pieces.placement[this.whiteCiv],
+    };
   },
 
   // Method to set up the board and pieces
