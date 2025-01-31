@@ -752,10 +752,9 @@ Object.assign(preparation, {
 // Call initializeGame to start
 let startGame = (function () {
   preparation.initializeGame(); // Ensure correct `this` context
-  //doTimeOut();
+  doTimeOut();
 })();
 
-/*
 let i = 0;
 
 function callTimeout() {
@@ -794,5 +793,3 @@ function makeMove(player) {
     }
   }
 }
-
-*/
