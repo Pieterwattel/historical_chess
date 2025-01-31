@@ -138,6 +138,8 @@ Object.assign(pieces, {
   },
 
   list: [
+    //black pieces
+    //rook
     {
       name: "rook",
       symbol: "R",
@@ -156,6 +158,7 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
+    //knight
     {
       name: "knight",
       symbol: "N",
@@ -179,7 +182,7 @@ Object.assign(pieces, {
         attack: "same as directions",
       },
     },
-
+    //bishop
     {
       name: "bishop",
       symbol: "B",
@@ -198,7 +201,7 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
-
+    //king
     {
       name: "king",
       symbol: "K",
@@ -221,7 +224,7 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
-
+    //queen
     {
       name: "queen",
       symbol: "Q",
@@ -244,7 +247,7 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
-
+    //pawn
     {
       name: "pawn",
       symbol: "P",
@@ -269,7 +272,8 @@ Object.assign(pieces, {
       },
     },
 
-    // white pieces:
+    // white pieces
+    //rook
     {
       name: "rook",
       symbol: "r",
@@ -288,6 +292,7 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
+    //knight
     {
       name: "knight",
       symbol: "N",
@@ -311,7 +316,7 @@ Object.assign(pieces, {
         attack: "same as directions",
       },
     },
-
+    //bishop
     {
       name: "bishop",
       symbol: "B",
@@ -330,7 +335,7 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
-
+    //king
     {
       name: "king",
       symbol: "K",
@@ -353,7 +358,7 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
-
+    //queen
     {
       name: "queen",
       symbol: "Q",
@@ -376,7 +381,7 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
-
+    //pawn
     {
       name: "pawn",
       symbol: "P",
@@ -456,7 +461,7 @@ Object.assign(gamePlay, {
     }
 
     if (
-      // if there is not piece selected yet, this is the start of a move
+      // if there is no piece selected yet, this is the start of a move
       (!selectedTile && clickedTileObj.content) ||
       //also re-initiate the turn if this some other piece of the current playerTurn's
       clickedTileObj.content.player == this.playerTurn
@@ -488,16 +493,25 @@ Object.assign(gamePlay, {
     ) {
       this.doAttack(this.selectedTile, clickedTile);
     }
+
     centralData.selectedTile = "";
     board.removeHighlights();
   },
 
   placePiece: function (oldTile, newTile) {
     console.log("placing piece..");
+    let hasMoved;
+    if (!oldTile.content.hasMoved) {
+      oldTile.content.hasMoved = 1;
+    } else {
+      oldTile.content.hasMoved += 1;
+    }
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
-    newTile.content = { ...oldTile.content, hasMoved: true };
+    newTile.content = {
+      ...oldTile.content,
+      previousTileXY: [oldTile.x, oldTile.y],
+    };
     oldTile.content = "";
-    newTile.content.hasMoved = true;
     this.selectedTile = "";
     this.closeTurn();
   },
