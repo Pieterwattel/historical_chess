@@ -756,14 +756,13 @@ Object.assign(preparation, {
 });
 
 // Call initializeGame to start
-/*
-function startGame() {
+let startGame = (function () {
   preparation.initializeGame(); // Ensure correct `this` context
   doTimeOut();
-}
-  */
+})();
 
 let i = 0;
+let active;
 
 function callTimeout() {
   if (active) {
@@ -771,79 +770,35 @@ function callTimeout() {
   }
 }
 
-let speed = 100;
-let active = true;
-let stopGame = document.getElementById("stopGame");
-stopGame.addEventListener("click", () => {
-  if (active) {
-    active = false;
-  } else {
-    active = true;
-    callTimeout();
-  }
-});
-
 function doTimeOut() {
   setTimeout(() => {
     console.log(i++);
     callTimeout();
     makeMove(gamePlay.playerTurn);
-  }, speed);
+  }, 1000);
 }
 
 function makeMove(player) {
-  console.log(player);
-
-  let pieceAmount = 0;
   let boardArray = centralData.boardTilesArray;
   let availableArray = [];
   let foundPiece = false;
-
-  //stop when a piece was found
   for (; Boolean(foundPiece) == false; ) {
     let randIndex = Math.floor(Math.random() * 63);
-    //get a random tile and check if its the current player's
     if (boardArray[randIndex].content.player == player) {
-      //if it is then...
       foundPiece = boardArray[randIndex];
       gamePlay.checkTileAction(foundPiece);
-      //collect all available tiles for it to move to
-      centralData.boardTilesArray.forEach((element, index) => {
+      centralData.boardTilesArray.forEach((element) => {
         if (Boolean(element.available)) {
-          //these are the available tiles
           availableArray.push(element);
         }
       });
       let randomTileIndex;
-      //check if there are any available tiles at all
-      if (availableArray.length == 0) {
-        //try another piece
-        makeMove(player);
-      } else {
-        //and if there are choose a random tile
+      if (availableArray.length != 0) {
         randomTileIndex = Math.floor(Math.random() * availableArray.length);
+      } else {
+        makeMove(player);
       }
-      console.log(availableArray);
-      console.log(randomTileIndex);
       gamePlay.checkTileAction(availableArray[randomTileIndex]);
     }
   }
-  let playerPieceAmount = availableArray.length;
-  if (false) {
-    console.log("activeFalse");
-  }
 }
-
-function startGame() {
-  board.boardEdgeNode.innerHTML = "";
-  centralData.boardTilesArray = [];
-  centralData.selectedTile = "";
-  centralData.availableTiles = {
-    move: [],
-    attack: [],
-  };
-  preparation.initializeGame(); // Ensure correct `this` context
-  doTimeOut();
-}
-
-startGame();
