@@ -759,24 +759,30 @@ Object.assign(preparation, {
 // Call initializeGame to start
 let startGame = (function () {
   preparation.initializeGame(); // Ensure correct `this` context
-  // doTimeOut();
+  // doTimeout();
 })();
 
-/*
 let i = 0;
-let active = true;
+let active = false;
 const stopGame = document.getElementById("stopGame");
 stopGame.addEventListener("click", () => {
-  active = false;
+  if (!active) {
+    active = true;
+    console.log("yes2");
+    callTimeout();
+  } else {
+    active = false;
+    console.log("yes1");
+  }
 });
 
 function callTimeout() {
   if (active) {
-    doTimeOut();
+    doTimeout();
   }
 }
 
-function doTimeOut() {
+function doTimeout() {
   setTimeout(() => {
     console.log(i++);
     callTimeout();
@@ -808,5 +814,3 @@ function makeMove(player) {
     }
   }
 }
-
-*/
