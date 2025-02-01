@@ -469,12 +469,6 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
-    if (typeof clickedTileObj == "undefined") {
-      console.log("undefinedObject");
-      active = false;
-      return;
-    }
-
     let selectedTile = this.selectedTile;
     // deselect the piece if clicked twice
     if (clickedTileObj == selectedTile) {
@@ -762,7 +756,11 @@ let startGame = (function () {
 })();
 
 let i = 0;
-let active;
+let active = true;
+const stopGame = document.getElementById("stopGame");
+stopGame.addEventListener("click", () => {
+  active = false;
+});
 
 function callTimeout() {
   if (active) {
@@ -775,7 +773,7 @@ function doTimeOut() {
     console.log(i++);
     callTimeout();
     makeMove(gamePlay.playerTurn);
-  }, 1000);
+  }, 200);
 }
 
 function makeMove(player) {
