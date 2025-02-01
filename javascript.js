@@ -565,11 +565,12 @@ Object.assign(gamePlay, {
 Object.assign(movementLogic, {
   updateAvailableTiles: function (tileObj) {
     let piece = tileObj.content;
-    let stepAmount = this.getStepAmount(piece);
+    let stepAmountMv = this.getStepAmountMv(piece);
+    let stepAmountAtk = this.getStepAmountAtk(piece);
     let movementData = this.getMovementData(piece);
     let attackData = this.getAttackData(piece);
-    this.calcMovement(movementData, tileObj, stepAmount);
-    this.calcAttack(attackData, tileObj, stepAmount);
+    this.calcMovement(movementData, tileObj, stepAmountMv);
+    this.calcAttack(attackData, tileObj, stepAmountAtk);
   },
 
   getMovementData: function (piece) {
@@ -588,7 +589,7 @@ Object.assign(movementLogic, {
     }
   },
 
-  getStepAmount(piece) {
+  getStepAmountMv: function (piece) {
     if (Boolean(piece.movement.firstMove) && !piece.hasMoved) {
       return piece.movement.firstMove.stepAmount;
     } else if (Number(piece.movement.stepAmount)) {
@@ -596,6 +597,12 @@ Object.assign(movementLogic, {
     } else {
       return true;
     }
+  },
+
+  getStepAmountAtk: function (piece) {
+    return !piece.hasMoved && piece.movement.firstMove?.attack?.stepAmount
+      ? piece.movement.firstMove.attack.stepAmount
+      : Number(piece.movement.stepAmount) || true;
   },
 
   calcMovement: function (movementData, tileObj, stepAmount) {
@@ -752,9 +759,10 @@ Object.assign(preparation, {
 // Call initializeGame to start
 let startGame = (function () {
   preparation.initializeGame(); // Ensure correct `this` context
-  doTimeOut();
+  // doTimeOut();
 })();
 
+/*
 let i = 0;
 let active = true;
 const stopGame = document.getElementById("stopGame");
@@ -773,7 +781,7 @@ function doTimeOut() {
     console.log(i++);
     callTimeout();
     makeMove(gamePlay.playerTurn);
-  }, 200);
+  }, 900);
 }
 
 function makeMove(player) {
@@ -781,7 +789,7 @@ function makeMove(player) {
   let availableArray = [];
   let foundPiece = false;
   for (; Boolean(foundPiece) == false; ) {
-    let randIndex = Math.floor(Math.random() * 63);
+    let randIndex = Math.floor(Math.random() * 64);
     if (boardArray[randIndex].content.player == player) {
       foundPiece = boardArray[randIndex];
       gamePlay.checkTileAction(foundPiece);
@@ -800,3 +808,5 @@ function makeMove(player) {
     }
   }
 }
+
+*/
