@@ -486,7 +486,7 @@ Object.assign(gamePlay, {
       // if there is no piece selected yet, this is the start of a move
       (!selectedTile && clickedTileObj.content) ||
       //also re-initiate the turn if this some other piece of the current playerTurn's
-      clickedTileObj.content.player == this.playerTurn
+      clickedTileObj?.content?.player == this.playerTurn
     ) {
       this.startTurn(clickedTileObj);
     } else if (selectedTile && clickedTileObj.available) {
@@ -698,19 +698,19 @@ Object.assign(preparation, {
   initializeGame: function () {
     board.createTiles();
     board.appendTiles();
-
+    /*
     let blackCiv = centralData.blackCiv;
     let whiteCiv = centralData.whiteCiv;
     this.setupBoard(pieces.placement[blackCiv], pieces.placement[whiteCiv]);
-    /*
+    */
     let civs = Object.keys(pieces.placement);
     let randCiv1 = civs[Math.floor(Math.random() * civs.length)];
     let randCiv2 = civs[Math.floor(Math.random() * civs.length)];
     console.log(randCiv1);
     console.log(randCiv2);
-    
+
     this.setupBoard(pieces.placement[randCiv1], pieces.placement[randCiv2]);
-  */
+
     // Call setupBoard on the preparation object
     board.update(); // Update the board
 
@@ -724,7 +724,6 @@ Object.assign(preparation, {
   // iterates at equal pace through the tiles on the board, and
   // the order of pieces.placement, and connects the 2
   setupBoard: function (blackSetup, whiteSetup) {
-    console.log(whiteSetup);
     //setup black pieces
     let i = 0;
     let t = 0;
@@ -744,7 +743,6 @@ Object.assign(preparation, {
     t = 63;
     while (i < 16) {
       let symbol = whiteSetup.at(i);
-      console.log(symbol);
       if (symbol != " ") {
         let currentPiece = this.getPieceFromSymbolAndColor(symbol, "white");
         let currentTile = this.boardTilesArray[t];
@@ -764,6 +762,7 @@ let startGame = (function () {
 
 let i = 0;
 let active = false;
+let speed = 40;
 const stopGame = document.getElementById("stopGame");
 stopGame.addEventListener("click", () => {
   if (!active) {
@@ -787,7 +786,7 @@ function doTimeout() {
     console.log(i++);
     callTimeout();
     makeMove(gamePlay.playerTurn);
-  }, 900);
+  }, speed);
 }
 
 function makeMove(player) {
