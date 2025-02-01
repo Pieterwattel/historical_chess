@@ -759,16 +759,10 @@ Object.assign(preparation, {
 /*
 function startGame() {
   preparation.initializeGame(); // Ensure correct `this` context
-<<<<<<< HEAD
   doTimeOut();
 }
   */
-=======
-  //doTimeOut();
-})();
->>>>>>> parent of 09b5ccb (add a random chess AI)
 
-/*
 let i = 0;
 
 function callTimeout() {
@@ -840,7 +834,6 @@ function makeMove(player) {
   }
 }
 
-<<<<<<< HEAD
 function startGame() {
   board.boardEdgeNode.innerHTML = "";
   centralData.boardTilesArray = [];
@@ -854,6 +847,3 @@ function startGame() {
 }
 
 startGame();
-=======
-*/
->>>>>>> parent of 09b5ccb (add a random chess AI)
