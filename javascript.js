@@ -749,7 +749,11 @@ Object.assign(movementLogic, {
       rightXTile,
       previousMove
     ) {
-      if (piece.name === "pawn") {
+      if (!piece.name === "pawn") {
+        return;
+      }
+      if (leftXTile) {
+        // check left hand for en passant
         if (leftXTile.content.name === "pawn") {
           //check if the left pawn was the one moved previous turn
           if (previousMove.endTile == leftXTile) {
@@ -759,9 +763,26 @@ Object.assign(movementLogic, {
               if (gamePlay.playerTurn == "white") {
                 passantTile = centralData.getTileObjXY(tileX - 1, tileY - 1);
               } else {
-                passantTile = centralData.getTileObjXY(tileX - 1, tileY - 1);
+                passantTile = centralData.getTileObjXY(tileX - 1, tileY + 1);
               }
-              console.log(passantTile);
+              passantTile.available = "move";
+            }
+          }
+        }
+      }
+      if (rightXTile) {
+        //check right hand side for en passant
+        if (rightXTile.content.name === "pawn") {
+          //check if the right pawn was the one moved previous turn
+          if (previousMove.endTile == rightXTile) {
+            //check if that pawn was moved 2 places last turn
+            if ((previousMove.startTile.y - previousMove.endTile.y) ** 2 == 4) {
+              let passantTile;
+              if (gamePlay.playerTurn == "white") {
+                passantTile = centralData.getTileObjXY(tileX + 1, tileY - 1);
+              } else {
+                passantTile = centralData.getTileObjXY(tileX + 1, tileY + 1);
+              }
               passantTile.available = "move";
             }
           }
