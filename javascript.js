@@ -515,6 +515,7 @@ Object.assign(gamePlay, {
     board.removeHighlights();
     movementLogic.updateAvailableTiles(clickedTile);
     board.addHighlights();
+    this.additions.checkSpecialStartEvent(clickedTile);
   },
 
   //2d part of turn, everything that happens when a piece is selected, and being placed
@@ -528,7 +529,7 @@ Object.assign(gamePlay, {
       //or attack the tile
       newTile.available == "attack"
     ) {
-      this.doAttack(newTile);
+      this.doAttack(oldTile, newTile);
       this.placePiece(oldTile, newTile);
     }
     pieces.update(oldTile, newTile);
@@ -543,13 +544,15 @@ Object.assign(gamePlay, {
 
   placePiece: function (oldTile, newTile) {
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
+    this.additions.checkSpecialPlacementEvent(oldTile, newTile);
     newTile.content = {
       ...oldTile.content,
     };
     this.switchTurn();
   },
 
-  doAttack: function (newTile) {
+  doAttack: function (oldTile, newTile) {
+    this.additions.checkSpecialAttackEvent(oldTile, newTile);
     this.lostPieces.push(newTile.content);
     newTile.content = "";
   },
@@ -573,15 +576,15 @@ Object.assign(gamePlay, {
   },
 
   additions: {
-    checkSpecialStartEvent: function () {
+    checkSpecialStartEvent: function (clickedTile) {
       console.log("checkSpecialStartEvent");
     },
 
-    checkSpecialPlacementEvent: function () {
+    checkSpecialPlacementEvent: function (oldTile, newTile) {
       console.log("checkSpecialPlacementEvent");
     },
 
-    checkSpecialAttackEvent: function () {
+    checkSpecialAttackEvent: function (oldTile, newTile) {
       console.log("checkSpeciaAttackEvent");
     },
   },
