@@ -528,7 +528,8 @@ Object.assign(gamePlay, {
       //or attack the tile
       newTile.available == "attack"
     ) {
-      this.doAttack(oldTile, newTile);
+      this.doAttack(newTile);
+      this.placePiece(oldTile, newTile);
     }
     pieces.update(oldTile, newTile);
     this.addMoveToHistory(oldTile, newTile);
@@ -550,7 +551,7 @@ Object.assign(gamePlay, {
 
   doAttack: function (oldTile, newTile) {
     this.lostPieces.push(newTile.content);
-    this.placePiece(oldTile, newTile);
+    newTile.content = "";
   },
 
   deselectTile: function (tile) {
@@ -569,6 +570,20 @@ Object.assign(gamePlay, {
         this.playerTurn = "white";
         this.otherPlayer = "black";
     }
+  },
+
+  additions: {
+    checkSpecialStartEvent: function () {
+      console.log("checkSpecialStartEvent");
+    },
+
+    checkSpecialPlacementEvent: function () {
+      console.log("checkSpecialPlacementEvent");
+    },
+
+    checkSpecialAttackEvent: function () {
+      console.log("checkSpeciaAttackEvent");
+    },
   },
 
   playerTurn: "white",
