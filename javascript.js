@@ -33,13 +33,22 @@ const centralData = {
     moves: [],
   },
 
-  getMoveDataObj: function (move, index) {
+  getMoveData: function (index) {
+    let move = this.history.moves[index];
     let moveNum = index + 1;
     let player = moveNum % 2 == 0 ? "black" : "white";
-    let startTile = getTileObjXY(move[1][0], move[1][0]);
-    let endTile = getTileObjXY(move[2][0], move[2][0]);
-    let piece = getPieceFromSymbolAndColor(move[0], player);
+    let startTile = this.getTileObjXY(move[1][0], move[1][1]);
+    let endTile = this.getTileObjXY(move[2][0], move[2][1]);
+    let piece = this.getPieceFromSymbolAndColor(move[0], player);
     return { moveNum, player, startTile, endTile, piece };
+  },
+
+  addMoveToHistory: function (oldTile, newTile) {
+    let newMove = [];
+    let symbol = newTile.content.symbol;
+    let oldCoor = [oldTile.x, oldTile.y];
+    let newCoor = [newTile.x, newTile.y];
+    this.history.moves.push([symbol, oldCoor, newCoor]);
   },
 };
 
@@ -423,38 +432,39 @@ Object.assign(pieces, {
 
   placement: {
     standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    /*
     mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
     aztecs: " PQQQQP   PPPP  ", // Ritualistic battle lines
     french: " NQBBQN   P  P  ", // Bishop-heavy strategy
-    sparta: " BQQKQB  PPPPPP ", // Strong phalanx formation
+    sparta: " BQQKQB  PPPPPP", // Strong phalanx formation
 
-    vikings: " RBBKBBR PPPPPPPP", // Shield wall, heavy frontline
-    samurai: " NNQKQNN PPPPPPPP", // Honor-based cavalry
-    egyptians: " QQBBKBBQQPPPPPP ", // Pharaoh & divine influence
-    persians: " RNQKQNR PPPPPPPP", // Strategic, cavalry-driven
-    byzantines: " BNRKQRNB PPPPPPPP", // Eastern-Western hybrid
-    zulu: " NNKKNN  PPPPPPPP", // Agile, fast-moving warriors
-    ottomans: " RNBKQBNRPPPPPPPP", // Elite Janissary focus
-    celts: " NQBBQNN PPPPPPPP", // Guerrilla tactics, druidic power
-    chinese: " BBQKQBB PPPPPPPP", // Strategic elephants, rigid lines
+    vikings: "RBBKBBRPPPPPPPP", // Shield wall, heavy frontline
+    samurai: " NNQKQNNPPPPPPPP", // Honor-based cavalry
+    egyptians: "QQBBKBBQQPPPPPP ", // Pharaoh & divine influence
+    persians: "RNQKQNR PPPPPPPP", // Strategic, cavalry-driven
+    byzantines: "BNRKQRNBPPPPPPPP", // Eastern-Western hybrid
+    zulu: " NNKKNN PPPPPPPP", // Agile, fast-moving warriors
+    ottomans: "RNBKQBNRPPPPPPPP", // Elite Janissary focus
+    celts: "NQBBQNNPPPPPPPP", // Guerrilla tactics, druidic power
+    chinese: "BBQKQBBPPPPPPPP", // Strategic elephants, rigid lines
 
     napoleon: " R B K Q B R PPPP ", // Artillery + disciplined army
-    huns: " NNNNNNNN PPPPPP  ", // Pure cavalry, fast attacks
-    mayans: " P  K  P QQQQQQ  ", // Ritualistic center control
-    crusaders: " R K Q K R PPPP ", // Heavy knight-based force
+    huns: "NNNNNNNN PPPPPP ", // Pure cavalry, fast attacks
+    mayans: " P K P  QQQQQQ ", // Ritualistic center control
+    crusaders: "R KQK  R  PPPP  ", // Heavy knight-based force
     templars: "  K Q K R RPPP  ", // Religious and militaristic
-    ww1: " R B Q K B R PPPP ", // Trench warfare, symmetrical
+    ww1: "PPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
     pirates: "    QK   RRRPPP ", // Ship formations, chaotic
     redcoats: " RNKQKNR PPPPPP  ", // British line infantry
-    mongol_horde: " NNKKNNNN PPPPPP ", // Pure mounted archery dominance
+    mongol_horde: "NNKKNNNN PPPPPP ", // Pure mounted archery dominance
     spartacus: "   KQQQ   PPPPPP ", // Slave uprising, sudden power
     attila: " NNQKQNN PPPPPPPP ", // Unpredictable barbarian charge
     carthage: "  R QKQ R PPPPP  ", // Elephants & naval strategy
     normans: " RNKQBNR PPPPPPPP ", // Knight-based feudal power
-    holy_roman: " B K Q K B PPPP ", // Church & state influence
-    cossacks: "  NN K Q NN PPPP ", // Highly mobile raiders
-    ragnarok: "  QQ K Q QQ PPPP ", // Norse myth, end-of-days chaos
+    holy_roman: "B KQK  B  PPPP  ", // Church & state influence
+    cossacks: "NN KQ NN  PPPP  ", // Highly mobile raiders
+    ragnarok: "QQ K  QQ  PPPP  ", // Norse myth, end-of-days chaos*/
   },
 
   update: function (oldTile, newTile) {
@@ -469,6 +479,7 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
+    //console.log(clickedTileObj);
     let selectedTile = this.selectedTile;
     // deselect the piece if clicked twice
     if (clickedTileObj == selectedTile) {
@@ -498,6 +509,7 @@ Object.assign(gamePlay, {
     board.update();
   },
 
+  //1st part of a turn, what happens when a piece gets selected
   startTurn: function (clickedTile) {
     this.selectedTile = clickedTile;
     board.removeHighlights();
@@ -505,6 +517,7 @@ Object.assign(gamePlay, {
     board.addHighlights();
   },
 
+  //2d part of turn, everything that happens when a piece is selected, and being placed
   endTurn: function (clickedTile) {
     let oldTile = this.selectedTile;
     let newTile = clickedTile;
@@ -518,7 +531,7 @@ Object.assign(gamePlay, {
       this.doAttack(oldTile, newTile);
     }
     pieces.update(oldTile, newTile);
-
+    this.addMoveToHistory(oldTile, newTile);
     oldTile.content = "";
     centralData.selectedTile = "";
     board.removeHighlights();
@@ -763,8 +776,8 @@ let startGame = (function () {
 let i = 0;
 let active = false;
 let speed = 40;
-const stopGame = document.getElementById("stopGame");
-stopGame.addEventListener("click", () => {
+const toggleAutoMove = document.getElementById("stopGame");
+toggleAutoMove.addEventListener("click", () => {
   if (!active) {
     active = true;
     console.log("yes2");
