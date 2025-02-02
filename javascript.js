@@ -14,8 +14,7 @@ const centralData = {
     let array = this.boardTilesArray;
     for (i = array.length; i > 0; i--) {
       if (array[i - 1].x == x && array[i - 1].y == y) {
-        return array[i - 1];
-        break;
+        return array[i - 1] ? array[i - 1] : undefined;
       }
     }
   },
@@ -49,6 +48,10 @@ const centralData = {
     let oldCoor = [oldTile.x, oldTile.y];
     let newCoor = [newTile.x, newTile.y];
     this.history.moves.push([symbol, oldCoor, newCoor]);
+  },
+
+  get previousMoveData() {
+    return this.history.moves[this.history.moves.length - 1];
   },
 };
 
@@ -577,7 +580,12 @@ Object.assign(gamePlay, {
 
   additions: {
     checkSpecialStartEvent: function (clickedTile) {
-      console.log("checkSpecialStartEvent");
+      //check if there is an en passant available
+      let tileX = clickedTile.x;
+      let tileY = clickedTile.y;
+      let leftXTile = centralData.getTileObjXY(tileX - 1, tileY);
+      let rightXTile = centralData.getTileObjXY(tileX + 1, tileY);
+      console.log(centralData.previousMoveData);
     },
 
     checkSpecialPlacementEvent: function (oldTile, newTile) {
