@@ -549,7 +549,7 @@ Object.assign(gamePlay, {
     this.switchTurn();
   },
 
-  doAttack: function (oldTile, newTile) {
+  doAttack: function (newTile) {
     this.lostPieces.push(newTile.content);
     newTile.content = "";
   },
