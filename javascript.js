@@ -51,7 +51,8 @@ const centralData = {
   },
 
   get previousMoveData() {
-    return this.history.moves[this.history.moves.length - 1];
+    let index = this.history.moves.length - 1;
+    return index >= 0 ? this.getMoveData(index) : null;
   },
 };
 
