@@ -537,6 +537,7 @@ Object.assign(gamePlay, {
     oldTile.content = "";
     centralData.selectedTile = "";
     board.removeHighlights();
+    this.switchTurn();
 
     //save the move in history of moves
     //   history.moves.push("aa");
@@ -544,11 +545,10 @@ Object.assign(gamePlay, {
 
   placePiece: function (oldTile, newTile) {
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
-    this.additions.checkSpecialPlacementEvent(oldTile, newTile);
     newTile.content = {
       ...oldTile.content,
     };
-    this.switchTurn();
+    this.additions.checkSpecialPlacementEvent(oldTile, newTile);
   },
 
   doAttack: function (oldTile, newTile) {
@@ -583,25 +583,33 @@ Object.assign(gamePlay, {
       let leftXTile = centralData.getTileObjXY(tileX - 1, tileY);
       let rightXTile = centralData.getTileObjXY(tileX + 1, tileY);
       let previousMove = centralData.previousMoveData;
-      if (previousMove) {
-        movementLogic.special.enPassant(
-          clickedTile,
-          tileX,
-          tileY,
-          piece,
-          leftXTile,
-          rightXTile,
-          previousMove
-        );
-      }
+
+      movementLogic.special.enPassantStart(
+        clickedTile,
+        tileX,
+        tileY,
+        piece,
+        leftXTile,
+        rightXTile,
+        previousMove
+      );
+
+      movementLogic.special.castlingStart(clickedTile, tileX, tileY, piece);
     },
 
-    checkSpecialPlacementEvent: function (oldTile, newTile) {
-      console.log("checkSpecialPlacementEvent");
-    },
+    checkSpecialPlacementEvent: function (oldTile, newTile) {},
 
     checkSpecialAttackEvent: function (oldTile, newTile) {
-      console.log("checkSpeciaAttackEvent");
+      let previousMove = centralData.previousMoveData;
+      let aboveYTile = centralData.getTileObjXY(newTile.x, newTile.y - 1);
+      let belowYTile = centralData.getTileObjXY(newTile.x, newTile.y + 1);
+
+      movementLogic.special.enPassantAttack(
+        newTile,
+        aboveYTile,
+        belowYTile,
+        previousMove
+      );
     },
   },
 
@@ -740,7 +748,7 @@ Object.assign(movementLogic, {
   },
 
   special: {
-    enPassant: function (
+    enPassantStart: function (
       clickedTile,
       tileX,
       tileY,
@@ -749,6 +757,11 @@ Object.assign(movementLogic, {
       rightXTile,
       previousMove
     ) {
+      //don't run if this is the first move
+      if (!previousMove) {
+        return;
+      }
+
       if (!piece.name === "pawn") {
         return;
       }
@@ -765,7 +778,7 @@ Object.assign(movementLogic, {
               } else {
                 passantTile = centralData.getTileObjXY(tileX - 1, tileY + 1);
               }
-              passantTile.available = "move";
+              passantTile.available = "attack";
             }
           }
         }
@@ -783,12 +796,47 @@ Object.assign(movementLogic, {
               } else {
                 passantTile = centralData.getTileObjXY(tileX + 1, tileY + 1);
               }
-              passantTile.available = "move";
+              passantTile.available = "attack";
             }
           }
         }
       }
     },
+
+    enPassantAttack: function (newTile, aboveYTile, belowYTile, previousMove) {
+      //don't run if this is the first move
+      if (!previousMove) {
+        return;
+      }
+      //check if current piece is a pawn
+      if (!newTile.content.name === "pawn") {
+        return;
+      }
+
+      //if the previous move was not by a pawn, or moved 2 spots, stop function
+      if (
+        !(
+          previousMove.endTile.content.name === "pawn" &&
+          (previousMove.startTile.y - previousMove.endTile.y) ** 2 == 4
+        )
+      ) {
+        return;
+      }
+
+      if (gamePlay.playerTurn == "white") {
+        if (belowYTile.content == previousMove.endTile.content) {
+          centralData.lostPieces.push(previousMove.endTile.content);
+          belowYTile.content = "";
+        }
+      } else {
+        if (aboveYTile.content == previousMove.endTile.content) {
+          centralData.lostPieces.push(previousMove.endTile.content);
+          aboveYTile.content = "";
+        }
+      }
+    },
+
+    castlingStart: function () {},
   },
 });
 
