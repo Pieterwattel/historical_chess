@@ -2,10 +2,6 @@ const centralData = {
   boardTilesArray: [],
   lostPieces: [],
   selectedTile: "",
-  availableTiles: {
-    move: [],
-    attack: [],
-  },
 
   blackCiv: "standard",
   whiteCiv: "standard",
@@ -483,7 +479,7 @@ Object.assign(pieces, {
 
 Object.assign(gamePlay, {
   checkTileAction: function (clickedTileObj) {
-    //console.log(clickedTileObj);
+    console.log(clickedTileObj);
     let selectedTile = this.selectedTile;
     // deselect the piece if clicked twice
     if (clickedTileObj == selectedTile) {
@@ -517,9 +513,9 @@ Object.assign(gamePlay, {
   startTurn: function (clickedTile) {
     this.selectedTile = clickedTile;
     board.removeHighlights();
+    this.additions.checkSpecialStartEvent(clickedTile);
     movementLogic.updateAvailableTiles(clickedTile);
     board.addHighlights();
-    this.additions.checkSpecialStartEvent(clickedTile);
   },
 
   //2d part of turn, everything that happens when a piece is selected, and being placed
@@ -581,12 +577,23 @@ Object.assign(gamePlay, {
 
   additions: {
     checkSpecialStartEvent: function (clickedTile) {
-      //check if there is an en passant available
       let tileX = clickedTile.x;
       let tileY = clickedTile.y;
+      let piece = clickedTile.content;
       let leftXTile = centralData.getTileObjXY(tileX - 1, tileY);
       let rightXTile = centralData.getTileObjXY(tileX + 1, tileY);
-      console.log(centralData.previousMoveData);
+      let previousMove = centralData.previousMoveData;
+      if (previousMove) {
+        movementLogic.special.enPassant(
+          clickedTile,
+          tileX,
+          tileY,
+          piece,
+          leftXTile,
+          rightXTile,
+          previousMove
+        );
+      }
     },
 
     checkSpecialPlacementEvent: function (oldTile, newTile) {
@@ -730,6 +737,37 @@ Object.assign(movementLogic, {
         }
       }
     });
+  },
+
+  special: {
+    enPassant: function (
+      clickedTile,
+      tileX,
+      tileY,
+      piece,
+      leftXTile,
+      rightXTile,
+      previousMove
+    ) {
+      if (piece.name === "pawn") {
+        if (leftXTile.content.name === "pawn") {
+          //check if the left pawn was the one moved previous turn
+          if (previousMove.endTile == leftXTile) {
+            //check if that pawn was moved 2 places last turn
+            if ((previousMove.startTile.y - previousMove.endTile.y) ** 2 == 4) {
+              let passantTile;
+              if (gamePlay.playerTurn == "white") {
+                passantTile = centralData.getTileObjXY(tileX - 1, tileY - 1);
+              } else {
+                passantTile = centralData.getTileObjXY(tileX - 1, tileY - 1);
+              }
+              console.log(passantTile);
+              passantTile.available = "move";
+            }
+          }
+        }
+      }
+    },
   },
 });
 
