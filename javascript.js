@@ -432,9 +432,11 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    castling: "R   K  RRRRRRRRR",
+    //castling: "R   K  RRRRRRRRR",
 
-    // standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    //pawnPromotion: "        PPPP    ",
+
+    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
     /*
     mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
@@ -610,6 +612,13 @@ Object.assign(gamePlay, {
     checkSpecialPlacementEvent: function (oldTile, newTile) {
       let piece = oldTile.content;
       movementLogic.special.castlingPlacement(
+        oldTile,
+        newTile,
+        piece,
+        gamePlay.playerTurn
+      );
+
+      movementLogic.special.pawnPromotion(
         oldTile,
         newTile,
         piece,
@@ -935,11 +944,11 @@ Object.assign(movementLogic, {
     },
 
     castlingPlacement: function (oldTile, newTile, piece, playerTurn) {
-      console.log(piece.name);
       if (piece.name != "king") {
         return;
       }
 
+      //select first row
       let y;
       if (playerTurn == "white") {
         y = 7;
@@ -972,6 +981,30 @@ Object.assign(movementLogic, {
           ...rightCornerTile.content,
         };
         rightCornerTile.content = false;
+      }
+    },
+
+    pawnPromotion: function (oldTile, newTile, piece, playerTurn) {
+      if (piece.name != "pawn") {
+        return;
+      }
+      //select last row
+      let y;
+      if (playerTurn == "white") {
+        y = 0;
+      } else {
+        y = 7;
+      }
+
+      console.log(y);
+      console.log(newTile.y);
+      if (newTile.y == y) {
+        console.log("yes");
+        console.log(centralData.getPieceFromSymbolAndColor("Q", playerTurn));
+        oldTile.content = centralData.getPieceFromSymbolAndColor(
+          "Q",
+          playerTurn
+        );
       }
     },
   },
@@ -1046,7 +1079,7 @@ let startGame = (function () {
 
 let i = 0;
 let active = false;
-let speed = 40;
+let speed = 200;
 const toggleAutoMove = document.getElementById("stopGame");
 toggleAutoMove.addEventListener("click", () => {
   if (!active) {
