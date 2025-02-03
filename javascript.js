@@ -2,6 +2,7 @@ const centralData = {
   boardTilesArray: [],
   lostPieces: [],
   selectedTile: "",
+  availableTiles: [],
 
   blackCiv: "standard",
   whiteCiv: "standard",
@@ -431,8 +432,10 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    castling: "R   K  RRRRRRRRR",
     /*
+    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+
     mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
     aztecs: " PQQQQP   PPPP  ", // Ritualistic battle lines
@@ -550,10 +553,11 @@ Object.assign(gamePlay, {
 
   placePiece: function (oldTile, newTile) {
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
+    this.additions.checkSpecialPlacementEvent(oldTile, newTile);
+
     newTile.content = {
       ...oldTile.content,
     };
-    this.additions.checkSpecialPlacementEvent(oldTile, newTile);
   },
 
   doAttack: function (oldTile, newTile) {
@@ -599,10 +603,24 @@ Object.assign(gamePlay, {
         previousMove
       );
 
-      movementLogic.special.castlingStart(clickedTile, tileX, tileY, piece);
+      movementLogic.special.castlingStart(
+        clickedTile,
+        tileX,
+        tileY,
+        piece,
+        gamePlay.playerTurn
+      );
     },
 
-    checkSpecialPlacementEvent: function (oldTile, newTile) {},
+    checkSpecialPlacementEvent: function (oldTile, newTile) {
+      let piece = oldTile.content;
+      movementLogic.special.castlingPlacement(
+        oldTile,
+        newTile,
+        piece,
+        gamePlay.playerTurn
+      );
+    },
 
     checkSpecialAttackEvent: function (oldTile, newTile) {
       let previousMove = centralData.previousMoveData;
@@ -841,9 +859,120 @@ Object.assign(movementLogic, {
       }
     },
 
-    castlingStart: function (clickedTile, tileX, tileY, piece) {
-      if (gamePlay.playerTurn == "white") {
+    castlingStart: function (clickedTile, tileX, tileY, piece, playerTurn) {
+      let y = 0;
+      if (piece.name != "king" || Boolean(piece.hasMoved)) {
+        //no castling
+        return;
       } else {
+        if (playerTurn == "white") {
+          y = 7;
+        } else {
+          y = 0;
+        }
+        let leftCornerTile = centralData.getTileObjXY(0, y);
+        let rightCornerTile = centralData.getTileObjXY(7, y);
+
+        //check left castling availability
+        if (!Boolean(leftCornerTile.content.hasMoved)) {
+          //if piece in left corner has NOT moved
+
+          //check all tiles from the left until you find a king
+          for (let x = 1; x <= 6; x++) {
+            let currentTile = centralData.getTileObjXY(x, y);
+            if (
+              currentTile.content.name != "king" &&
+              Boolean(currentTile.content)
+            ) {
+              console.log(currentTile);
+              console.log("notEmpty");
+              break;
+            }
+            if (currentTile.content.name == "king") {
+              //now we have found a king, with all empty tiles on left side,
+              //and a piece in the left corner tat has not moved
+              let king = currentTile.content;
+              //if that king has not moved yet
+              if (!Boolean(king.hasMoved)) {
+                let castleTile = centralData.getTileObjXY(
+                  currentTile.x - 2,
+                  currentTile.y
+                );
+                castleTile.available = "move";
+              }
+              break;
+            }
+          }
+        }
+
+        //check right castling availability
+        if (!Boolean(rightCornerTile.content.hasMoved)) {
+          //if piece in right corner has NOT moved
+
+          //check all tiles from the right until you find a king
+          for (let x = 6; x >= 0; x--) {
+            let currentTile = centralData.getTileObjXY(x, y);
+            if (
+              currentTile.content.name != "king" &&
+              Boolean(currentTile.content)
+            ) {
+              console.log(currentTile);
+              console.log("notEmpty");
+              break;
+            }
+            if (currentTile.content.name == "king") {
+              //now we have found a king, with all empty tiles on right side,
+              //and a piece in the right corner that has not moved
+              let king = currentTile.content;
+              //if that king has not moved yet
+              if (!Boolean(king.hasMoved)) {
+                let castleTile = centralData.getTileObjXY(
+                  currentTile.x + 2,
+                  currentTile.y
+                );
+                castleTile.available = "move";
+              }
+              break;
+            }
+          }
+        }
+      }
+    },
+
+    castlingPlacement: function (oldTile, newTile, piece, playerTurn) {
+      if (!piece.name == "king") {
+        return;
+      }
+      let y;
+      if (playerTurn == "white") {
+        y = 7;
+      } else {
+        y = 0;
+      }
+
+      let leftCornerTile = centralData.getTileObjXY(0, y);
+      let rightCornerTile = centralData.getTileObjXY(7, y);
+
+      if (oldTile.x - newTile.x == 2) {
+        let cornerPieceNewTile = centralData.getTileObjXY(
+          oldTile.x - 1,
+          oldTile.y
+        );
+        cornerPieceNewTile.content = {
+          ...leftCornerTile.content,
+        };
+        leftCornerTile.content = false;
+      }
+
+      if (oldTile.x - newTile.x == -2) {
+        let cornerPieceNewTile = centralData.getTileObjXY(
+          oldTile.x + 1,
+          oldTile.y
+        );
+        cornerPieceNewTile.content = {
+          ...rightCornerTile.content,
+        };
+        rightCornerTile.content = false;
       }
     },
   },
