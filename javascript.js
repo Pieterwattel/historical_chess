@@ -432,10 +432,10 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    castling: "R   K  RRRRRRRRR",
-    /*
-    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    // castling: "R   K  RRRRRRRRR",
 
+    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    /*
     mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
     aztecs: " PQQQQP   PPPP  ", // Ritualistic battle lines
@@ -940,9 +940,11 @@ Object.assign(movementLogic, {
     },
 
     castlingPlacement: function (oldTile, newTile, piece, playerTurn) {
-      if (!piece.name == "king") {
+      console.log(piece.name);
+      if (piece.name != "king") {
         return;
       }
+
       let y;
       if (playerTurn == "white") {
         y = 7;
@@ -953,6 +955,7 @@ Object.assign(movementLogic, {
       let leftCornerTile = centralData.getTileObjXY(0, y);
       let rightCornerTile = centralData.getTileObjXY(7, y);
 
+      //castling placement on the left
       if (oldTile.x - newTile.x == 2) {
         let cornerPieceNewTile = centralData.getTileObjXY(
           oldTile.x - 1,
@@ -964,6 +967,7 @@ Object.assign(movementLogic, {
         leftCornerTile.content = false;
       }
 
+      //castling placement on the right
       if (oldTile.x - newTile.x == -2) {
         let cornerPieceNewTile = centralData.getTileObjXY(
           oldTile.x + 1,
