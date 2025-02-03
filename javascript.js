@@ -432,9 +432,9 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    // castling: "R   K  RRRRRRRRR",
+    castling: "R   K  RRRRRRRRR",
 
-    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    // standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
     /*
     mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
@@ -477,11 +477,6 @@ Object.assign(pieces, {
     } else {
       newTile.content.hasMoved += 1;
     }
-  },
-
-  king: {
-    white: "",
-    black: "",
   },
 });
 
@@ -999,7 +994,6 @@ Object.assign(preparation, {
     console.log(randCiv2);
 
     this.setupBoard(pieces.placement[randCiv1], pieces.placement[randCiv2]);
-    this.storeKings();
 
     // Call setupBoard on the preparation object
     board.update(); // Update the board
@@ -1041,19 +1035,6 @@ Object.assign(preparation, {
       i++;
       t--;
     }
-  },
-
-  storeKings: function () {
-    centralData.boardTilesArray.forEach((tile) => {
-      if (tile.content.name == "king" && tile.content.player == "white") {
-        pieces.king.white = tile.content;
-      } else if (
-        tile.content.name == "king" &&
-        tile.content.player == "black"
-      ) {
-        pieces.king.white = tile.content;
-      }
-    });
   },
 });
 
