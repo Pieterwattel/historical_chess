@@ -436,7 +436,9 @@ Object.assign(pieces, {
 
     //pawnPromotion: "        PPPP    ",
 
-    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    //standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    french: " N BB N   P  P          ", // Bishop-heavy strategy
+    ww1: "PPPPPPPPPPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
     /*
     mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
@@ -459,7 +461,6 @@ Object.assign(pieces, {
     mayans: " P K P  QQQQQQ ", // Ritualistic center control
     crusaders: "R KQK  R  PPPP  ", // Heavy knight-based force
     templars: "  K Q K R RPPP  ", // Religious and militaristic
-    ww1: "PPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
     pirates: "    QK   RRRPPP ", // Ship formations, chaotic
     redcoats: " RNKQKNR PPPPPP  ", // British line infantry
     mongol_horde: "NNKKNNNN PPPPPP ", // Pure mounted archery dominance
@@ -789,7 +790,7 @@ Object.assign(movementLogic, {
         return;
       }
 
-      if (!piece.name === "pawn") {
+      if (piece.name != "pawn") {
         return;
       }
       if (leftXTile) {
@@ -999,8 +1000,6 @@ Object.assign(movementLogic, {
       console.log(y);
       console.log(newTile.y);
       if (newTile.y == y) {
-        console.log("yes");
-        console.log(centralData.getPieceFromSymbolAndColor("Q", playerTurn));
         oldTile.content = centralData.getPieceFromSymbolAndColor(
           "Q",
           playerTurn
@@ -1044,7 +1043,7 @@ Object.assign(preparation, {
     //setup black pieces
     let i = 0;
     let t = 0;
-    while (i < 16) {
+    while (i < 24) {
       let symbol = blackSetup.at(i);
       if (symbol != " ") {
         let currentPiece = this.getPieceFromSymbolAndColor(symbol, "black");
@@ -1058,7 +1057,7 @@ Object.assign(preparation, {
     //setup white pieces
     i = 0;
     t = 63;
-    while (i < 16) {
+    while (i < 24) {
       let symbol = whiteSetup.at(i);
       if (symbol != " ") {
         let currentPiece = this.getPieceFromSymbolAndColor(symbol, "white");
@@ -1079,7 +1078,7 @@ let startGame = (function () {
 
 let i = 0;
 let active = false;
-let speed = 200;
+let speed = 50;
 const toggleAutoMove = document.getElementById("stopGame");
 toggleAutoMove.addEventListener("click", () => {
   if (!active) {

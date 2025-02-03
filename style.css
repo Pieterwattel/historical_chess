@@ -12,6 +12,7 @@ html {
   width: min(90vh, 90vw);
   border: 3px solid black;
   padding: 0.3%;
+  display: flex;
 
   background-color: black;
   display: grid;
@@ -65,4 +66,41 @@ html {
 
 .lightTile.highlightAttack {
   background-color: rgb(255, 144, 100) !important;
+}
+
+#popupOverlay {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#popup {
+  padding: 0.8rem;
+  max-width: fit-content;
+  max-height: fit-content;
+
+  outline: 3px solid beige;
+  position: fixed;
+  color: white;
+  background-color: rgb(90, 90, 90);
+
+  align-self: center;
+  justify-self: center;
+  z-index: 3;
+}
+
+#popup > {
+  outline: 3px solid beige;
+  max-width: fit-content;
+  max-height: fit-content;
+
+  padding: 0.8rem;
 }
