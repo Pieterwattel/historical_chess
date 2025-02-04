@@ -445,11 +445,11 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    //castling: "QK   K RRRRRRRRR",
+    castling: "QK   K RRRRRRRRR",
 
     //pawnPromotion: "        PPPP    ",
 
-    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    //standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
     //french: " NQBBQN   P  P          ", // Bishop-heavy strategy
     //ww1: "PPPPPPPPPPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
     /*
@@ -956,13 +956,20 @@ Object.assign(movementLogic, {
               currentTile.content.name != "king" &&
               Boolean(currentTile.content)
             ) {
-              console.log(currentTile);
-              console.log("notEmpty");
               break;
             }
+            //prevent this from triggering to another king than the one you clicked
+            else if (
+              currentTile.content.name == "king" &&
+              currentTile != clickedTile
+            ) {
+              break;
+            }
+
             if (currentTile.content.name == "king") {
               //now we have found a king, with all empty tiles on left side,
-              //and a piece in the left corner tat has not moved
+              //and a piece in the left corner that has not moved              console.log(currentTile);
+
               let king = currentTile.content;
               //if that king has not moved yet
               if (!Boolean(king.hasMoved)) {
@@ -970,6 +977,14 @@ Object.assign(movementLogic, {
                   currentTile.x - 2,
                   currentTile.y
                 );
+                //get the adjacent corner tile, when the king is next to the corner piece
+                if (!castleTile) {
+                  castleTile = centralData.getTileObjXY(
+                    currentTile.x - 1,
+                    currentTile.y
+                  );
+                }
+
                 castleTile.available = "move";
               }
               break;
@@ -992,6 +1007,14 @@ Object.assign(movementLogic, {
               console.log("notEmpty");
               break;
             }
+            //prevent this from triggering to another king than the one you clicked
+            else if (
+              currentTile.content.name == "king" &&
+              currentTile != clickedTile
+            ) {
+              break;
+            }
+
             if (currentTile.content.name == "king") {
               //now we have found a king, with all empty tiles on right side,
               //and a piece in the right corner that has not moved
@@ -1002,7 +1025,16 @@ Object.assign(movementLogic, {
                   currentTile.x + 2,
                   currentTile.y
                 );
+
                 console.log(castleTile);
+                console.log(Boolean(castleTile));
+
+                if (!castleTile) {
+                  castleTile = centralData.getTileObjXY(
+                    currentTile.x + 1,
+                    currentTile.y
+                  );
+                }
                 castleTile.available = "move";
               }
               break;
@@ -1144,13 +1176,13 @@ Object.assign(preparation, {
 
 // Call initializeGame to start
 let startGame = (function () {
-  preparation.initializeGame(); // Ensure correct `this` context
+  preparation.initializeGame();
   // doTimeout();
 })();
 
 let i = 0;
 let active = false;
-let speed = 700;
+let speed = 80;
 const toggleAutoMove = document.getElementById("stopGame");
 toggleAutoMove.addEventListener("click", () => {
   if (!active) {
