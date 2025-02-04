@@ -445,11 +445,11 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    castling: "QK   K RRRRRRRRR",
+    //castling: "QK   K RRRRRRRRR",
 
     //pawnPromotion: "        PPPP    ",
 
-    //standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
     //french: " NQBBQN   P  P          ", // Bishop-heavy strategy
     //ww1: "PPPPPPPPPPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
     /*
@@ -512,15 +512,15 @@ Object.assign(gamePlay, {
       return;
     }
 
-    if (
+    if (selectedTile && clickedTileObj.available) {
+      this.endTurn(clickedTileObj);
+    } else if (
       // if there is no piece selected yet, this is the start of a move
       (!selectedTile && clickedTileObj.content) ||
       //also re-initiate the turn if this some other piece of the current playerTurn's
       clickedTileObj?.content?.player == this.playerTurn
     ) {
       this.startTurn(clickedTileObj);
-    } else if (selectedTile && clickedTileObj.available) {
-      this.endTurn(clickedTileObj);
     } else {
       this.deselectTile();
     }
@@ -1025,9 +1025,6 @@ Object.assign(movementLogic, {
                   currentTile.x + 2,
                   currentTile.y
                 );
-
-                console.log(castleTile);
-                console.log(Boolean(castleTile));
 
                 if (!castleTile) {
                   castleTile = centralData.getTileObjXY(
