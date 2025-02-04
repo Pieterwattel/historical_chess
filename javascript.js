@@ -434,11 +434,11 @@ Object.assign(pieces, {
   placement: {
     //castling: "R   K  RRRRRRRRR",
 
-    //pawnPromotion: "        PPPP    ",
+    pawnPromotion: "        PPPP    ",
 
     //standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
-    french: " N BB N   P  P          ", // Bishop-heavy strategy
-    ww1: "PPPPPPPPPPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
+    //french: " NQBBQN   P  P          ", // Bishop-heavy strategy
+    //ww1: "PPPPPPPPPPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
     /*
     mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
@@ -552,7 +552,7 @@ Object.assign(gamePlay, {
   placePiece: function (oldTile, newTile) {
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
     this.additions.checkSpecialPlacementEvent(oldTile, newTile);
-
+    console.log(oldTile);
     newTile.content = {
       ...oldTile.content,
     };
@@ -638,6 +638,55 @@ Object.assign(gamePlay, {
         belowYTile,
         previousMove
       );
+    },
+
+    pawnPromotionPopup: function (newTile) {
+      let popup = document.createElement("div");
+      popup.setAttribute("id", "popup");
+      board.boardEdgeNode.appendChild(popup);
+
+      let queenImg = document.createElement("img");
+      let rookImg = document.createElement("img");
+      let bishopImg = document.createElement("img");
+      let knightImg = document.createElement("img");
+      queenImg.src = "./files/queenGrey.svg";
+      rookImg.src = "./files/rookGrey.svg";
+      bishopImg.src = "./files/bishopGrey.svg";
+      knightImg.src = "./files/knightGrey.svg";
+
+      popup.appendChild(queenImg);
+      popup.appendChild(rookImg);
+      popup.appendChild(bishopImg);
+      popup.appendChild(knightImg);
+
+      queenImg.addEventListener("click", () => {
+        choosePiece("Q");
+      });
+      rookImg.addEventListener("click", () => {
+        choosePiece("R");
+      });
+      bishopImg.addEventListener("click", () => {
+        choosePiece("B");
+      });
+      knightImg.addEventListener("click", () => {
+        choosePiece("N");
+      });
+
+      let popupOverlay = document.createElement("div");
+      popupOverlay.setAttribute("id", "popupOverlay");
+      document.body.appendChild(popupOverlay);
+
+      function choosePiece(piece) {
+        let chosenPiece = centralData.getPieceFromSymbolAndColor(
+          piece,
+          gamePlay.otherPlayer
+        );
+        newTile.content = chosenPiece;
+        console.log(newTile);
+        popup.remove();
+        popupOverlay.remove();
+        board.update();
+      }
     },
   },
 
@@ -1000,10 +1049,14 @@ Object.assign(movementLogic, {
       console.log(y);
       console.log(newTile.y);
       if (newTile.y == y) {
-        oldTile.content = centralData.getPieceFromSymbolAndColor(
-          "Q",
-          playerTurn
-        );
+        if (active) {
+          oldTile.content = centralData.getPieceFromSymbolAndColor(
+            "Q",
+            gamePlay.playerTurn
+          );
+        } else {
+          gamePlay.additions.pawnPromotionPopup(newTile);
+        }
       }
     },
   },
@@ -1043,7 +1096,7 @@ Object.assign(preparation, {
     //setup black pieces
     let i = 0;
     let t = 0;
-    while (i < 24) {
+    while (i < 16) {
       let symbol = blackSetup.at(i);
       if (symbol != " ") {
         let currentPiece = this.getPieceFromSymbolAndColor(symbol, "black");
@@ -1057,7 +1110,7 @@ Object.assign(preparation, {
     //setup white pieces
     i = 0;
     t = 63;
-    while (i < 24) {
+    while (i < 16) {
       let symbol = whiteSetup.at(i);
       if (symbol != " ") {
         let currentPiece = this.getPieceFromSymbolAndColor(symbol, "white");
