@@ -445,11 +445,11 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    //castling: "QK   K RRRRRRRRR",
+    castling: "QK    KRRRRRRRRR",
 
     //pawnPromotion: "        PPPP    ",
 
-    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    //standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
     //french: " NQBBQN   P  P          ", // Bishop-heavy strategy
     //ww1: "PPPPPPPPPPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
     /*
@@ -564,11 +564,15 @@ Object.assign(gamePlay, {
 
   placePiece: function (oldTile, newTile) {
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
-    this.additions.checkSpecialPlacementEvent(oldTile, newTile);
-    console.log(oldTile);
-    newTile.content = {
-      ...oldTile.content,
-    };
+    let skipPlacement = this.additions.checkSpecialPlacementEvent(
+      oldTile,
+      newTile
+    );
+    if (!skipPlacement) {
+      newTile.content = {
+        ...oldTile.content,
+      };
+    }
   },
 
   doAttack: function (oldTile, newTile) {
@@ -1042,8 +1046,9 @@ Object.assign(movementLogic, {
     },
 
     castlingPlacement: function (oldTile, newTile, piece, playerTurn) {
+      let skipPlacement = false;
       if (piece.name != "king") {
-        return;
+        return skipPlacement;
       }
 
       //select first row
