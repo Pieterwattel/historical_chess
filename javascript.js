@@ -105,6 +105,14 @@ Object.assign(board, {
   createTileNode: function (tileObj) {
     let tileNode = document.createElement("div");
     tileNode.addEventListener("click", () => gamePlay.checkTileAction(tileObj));
+    tileNode.addEventListener("drag", () => gamePlay.checkTileAction(tileObj));
+    tileNode.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+    tileNode.addEventListener("drop", (e) => {
+      e.preventDefault();
+      gamePlay.checkTileAction(tileObj);
+    });
     tileNode.classList.add(tileObj.color);
     tileObj.node = tileNode;
     return tileNode;
@@ -116,7 +124,12 @@ Object.assign(board, {
       //if the tile has content, place in tile node
       if (tileObj.content) {
         // check if there is anything standing on the tile
-        tileObj.node.innerHTML = `<img src="${tileObj.content.image}" alt="image">`;
+        let img = document.createElement("img");
+        img.src = tileObj.content.image;
+        img.alt = `${tileObj.content.player} ${tileObj.content.name}`;
+        img.setAttribute("draggable", "true");
+        tileObj.node.innerHTML = "";
+        tileObj.node.appendChild(img);
       }
       //if not, empty the tile
       else {
@@ -432,11 +445,11 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    //castling: "R   K  RRRRRRRRR",
+    //castling: "QK   K RRRRRRRRR",
 
-    pawnPromotion: "        PPPP    ",
+    //pawnPromotion: "        PPPP    ",
 
-    //standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
     //french: " NQBBQN   P  P          ", // Bishop-heavy strategy
     //ww1: "PPPPPPPPPPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
     /*
@@ -641,6 +654,9 @@ Object.assign(gamePlay, {
     },
 
     pawnPromotionPopup: function (newTile) {
+      //because gamePlay.placePiece() already finishes before, I am slightly forcing this to happen after the turn
+
+      //here I create a popup to choose a piece
       let popup = document.createElement("div");
       popup.setAttribute("id", "popup");
       board.boardEdgeNode.appendChild(popup);
@@ -676,6 +692,7 @@ Object.assign(gamePlay, {
       popupOverlay.setAttribute("id", "popupOverlay");
       document.body.appendChild(popupOverlay);
 
+      //and the mechanic to place the chosen piece (again, I'm not completely happy with this code)
       function choosePiece(piece) {
         let chosenPiece = centralData.getPieceFromSymbolAndColor(
           piece,
@@ -919,6 +936,7 @@ Object.assign(movementLogic, {
         //no castling
         return;
       } else {
+        console.log("castling");
         if (playerTurn == "white") {
           y = 7;
         } else {
@@ -984,6 +1002,7 @@ Object.assign(movementLogic, {
                   currentTile.x + 2,
                   currentTile.y
                 );
+                console.log(castleTile);
                 castleTile.available = "move";
               }
               break;
@@ -1131,7 +1150,7 @@ let startGame = (function () {
 
 let i = 0;
 let active = false;
-let speed = 50;
+let speed = 700;
 const toggleAutoMove = document.getElementById("stopGame");
 toggleAutoMove.addEventListener("click", () => {
   if (!active) {
