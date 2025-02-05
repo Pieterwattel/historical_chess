@@ -961,7 +961,8 @@ Object.assign(movementLogic, {
         //check left castling availability
         if (
           !Boolean(leftCornerTile.content.hasMoved) &&
-          Boolean(leftCornerTile.content)
+          Boolean(leftCornerTile.content) &&
+          leftCornerTile.content.player == gamePlay.playerTurns
         ) {
           //if piece in left corner has NOT moved
 
