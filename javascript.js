@@ -946,6 +946,7 @@ Object.assign(movementLogic, {
     castlingStart: function (clickedTile, tileX, tileY, piece, playerTurn) {
       let y = 0;
       if (piece.name != "king" || Boolean(piece.hasMoved)) {
+        console.log("noCastle");
         //no castling
         return;
       } else {
@@ -1075,7 +1076,7 @@ Object.assign(movementLogic, {
       if (oldTile.x == 1) {
         // first checking of the king is adjacent to the corner piece
         oldTile.content = newTile.content;
-        newTile.content = piece;
+        newTile.content = { ...piece };
         skipPlacement = true;
       } else if (oldTile.x - newTile.x == 2) {
         let cornerPieceNewTile = centralData.getTileObjXY(
@@ -1092,7 +1093,7 @@ Object.assign(movementLogic, {
       if (oldTile.x == 6) {
         // first checking of the king is adjacent to the corner piece
         oldTile.content = newTile.content;
-        newTile.content = piece;
+        newTile.content = { ...piece };
         skipPlacement = true;
       } else if (oldTile.x - newTile.x == -2) {
         let cornerPieceNewTile = centralData.getTileObjXY(
