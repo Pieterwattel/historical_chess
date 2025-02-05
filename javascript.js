@@ -451,7 +451,6 @@ Object.assign(pieces, {
 
     standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
 
-    /*
     french: " NQBBQN   P  P  ", // Bishop-heavy strategy
     ww1: "PPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
 
@@ -487,7 +486,6 @@ Object.assign(pieces, {
     holy_roman: "B KQK  B  PPPP  ", // Church & state influence
     cossacks: "NN KQ NN  PPPP  ", // Highly mobile raiders
     ragnarok: "QQ K  QQ  PPPP  ", // Norse myth, end-of-days chaos
-    */
   },
 
   update: function (oldTile, newTile) {
