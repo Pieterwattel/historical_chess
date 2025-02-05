@@ -871,7 +871,7 @@ Object.assign(movementLogic, {
       if (piece.name != "pawn") {
         return;
       }
-      if (leftXTile) {
+      if (leftXTile?.content) {
         // check left hand for en passant
         if (leftXTile.content.name === "pawn") {
           //check if the left pawn was the one moved previous turn
@@ -889,7 +889,7 @@ Object.assign(movementLogic, {
           }
         }
       }
-      if (rightXTile) {
+      if (rightXTile?.content) {
         //check right hand side for en passant
         if (rightXTile.content.name === "pawn") {
           //check if the right pawn was the one moved previous turn
