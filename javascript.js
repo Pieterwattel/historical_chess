@@ -445,12 +445,13 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    castling: "Q K   KRRRRRRRRR",
+    castling: "QK     RRRRRRRRR",
 
     //pawnPromotion: "        PPPP    ",
 
-    /*
     standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+
+    /*
     french: " NQBBQN   P  P  ", // Bishop-heavy strategy
     ww1: "PPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
 
