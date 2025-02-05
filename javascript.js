@@ -456,7 +456,7 @@ Object.assign(pieces, {
 
     mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
-    aztecs: " PQQQQP   PPPP  ", // Ritualistic battle lines
+    aztecs: " PQKQQP   PPPP  ", // Ritualistic battle lines
 
     french: " NQBBQN   P  P  ", // Bishop-heavy strategy
     sparta: " BQQKQB  PPPPPP", // Strong phalanx formation

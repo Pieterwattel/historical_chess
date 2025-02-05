@@ -10,18 +10,16 @@ html {
 #boardEdge {
   height: min(90vh, 90vw);
   width: min(90vh, 90vw);
-  border: 3px solid black;
-  padding: 0.3%;
+  padding: 0px;
   display: flex;
 
   background-image: url("./files/chessBgWood.jpg");
   display: grid;
   grid-template-rows: repeat(8, 1fr);
   grid-template-columns: repeat(8, 1fr);
-  gap: 5px;
   resize: both;
-  border-radius: 0.6em;
-  box-shadow: 0px 0px 15px rgb(138, 137, 137);
+  border-radius: 1em;
+  box-shadow: 0px 0px 30px rgb(53, 52, 52);
 }
 
 #boardEdge div :hover {
@@ -31,30 +29,29 @@ html {
 }
 
 #boardEdge > :active {
-  box-shadow: inset 0px 0px 5px black;
+  box-shadow: inset 0px 0px 7px rgb(0, 0, 0);
 }
 
 #boardEdge div {
   display: flex;
-  box-shadow: 6px 6px 0px black;
-  box-shadow: -6px -6px 0px black;
+  align-items: center;
+  justify-items: center;
 }
 
-#boardEdge div img :not(#popup) {
-  height: 90%;
-  width: 90%;
-  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0) !important;
+#boardEdge div > :not(#popup img) {
+  height: 84%;
+  width: 84%;
   margin-left: auto;
   margin-right: auto;
 }
 
 .darkTile {
   background-color: rgba(49, 12, 12, 0.4);
-  box-shadow: inset 1px 1px 5px rgb(102, 11, 11);
+  box-shadow: inset 0px 0px 5px rgb(102, 11, 11);
 }
 
 .lightTile {
-  background-color: rgba(255, 255, 205, 0.219);
+  background-color: rgba(255, 255, 205, 0.06);
 }
 
 .darkTile.highlightMove {
@@ -99,21 +96,21 @@ html {
   align-self: center;
   justify-self: center;
   z-index: 3;
+  gap: 0.8rem;
 }
 
 #popup img {
-  height: min(12vw, 12vh);
-  width: min(12vw, 12vh);
+  height: min(10vw, 10vh);
+  width: min(10vw, 10vh);
   padding: 0.8rem;
   z-index: 3;
   background-color: rgb(100, 100, 100);
-  margin: 3px;
+  margin: 2px;
   border-radius: 1vh;
   box-shadow: 3px 3px 10px black;
 }
 
 #popup > img:hover {
   z-index: 4;
-  box-shadow: inset 0px 0px min(0.8vh, 0.8vw) rgb(145, 145, 145);
   transform: scale(1.015);
 }
