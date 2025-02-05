@@ -1224,7 +1224,11 @@ const interface = {
   undoMove: document.getElementById("undoMove"),
 
   addUIEventListeners: function () {
-    this.undoMove.addEventListener("click", () => console.log("yes"));
+    undoMove.addEventListener("click", () => this.undoLastMove());
+  },
+
+  undoLastMove: function () {
+    console.log(centralData.boardSaveStates);
   },
 };
 
