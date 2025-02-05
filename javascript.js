@@ -1218,13 +1218,17 @@ Object.assign(preparation, {
       t--;
     }
   },
+
+  resetBoard: function () {},
 });
 
 const interface = {
   undoMove: document.getElementById("undoMove"),
+  resetBoard: document.getElementById("resetBoard"),
 
   addUIEventListeners: function () {
     undoMove.addEventListener("click", () => this.undoLastMove());
+    resetBoard.addEventListener("click", () => this.doResetBoard());
   },
 
   undoLastMove: function () {
@@ -1234,6 +1238,38 @@ const interface = {
     });
     board.update();
     gamePlay.switchTurn();
+  },
+
+  doResetBoard: function () {
+    for (tile in centralData.boardTilesArray) {
+      tile.content = "";
+    }
+    let blackCiv = centralData.blackCiv;
+    let whiteCiv = centralData.whiteCiv;
+
+    if (!blackCiv) {
+      let civs = Object.keys(pieces.placement);
+      blackCiv = civs[Math.floor(Math.random() * civs.length)];
+      console.log(blackCiv);
+    }
+    if (!whiteCiv) {
+      let civs = Object.keys(pieces.placement);
+      whiteCiv = civs[Math.floor(Math.random() * civs.length)];
+      console.log(whiteCiv);
+    }
+
+    preparation.setupBoard(
+      pieces.placement[blackCiv],
+      pieces.placement[whiteCiv]
+    );
+
+    // Call setupBoard on the preparation object
+    board.update(); // Update the board
+
+    centralData.history.startPlacement = {
+      black: pieces.placement[centralData.blackCiv],
+      white: pieces.placement[centralData.whiteCiv],
+    };
   },
 };
 
