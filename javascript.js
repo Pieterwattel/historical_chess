@@ -4,8 +4,8 @@ const centralData = {
   selectedTile: "",
   availableTiles: [],
 
-  blackCiv: "standard",
-  whiteCiv: "standard",
+  blackCiv: "",
+  whiteCiv: "",
 
   getTileObjXY: function (x, y) {
     let array = this.boardTilesArray;
@@ -486,6 +486,9 @@ Object.assign(pieces, {
     holy_roman: "B KQK  B  PPPP  ", // Church & state influence
     cossacks: "NN KQ NN  PPPP  ", // Highly mobile raiders
     ragnarok: "QQ K  QQ  PPPP  ", // Norse myth, end-of-days chaos
+    other1: "R B  B RN N  N N",
+    other2: "B N  N BN B  B N",
+    other3: " KKKPPP  KKKPPP ",
   },
 
   update: function (oldTile, newTile) {
@@ -1148,18 +1151,22 @@ Object.assign(preparation, {
   initializeGame: function () {
     board.createTiles();
     board.appendTiles();
-    /*
+
     let blackCiv = centralData.blackCiv;
     let whiteCiv = centralData.whiteCiv;
-    this.setupBoard(pieces.placement[blackCiv], pieces.placement[whiteCiv]);
-    */
-    let civs = Object.keys(pieces.placement);
-    let randCiv1 = civs[Math.floor(Math.random() * civs.length)];
-    let randCiv2 = civs[Math.floor(Math.random() * civs.length)];
-    console.log(randCiv1);
-    console.log(randCiv2);
 
-    this.setupBoard(pieces.placement[randCiv1], pieces.placement[randCiv2]);
+    if (!blackCiv) {
+      let civs = Object.keys(pieces.placement);
+      blackCiv = civs[Math.floor(Math.random() * civs.length)];
+      console.log(blackCiv);
+    }
+    if (!whiteCiv) {
+      let civs = Object.keys(pieces.placement);
+      whiteCiv = civs[Math.floor(Math.random() * civs.length)];
+      console.log(whiteCiv);
+    }
+
+    this.setupBoard(pieces.placement[blackCiv], pieces.placement[whiteCiv]);
 
     // Call setupBoard on the preparation object
     board.update(); // Update the board
