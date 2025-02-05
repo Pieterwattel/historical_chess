@@ -115,3 +115,15 @@ html {
   z-index: 4;
   transform: scale(1.015);
 }
+
+#userInterface {
+  padding-left: 1.5em;
+}
+
+button {
+  background-color: rgb(158, 102, 49);
+  border-radius: 0 0 0.5em 0.5em;
+}
+button:hover {
+  background-color: rgb(180, 119, 61);
+}

@@ -3,6 +3,7 @@ const centralData = {
   lostPieces: [],
   selectedTile: "",
   availableTiles: [],
+  boardSaveStates: [],
 
   blackCiv: "",
   whiteCiv: "",
@@ -50,6 +51,11 @@ const centralData = {
   get previousMoveData() {
     let index = this.history.moves.length - 1;
     return index >= 0 ? this.getMoveData(index) : null;
+  },
+
+  saveBoardState: function (boardArray) {
+    console.log(boardArray);
+    this.boardSaveStates.push(JSON.parse(JSON.stringify(boardArray)));
   },
 };
 
@@ -544,6 +550,8 @@ Object.assign(gamePlay, {
 
   //2d part of turn, everything that happens when a piece is selected, and being placed
   endTurn: function (clickedTile) {
+    this.saveBoardState(this.boardTilesArray);
+
     let oldTile = this.selectedTile;
     let newTile = clickedTile;
     //either move to the tile
@@ -1149,6 +1157,7 @@ Object.assign(movementLogic, {
 Object.assign(preparation, {
   // Method to initialize the game
   initializeGame: function () {
+    interface.addUIEventListeners();
     board.createTiles();
     board.appendTiles();
 
@@ -1210,6 +1219,14 @@ Object.assign(preparation, {
     }
   },
 });
+
+const interface = {
+  undoMove: document.getElementById("undoMove"),
+
+  addUIEventListeners: function () {
+    this.undoMove.addEventListener("click", () => console.log("yes"));
+  },
+};
 
 // Call initializeGame to start
 let startGame = (function () {
