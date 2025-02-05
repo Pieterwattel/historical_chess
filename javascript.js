@@ -959,7 +959,10 @@ Object.assign(movementLogic, {
         let rightCornerTile = centralData.getTileObjXY(7, y);
 
         //check left castling availability
-        if (!Boolean(leftCornerTile.content.hasMoved)) {
+        if (
+          !Boolean(leftCornerTile.content.hasMoved) &&
+          Boolean(leftCornerTile.content)
+        ) {
           //if piece in left corner has NOT moved
 
           //check all tiles from the left until you find a king
@@ -1006,7 +1009,10 @@ Object.assign(movementLogic, {
         }
 
         //check right castling availability
-        if (!Boolean(rightCornerTile.content.hasMoved)) {
+        if (
+          !Boolean(rightCornerTile.content.hasMoved) &&
+          Boolean(rightCornerTile.content)
+        ) {
           //if piece in right corner has NOT moved
 
           //check all tiles from the right until you find a king
