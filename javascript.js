@@ -445,17 +445,19 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    castling: "QK    KRRRRRRRRR",
+    castling: "Q K   KRRRRRRRRR",
 
     //pawnPromotion: "        PPPP    ",
 
-    //standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
-    //french: " NQBBQN   P  P          ", // Bishop-heavy strategy
-    //ww1: "PPPPPPPPPPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
     /*
+    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    french: " NQBBQN   P  P  ", // Bishop-heavy strategy
+    ww1: "PPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
+
     mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
     aztecs: " PQQQQP   PPPP  ", // Ritualistic battle lines
+
     french: " NQBBQN   P  P  ", // Bishop-heavy strategy
     sparta: " BQQKQB  PPPPPP", // Strong phalanx formation
 
@@ -483,7 +485,8 @@ Object.assign(pieces, {
     normans: " RNKQBNR PPPPPPPP ", // Knight-based feudal power
     holy_roman: "B KQK  B  PPPP  ", // Church & state influence
     cossacks: "NN KQ NN  PPPP  ", // Highly mobile raiders
-    ragnarok: "QQ K  QQ  PPPP  ", // Norse myth, end-of-days chaos*/
+    ragnarok: "QQ K  QQ  PPPP  ", // Norse myth, end-of-days chaos
+    */
   },
 
   update: function (oldTile, newTile) {
@@ -553,7 +556,6 @@ Object.assign(gamePlay, {
     }
     pieces.update(oldTile, newTile);
     this.addMoveToHistory(oldTile, newTile);
-    oldTile.content = "";
     centralData.selectedTile = "";
     board.removeHighlights();
     this.switchTurn();
@@ -568,10 +570,14 @@ Object.assign(gamePlay, {
       oldTile,
       newTile
     );
+
+    console.log(skipPlacement);
     if (!skipPlacement) {
       newTile.content = {
         ...oldTile.content,
       };
+
+      oldTile.content = "";
     }
   },
 
@@ -629,19 +635,22 @@ Object.assign(gamePlay, {
 
     checkSpecialPlacementEvent: function (oldTile, newTile) {
       let piece = oldTile.content;
-      movementLogic.special.castlingPlacement(
-        oldTile,
-        newTile,
-        piece,
-        gamePlay.playerTurn
-      );
 
-      movementLogic.special.pawnPromotion(
-        oldTile,
-        newTile,
-        piece,
-        gamePlay.playerTurn
-      );
+      let skipPlacement =
+        movementLogic.special.castlingPlacement(
+          oldTile,
+          newTile,
+          piece,
+          gamePlay.playerTurn
+        ) ||
+        movementLogic.special.pawnPromotion(
+          oldTile,
+          newTile,
+          piece,
+          gamePlay.playerTurn
+        );
+
+      return skipPlacement;
     },
 
     checkSpecialAttackEvent: function (oldTile, newTile) {
@@ -1063,7 +1072,12 @@ Object.assign(movementLogic, {
       let rightCornerTile = centralData.getTileObjXY(7, y);
 
       //castling placement on the left
-      if (oldTile.x - newTile.x == 2) {
+      if (oldTile.x == 1) {
+        // first checking of the king is adjacent to the corner piece
+        oldTile.content = newTile.content;
+        newTile.content = piece;
+        skipPlacement = true;
+      } else if (oldTile.x - newTile.x == 2) {
         let cornerPieceNewTile = centralData.getTileObjXY(
           oldTile.x - 1,
           oldTile.y
@@ -1075,7 +1089,12 @@ Object.assign(movementLogic, {
       }
 
       //castling placement on the right
-      if (oldTile.x - newTile.x == -2) {
+      if (oldTile.x == 6) {
+        // first checking of the king is adjacent to the corner piece
+        oldTile.content = newTile.content;
+        newTile.content = piece;
+        skipPlacement = true;
+      } else if (oldTile.x - newTile.x == -2) {
         let cornerPieceNewTile = centralData.getTileObjXY(
           oldTile.x + 1,
           oldTile.y
@@ -1085,6 +1104,8 @@ Object.assign(movementLogic, {
         };
         rightCornerTile.content = false;
       }
+
+      return skipPlacement;
     },
 
     pawnPromotion: function (oldTile, newTile, piece, playerTurn) {
