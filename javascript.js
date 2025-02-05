@@ -5,7 +5,7 @@ const centralData = {
   availableTiles: [],
   boardSaveStates: [],
 
-  blackCiv: "",
+  blackCiv: "zebras",
   whiteCiv: "",
 
   getTileObjXY: function (x, y) {
@@ -314,6 +314,55 @@ Object.assign(pieces, {
         },
       },
     },
+    //zebra
+    {
+      name: "zebra",
+      symbol: "z",
+      image: "./files/zebraBlack.svg",
+      player: "black",
+      movement: {
+        directions: [
+          [1, -3],
+          [3, -1],
+          [3, 1],
+          [1, 3],
+          [-1, 3],
+          [-3, 1],
+          [-3, -1],
+          [-1, -3],
+        ],
+        stepAmount: "1",
+        jump: true,
+        attack: "same as directions",
+        firstMove: false,
+        attack: "same as directions",
+      },
+    },
+    //elephant
+    {
+      name: "elephant",
+      symbol: "e",
+      image: "./files/elephantBlack.svg",
+      player: "black",
+      movement: {
+        directions: [
+          [1, 1],
+          [0, 1],
+          [-1, 1],
+          [-1, 0],
+          [-1, -1],
+          [0, -1],
+          [1, -1],
+          [1, 0],
+        ],
+        stepAmount: 1,
+        jump: false,
+        attack: {
+          directions: 0,
+        },
+        firstMove: false,
+      },
+    },
 
     // white pieces
     //rook
@@ -448,9 +497,60 @@ Object.assign(pieces, {
         },
       },
     },
+
+    //zebra
+    {
+      name: "zebra",
+      symbol: "z",
+      image: "./files/zebraWhite.svg",
+      player: "white",
+      movement: {
+        directions: [
+          [1, -3],
+          [3, -1],
+          [3, 1],
+          [1, 3],
+          [-1, 3],
+          [-3, 1],
+          [-3, -1],
+          [-1, -3],
+        ],
+        stepAmount: "1",
+        jump: true,
+        attack: "same as directions",
+        firstMove: false,
+        attack: "same as directions",
+      },
+    },
+    //elephant
+    {
+      name: "elephant",
+      symbol: "e",
+      image: "./files/elephantWhite.svg",
+      player: "white",
+      movement: {
+        directions: [
+          [1, 1],
+          [0, 1],
+          [-1, 1],
+          [-1, 0],
+          [-1, -1],
+          [0, -1],
+          [1, -1],
+          [1, 0],
+        ],
+        stepAmount: 1,
+        jump: false,
+        attack: {
+          directions: 0,
+        },
+        firstMove: false,
+      },
+    },
   ],
 
   placement: {
+    zebras: "KzKzKzKzzzzzzeee",
     castling: "QK     RRRRRRRRR",
 
     //pawnPromotion: "        PPPP    ",
@@ -820,6 +920,10 @@ Object.assign(movementLogic, {
   },
 
   calcAttack: function (movementData, tileObj, stepAmount) {
+    console.log(movementData.directions);
+    if (movementData.directions == 0) {
+      return;
+    }
     movementData.directions.forEach((direction) => {
       // make the currentTile equal tileObj, without linking the two
       currentTile = Object.assign({}, tileObj);
@@ -840,10 +944,12 @@ Object.assign(movementLogic, {
 
         //new tile is at least existing, lets check it out further
         let availableTileObj = this.getTileObjXY(newX, newY);
-
         if (!availableTileObj.content) {
           // if the tile is empty, just skip it and go check the next one!
-        } else if (availableTileObj.content.player == gamePlay.otherPlayer) {
+        } else if (
+          availableTileObj.content.player == gamePlay.otherPlayer &&
+          availableTileObj.content.name != "elephant"
+        ) {
           //if there is an enemy piece blocking the tile, make it available, and end that direction
           availableTileObj.available = "attack";
           break;
