@@ -1228,7 +1228,12 @@ const interface = {
   },
 
   undoLastMove: function () {
-    console.log(centralData.boardSaveStates);
+    let lastState = centralData.boardSaveStates.pop();
+    lastState.forEach((tile, index) => {
+      centralData.boardTilesArray[index].content = tile.content;
+    });
+    board.update();
+    gamePlay.switchTurn();
   },
 };
 
