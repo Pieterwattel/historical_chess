@@ -5,8 +5,8 @@ const centralData = {
   availableTiles: [],
   boardSaveStates: [],
 
-  blackCiv: "cannons",
-  whiteCiv: "castling",
+  blackCiv: "",
+  whiteCiv: "",
 
   getTileObjXY: function (x, y) {
     let array = this.boardTilesArray;
@@ -613,6 +613,26 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
+    //cannon
+    {
+      name: "cannon",
+      symbol: "c",
+      image: "./files/cannonWhite.svg",
+      player: "white",
+      movement: {
+        directions: [
+          [-1, 0],
+          [1, 0],
+        ],
+        stepAmount: 1,
+        jump: false,
+        attack: {
+          directions: [[0, -1]],
+          stepAmount: "continuous",
+        },
+        firstMove: false,
+      },
+    },
   ],
 
   placement: {
@@ -625,13 +645,13 @@ Object.assign(pieces, {
     mongols: "zNNNKNNzNN PP NN", // Nomadic cavalry dominance
     romans: "RRPKKPRReePPPPee", // Legion-based symmetry
     aztecs: " PQKQQP   PPPP  ", // Ritualistic battle lines
+    ottomans: "cBPPPPBcRPPeePPR",
 
     other1: "R B  B RN N  N N",
     other2: "B N  N BN B  B N",
     other3: " KKKKKK PPPPPPPP",
     other4: "KPPPPPPKPPPPPPPP",
-    cannons: "c c z  c c",
-    castling: "RK K   R",
+    other5: " NcbecN   NeNN ",
   },
 
   update: function (oldTile, newTile) {
