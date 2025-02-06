@@ -4,7 +4,6 @@ const centralData = {
   selectedTile: "",
   availableTiles: [],
   boardSaveStates: [],
-
   blackCiv: "",
   whiteCiv: "",
 
@@ -643,7 +642,6 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    random: "",
     standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
     america: "RNBbKBNRPPPPPPPP",
 
@@ -659,7 +657,7 @@ Object.assign(pieces, {
     other2: "B N  N BN B  B N",
     other3: " KKKKKK PPPPPPPP",
     other4: "KPPPPPPKPPPPPPPP",
-    other5: " NcbecN   NeNN ",
+    other5: " NcbzcN   NeeN ",
     other6: "  cbbc    eeee  ",
   },
 
@@ -1416,32 +1414,31 @@ Object.assign(preparation, {
     board.createTiles();
     board.appendTiles();
 
-    console.log(interface.setupSelection1.value);
-
-    let blackCiv = interface.setupSelection1.value;
-    let whiteCiv = interface.setupSelection2.value;
+    let blackCiv = centralData.blackCiv;
+    let whiteCiv = centralData.whiteCiv;
+    console.log(blackCiv);
 
     if (!blackCiv) {
-      let civs = Object.keys(pieces.placement);
+      let civs = Object.entries(pieces.placement);
       blackCiv = civs[Math.floor(Math.random() * civs.length)];
       console.log("black:");
       console.log(blackCiv);
     }
     if (!whiteCiv) {
-      let civs = Object.keys(pieces.placement);
+      let civs = Object.entries(pieces.placement);
       whiteCiv = civs[Math.floor(Math.random() * civs.length)];
       console.log("white:");
       console.log(whiteCiv);
     }
 
-    this.setupBoard(pieces.placement[blackCiv], pieces.placement[whiteCiv]);
+    this.setupBoard(blackCiv[1], whiteCiv[1]);
 
     // Call setupBoard on the preparation object
     board.update(); // Update the board
 
     this.history.startPlacement = {
-      black: pieces.placement[this.blackCiv],
-      white: pieces.placement[this.whiteCiv],
+      black: blackCiv,
+      white: whiteCiv,
     };
   },
 
@@ -1486,8 +1483,6 @@ Object.assign(preparation, {
 const interface = {
   undoMove: document.getElementById("undoMove"),
   resetBoard: document.getElementById("resetBoard"),
-  setupSelection1: "",
-  setupSelection2: "",
 
   addUIEventListeners: function () {
     undoMove.addEventListener("click", () => this.undoLastMove());
@@ -1547,23 +1542,39 @@ const interface = {
 
   addSetupOptions: function () {
     let setups = Object.entries(pieces.placement);
-    setupSelection1 = document.getElementById("setupSelection1");
-    setupSelection2 = document.getElementById("setupSelection2");
-    console.log(setups.length);
+    console.log(this);
 
-    j = 0;
-    for (let i = setups.length; i > 0; i--) {
+    let setupSelectionBlack = document.getElementById("setupSelection1");
+    let setupSelectionWhite = document.getElementById("setupSelection2");
+
+    setupSelectionBlack.addEventListener("change", (e) => {
+      const selectedOption = e.target.options[e.target.selectedIndex];
+      if (selectedOption.text == "random") {
+        centralData.blackCiv = "";
+      } else {
+        centralData.blackCiv = selectedOption.text;
+      }
+    });
+
+    setupSelectionWhite.addEventListener("change", (e) => {
+      const selectedOption = e.target.options[e.target.selectedIndex];
+      if (selectedOption.text == "random") {
+        centralData.whiteCiv = "";
+      } else {
+        centralData.whiteCiv = selectedOption.text;
+      }
+    });
+
+    for (let i = 0; i < setups.length; i++) {
       const option2 = document.createElement("option");
       const option1 = document.createElement("option");
-      setupSelection1.appendChild(option1);
-      setupSelection2.appendChild(option2);
-      option1.textContent = setups[j][0];
-      option2.textContent = setups[j][0];
+      setupSelectionBlack.appendChild(option1);
+      setupSelectionWhite.appendChild(option2);
+      option1.textContent = setups[i][0];
+      option2.textContent = setups[i][0];
 
-      option1.value = setups[j][1];
-      option2.value = setups[j][1];
-
-      j++;
+      option1.value = setups[i][1];
+      option2.value = setups[i][1];
     }
     /*
     for (j = 0; j <= themelength; j++) {
