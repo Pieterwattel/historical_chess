@@ -5,8 +5,8 @@ const centralData = {
   availableTiles: [],
   boardSaveStates: [],
 
-  blackCiv: "zebras",
-  whiteCiv: "",
+  blackCiv: "",
+  whiteCiv: "zebras",
 
   getTileObjXY: function (x, y) {
     let array = this.boardTilesArray;
@@ -363,6 +363,29 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
+    //bomb
+    {
+      name: "bomb",
+      symbol: "b",
+      image: "./files/bombBlack.svg",
+      player: "black",
+      movement: {
+        directions: [
+          [1, 1],
+          [0, 1],
+          [-1, 1],
+          [-1, 0],
+          [-1, -1],
+          [0, -1],
+          [1, -1],
+          [1, 0],
+        ],
+        stepAmount: 1,
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
+      },
+    },
 
     // white pieces
     //rook
@@ -547,10 +570,33 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
+    //bomb
+    {
+      name: "bomb",
+      symbol: "b",
+      image: "./files/bombWhite.svg",
+      player: "white",
+      movement: {
+        directions: [
+          [1, 1],
+          [0, 1],
+          [-1, 1],
+          [-1, 0],
+          [-1, -1],
+          [0, -1],
+          [1, -1],
+          [1, 0],
+        ],
+        stepAmount: 1,
+        jump: false,
+        attack: "same as directions",
+        firstMove: false,
+      },
+    },
   ],
 
   placement: {
-    zebras: "KzKzKzKzzzzzzeee",
+    zebras: "KzKzKzKzzzRRbbee",
     castling: "QK     RRRRRRRRR",
 
     //pawnPromotion: "        PPPP    ",
@@ -598,6 +644,10 @@ Object.assign(pieces, {
   },
 
   update: function (oldTile, newTile) {
+    if (!newTile.content.name) {
+      newTile.content = "";
+      return;
+    }
     //update amount of moves
     if (!newTile.content.hasMoved) {
       newTile.content.hasMoved = 1;
@@ -613,13 +663,13 @@ Object.assign(gamePlay, {
     let selectedTile = this.selectedTile;
     // deselect the piece if clicked twice
     if (clickedTileObj == selectedTile) {
-      this.deselectTile();
+      this.deselectTile(clickedTileObj);
       return;
     }
 
     // this is to make sure that only the pieces of the persons turn can be moved
     if (!selectedTile && clickedTileObj.content.player == this.otherPlayer) {
-      this.deselectTile();
+      this.deselectTile(clickedTileObj);
       return;
     }
 
@@ -631,9 +681,13 @@ Object.assign(gamePlay, {
       //also re-initiate the turn if this some other piece of the current playerTurn's
       clickedTileObj?.content?.player == this.playerTurn
     ) {
+      console.log(this.selectedTile);
+      if (this.selectedTile) {
+        this.deselectTile(this.selectedTile);
+      }
       this.startTurn(clickedTileObj);
     } else {
-      this.deselectTile();
+      this.deselectTile(clickedTileObj);
     }
 
     board.update();
@@ -700,6 +754,8 @@ Object.assign(gamePlay, {
   deselectTile: function (tile) {
     this.selectedTile = "";
     board.removeHighlights();
+    console.log(tile);
+    this.additions.checkSpecialDeselectEvent(tile);
   },
 
   switchTurn: function () {
@@ -760,6 +816,13 @@ Object.assign(gamePlay, {
           gamePlay.playerTurn
         );
 
+      if (piece.name == "bomb") {
+        console.log("yes");
+        for (let tile of centralData.boardTilesArray) {
+          tile.node.classList.remove("threatTile");
+        }
+      }
+
       return skipPlacement;
     },
 
@@ -767,6 +830,10 @@ Object.assign(gamePlay, {
       let previousMove = centralData.previousMoveData;
       let aboveYTile = centralData.getTileObjXY(newTile.x, newTile.y - 1);
       let belowYTile = centralData.getTileObjXY(newTile.x, newTile.y + 1);
+      let tileX = newTile.x;
+      let tileY = newTile.y;
+      let piece = newTile.content;
+      let oldPiece = oldTile.content;
 
       movementLogic.special.enPassantAttack(
         newTile,
@@ -774,6 +841,10 @@ Object.assign(gamePlay, {
         belowYTile,
         previousMove
       );
+
+      if (oldTile.content.name == "bomb") {
+        movementLogic.special.bombDetonation(newTile);
+      }
     },
 
     pawnPromotionPopup: function (newTile) {
@@ -826,6 +897,16 @@ Object.assign(gamePlay, {
         popup.remove();
         popupOverlay.remove();
         board.update();
+      }
+    },
+
+    checkSpecialDeselectEvent(tile) {
+      console.log(tile);
+      if (tile.content.name == "bomb") {
+        console.log("yes");
+        for (let tile of centralData.boardTilesArray) {
+          tile.node.classList.remove("threatTile");
+        }
       }
     },
   },
@@ -920,7 +1001,6 @@ Object.assign(movementLogic, {
   },
 
   calcAttack: function (movementData, tileObj, stepAmount) {
-    console.log(movementData.directions);
     if (movementData.directions == 0) {
       return;
     }
@@ -1256,6 +1336,48 @@ Object.assign(movementLogic, {
           gamePlay.additions.pawnPromotionPopup(newTile);
         }
       }
+    },
+
+    bombDetonation: function (newTile) {
+      let tilesArray = [
+        [-2, -2],
+        [-1, -2],
+        [0, -2],
+        [1, -2],
+        [2, -2],
+        [-2, -1],
+        [-1, -1],
+        [0, -1],
+        [1, -1],
+        [2, -1],
+        [-2, 0],
+        [-1, 0],
+        [1, 0],
+        [2, 0],
+        [-2, 1],
+        [-1, 1],
+        [0, 1],
+        [1, 1],
+        [2, 1],
+        [-2, 2],
+        [-1, 2],
+        [0, 2],
+        [1, 2],
+        [2, 2],
+      ];
+      tilesArray.forEach((coor) => {
+        let x = newTile.x + coor[0];
+        let y = newTile.y + coor[1];
+
+        if (!(x < 0 || x > 7 || y < 0 || y > 7)) {
+          let threatTile = centralData.getTileObjXY(x, y);
+          if (threatTile && threatTile.node) {
+            threatTile.content = "";
+          }
+        }
+        newTile.content = "";
+        newTile.content.name == "bomb";
+      });
     },
   },
 });
