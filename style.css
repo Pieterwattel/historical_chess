@@ -5,9 +5,12 @@ html {
   display: flex;
   align-content: center;
   justify-content: center;
+  background-image: url(./files/bg1.jpg);
+  background-size: cover;
 }
 
 #boardEdge {
+  margin-top: 3.5vh;
   height: min(90vh, 90vw);
   width: min(90vh, 90vw);
   padding: 0px;
@@ -20,7 +23,7 @@ html {
   grid-template-columns: repeat(8, 1fr);
   resize: both;
   border-radius: 1em;
-  box-shadow: 0px 0px 30px rgb(53, 52, 52);
+  box-shadow: 10px 10px 20px rgb(53, 52, 52);
 }
 
 #boardEdge div :hover {
