@@ -195,7 +195,7 @@ Object.assign(pieces, {
           [0, 1],
           [-1, 0],
         ],
-        stepAmount: "continuous",
+        stepAmount: 10,
         jump: false,
         attack: "same as directions",
         firstMove: false,
@@ -238,7 +238,7 @@ Object.assign(pieces, {
           [-1, -1],
           [1, -1],
         ],
-        stepAmount: "continuous",
+        stepAmount: 10,
         jump: false,
         attack: "same as directions",
         firstMove: false,
@@ -261,7 +261,7 @@ Object.assign(pieces, {
           [1, -1],
           [1, 0],
         ],
-        stepAmount: 1,
+        stepAmount: 10,
         jump: false,
         attack: "same as directions",
         firstMove: false,
@@ -284,7 +284,7 @@ Object.assign(pieces, {
           [1, -1],
           [1, 0],
         ],
-        stepAmount: "continuous",
+        stepAmount: 10,
         jump: false,
         attack: "same as directions",
         firstMove: false,
@@ -298,18 +298,18 @@ Object.assign(pieces, {
       player: "black",
       movement: {
         directions: [[0, 1]],
-        stepAmount: "1",
+        stepAmount: 1,
         jump: false,
         attack: {
           directions: [
             [1, 1],
             [-1, 1],
           ],
-          stepAmount: "1",
+          stepAmount: 1,
         },
         firstMove: {
           directions: [[0, 1]],
-          stepAmount: "2",
+          stepAmount: 2,
           jump: false,
         },
       },
@@ -331,7 +331,7 @@ Object.assign(pieces, {
           [-3, -1],
           [-1, -3],
         ],
-        stepAmount: "1",
+        stepAmount: 1,
         jump: true,
         attack: "same as directions",
         firstMove: false,
@@ -401,7 +401,7 @@ Object.assign(pieces, {
         jump: false,
         attack: {
           directions: [[0, 1]],
-          stepAmount: "continuous",
+          stepAmount: 10,
         },
         firstMove: false,
       },
@@ -421,7 +421,7 @@ Object.assign(pieces, {
           [0, 1],
           [-1, 0],
         ],
-        stepAmount: "continuous",
+        stepAmount: 10,
         jump: false,
         attack: "same as directions",
         firstMove: false,
@@ -444,7 +444,7 @@ Object.assign(pieces, {
           [-2, -1],
           [-1, -2],
         ],
-        stepAmount: "1",
+        stepAmount: 1,
         jump: true,
         attack: "same as directions",
         firstMove: false,
@@ -464,7 +464,7 @@ Object.assign(pieces, {
           [-1, -1],
           [1, -1],
         ],
-        stepAmount: "continuous",
+        stepAmount: 10,
         jump: false,
         attack: "same as directions",
         firstMove: false,
@@ -510,7 +510,7 @@ Object.assign(pieces, {
           [1, -1],
           [1, 0],
         ],
-        stepAmount: "continuous",
+        stepAmount: 10,
         jump: false,
         attack: "same as directions",
         firstMove: false,
@@ -524,18 +524,18 @@ Object.assign(pieces, {
       player: "white",
       movement: {
         directions: [[0, -1]],
-        stepAmount: "1",
+        stepAmount: 1,
         jump: false,
         attack: {
           directions: [
             [1, -1],
             [-1, -1],
           ],
-          stepAmount: "1",
+          stepAmount: 1,
         },
         firstMove: {
           directions: [[0, -1]],
-          stepAmount: "2",
+          stepAmount: 2,
           jump: false,
         },
       },
@@ -558,7 +558,7 @@ Object.assign(pieces, {
           [-3, -1],
           [-1, -3],
         ],
-        stepAmount: "1",
+        stepAmount: 1,
         jump: true,
         attack: "same as directions",
         firstMove: false,
@@ -628,7 +628,7 @@ Object.assign(pieces, {
         jump: false,
         attack: {
           directions: [[0, -1]],
-          stepAmount: "continuous",
+          stepAmount: 9,
         },
         firstMove: false,
       },
@@ -652,6 +652,7 @@ Object.assign(pieces, {
     other3: " KKKKKK PPPPPPPP",
     other4: "KPPPPPPKPPPPPPPP",
     other5: " NcbecN   NeNN ",
+    cannon: "cccccccc        ",
   },
 
   update: function (oldTile, newTile) {
@@ -763,7 +764,6 @@ Object.assign(gamePlay, {
   deselectTile: function (tile) {
     this.selectedTile = "";
     board.removeHighlights();
-    console.log(tile);
     this.additions.checkSpecialDeselectEvent(tile);
   },
 
@@ -912,9 +912,7 @@ Object.assign(gamePlay, {
     },
 
     checkSpecialDeselectEvent(tile) {
-      console.log(tile);
       if (tile.content.name == "bomb") {
-        console.log("yes");
         for (let tile of centralData.boardTilesArray) {
           tile.node.classList.remove("threatTile");
         }
@@ -958,10 +956,8 @@ Object.assign(movementLogic, {
   getStepAmountMv: function (piece) {
     if (Boolean(piece.movement.firstMove) && !piece.hasMoved) {
       return piece.movement.firstMove.stepAmount;
-    } else if (Number(piece.movement.stepAmount)) {
-      return piece.movement.stepAmount;
     } else {
-      return true;
+      return piece.movement.stepAmount;
     }
   },
 
@@ -971,12 +967,8 @@ Object.assign(movementLogic, {
       return piece.movement.firstMove.attack.stepAmount;
     } else if (piece.movement.attack?.stepAmount) {
       return piece.movement.attack.stepAmount;
-    } else if (Number(piece.movement.stepAmount)) {
-      console.log("yes");
-      return piece.movement.stepAmount;
     } else {
-      console.log("npo");
-      return true;
+      return piece.movement.stepAmount;
     }
   },
 
@@ -1492,6 +1484,10 @@ const interface = {
   },
 
   doResetBoard: function () {
+    centralData.boardEdgeNode.innerHTML = "";
+    preparation.initializeGame();
+
+    /*
     let blackCiv = centralData.blackCiv;
     let whiteCiv = centralData.whiteCiv;
 
@@ -1523,6 +1519,7 @@ const interface = {
     };
 
     gamePlay.playerTurn = "white";
+    */
   },
 };
 
