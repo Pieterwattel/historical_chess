@@ -970,6 +970,8 @@ Object.assign(movementLogic, {
       return piece.movement.firstMove.attack.stepAmount;
     } else if (piece.movement.attack?.stepAmount) {
       return true;
+    } else if (Number(piece.movement.stepAmount)) {
+      return piece.movement.stepAmount;
     } else {
       return true;
     }
