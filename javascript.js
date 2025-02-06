@@ -842,8 +842,8 @@ Object.assign(gamePlay, {
         previousMove
       );
 
-      if (oldTile.content.name == "bomb") {
-        movementLogic.special.bombDetonation(newTile);
+      if (oldTile.content.name == "bomb" || newTile.content.name == "bomb") {
+        movementLogic.special.bombDetonation(oldTile, newTile);
       }
     },
 
@@ -1338,7 +1338,7 @@ Object.assign(movementLogic, {
       }
     },
 
-    bombDetonation: function (newTile) {
+    bombDetonation: function (oldTile, newTile) {
       let tilesArray = [
         [-2, -2],
         [-1, -2],
@@ -1365,6 +1365,7 @@ Object.assign(movementLogic, {
         [1, 2],
         [2, 2],
       ];
+      oldTile.content = "";
       tilesArray.forEach((coor) => {
         let x = newTile.x + coor[0];
         let y = newTile.y + coor[1];
