@@ -6,6 +6,8 @@ const centralData = {
   boardSaveStates: [],
   blackCiv: "",
   whiteCiv: "",
+  civsTop: document.getElementById("civsTop"),
+  civsBottom: document.getElementById("civsBottom"),
 
   getTileObjXY: function (x, y) {
     let array = this.boardTilesArray;
@@ -645,18 +647,20 @@ Object.assign(pieces, {
     standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
     america: "RNBbKBNRPPPPPPPP",
 
-    french: " NQBBQN   P  P  ", // Bishop-heavy strategy
-    ww1: "PPPPPPPPeeeeeeee", // Trench warfare, symmetrical
+    france: " NQBBQN   P  P  ", // Bishop-heavy strategy
+    india1: "PNBQKBNPPePPPPeP",
+    india2: "PPPPPPPPePePPePe", // Trench warfare, symmetrical
 
     mongols: "zNNNKNNzNN PP NN", // Nomadic cavalry dominance
     romans: "RRPKKPRReePPPPee", // Legion-based symmetry
     aztecs: " PQKQQP   PPPP  ", // Ritualistic battle lines
-    ottomans: "cBPPPPBcRPPPPPPR",
+    ottomans: "PBPPPPBcRPPPPPPR",
+    rome: "BcBKbBcBPPPPPPPP",
 
-    other1: "R B  B RN N  N N",
-    other2: "B N  N BN B  B N",
-    other3: " KKKKKK PPPPPPPP",
-    other4: "KPPPPPPKPPPPPPPP",
+    spreadOut1: "R B  B RN N  N N",
+    spreadOut2: "B N  N BN B  B N",
+    crusade: " KKKKKK PPPPPPPP",
+    defensiveLine: "KPPPPPPKPPPPPPPP",
     other5: " NcbzcN   NeeN ",
     other6: "  cbbc    eeee  ",
   },
