@@ -261,7 +261,7 @@ Object.assign(pieces, {
           [1, -1],
           [1, 0],
         ],
-        stepAmount: 10,
+        stepAmount: 1,
         jump: false,
         attack: "same as directions",
         firstMove: false,
