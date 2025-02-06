@@ -1,25 +1,34 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
-    <m4eta charset="utf-8">
-        <title>HTML boilerplate</title>
-        <link rel="stylesheet" href="./style.css">
-        <script src="./javascript.js" defer></script>
+    <meta charset="utf-8">
+    <title>HTML boilerplate</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./javascript.js" defer></script>
 </head>
 
 <body>
 
-    <div id="boardEdge">
+    <div id="centralContainer">
+        <div class="userInterface top">
+            <select name="select set-up" id="setupSelection1" class="top">
+            </select>
+        </div>
+        <div id="boardEdge">
+            <!-- content -->
+        </div>
+        <div class="userInterface bottom">
+            <div>
+                <button id="stopGame" class='bottom'>Toggle random moves</button>
+                <button id="undoMove" class='bottom'>undo move</button>
+                <button id="resetBoard" class='bottom'>re-set board</button>
+            </div>
+            <select name="select set-up" id="setupSelection2" class='bottom'>
+            </select>
+        </div>
     </div>
 
-    <div id="userInterface">
-        <button id=stopGame>Toggle random moves</button>
-        <button id="undoMove">undo move</button>
-        <button id="resetBoard">reset board</button>
-    </div>
-    </div>
 </body>
 
 </html>

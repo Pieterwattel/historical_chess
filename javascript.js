@@ -643,6 +643,7 @@ Object.assign(pieces, {
   ],
 
   placement: {
+    random: "",
     standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
     america: "RNBbKBNRPPPPPPPP",
 
@@ -1415,8 +1416,10 @@ Object.assign(preparation, {
     board.createTiles();
     board.appendTiles();
 
-    let blackCiv = centralData.blackCiv;
-    let whiteCiv = centralData.whiteCiv;
+    console.log(interface.setupSelection1.value);
+
+    let blackCiv = interface.setupSelection1.value;
+    let whiteCiv = interface.setupSelection2.value;
 
     if (!blackCiv) {
       let civs = Object.keys(pieces.placement);
@@ -1474,11 +1477,17 @@ Object.assign(preparation, {
       t--;
     }
   },
+
+  makeUI: function () {
+    interface.addSetupOptions();
+  },
 });
 
 const interface = {
   undoMove: document.getElementById("undoMove"),
   resetBoard: document.getElementById("resetBoard"),
+  setupSelection1: "",
+  setupSelection2: "",
 
   addUIEventListeners: function () {
     undoMove.addEventListener("click", () => this.undoLastMove());
@@ -1535,11 +1544,42 @@ const interface = {
 
     gamePlay.playerTurn = "white";
   },
+
+  addSetupOptions: function () {
+    let setups = Object.entries(pieces.placement);
+    setupSelection1 = document.getElementById("setupSelection1");
+    setupSelection2 = document.getElementById("setupSelection2");
+    console.log(setups.length);
+
+    j = 0;
+    for (let i = setups.length; i > 0; i--) {
+      const option2 = document.createElement("option");
+      const option1 = document.createElement("option");
+      setupSelection1.appendChild(option1);
+      setupSelection2.appendChild(option2);
+      option1.textContent = setups[j][0];
+      option2.textContent = setups[j][0];
+
+      option1.value = setups[j][1];
+      option2.value = setups[j][1];
+
+      j++;
+    }
+    /*
+    for (j = 0; j <= themelength; j++) {
+      const option = document.createElement("option");
+      themeSelection.appendChild(option);
+      option.textContent = themes[j].name;
+      option.value = j;
+    }
+    */
+  },
 };
 
 // Call initializeGame to start
 let startGame = (function () {
   preparation.initializeGame();
+  preparation.makeUI();
   // doTimeout();
 })();
 
