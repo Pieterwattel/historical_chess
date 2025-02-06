@@ -652,7 +652,6 @@ Object.assign(pieces, {
     other3: " KKKKKK PPPPPPPP",
     other4: "KPPPPPPKPPPPPPPP",
     other5: " NcbecN   NeNN ",
-    cannon: "cccccccc        ",
   },
 
   update: function (oldTile, newTile) {
@@ -675,12 +674,13 @@ Object.assign(gamePlay, {
     let selectedTile = this.selectedTile;
     // deselect the piece if clicked twice
     if (clickedTileObj == selectedTile) {
+      console.log("if1");
       this.deselectTile(clickedTileObj);
       return;
     }
 
     // this is to make sure that only the pieces of the persons turn can be moved
-    if (!selectedTile && clickedTileObj.content.player == this.otherPlayer) {
+    if (!selectedTile && clickedTileObj.content.player != this.playerTurn) {
       this.deselectTile(clickedTileObj);
       return;
     }
@@ -1478,16 +1478,17 @@ const interface = {
     let lastState = centralData.boardSaveStates.pop();
     lastState.forEach((tile, index) => {
       centralData.boardTilesArray[index].content = tile.content;
+      centralData.boardTilesArray[index].available = "";
     });
     board.update();
     gamePlay.switchTurn();
   },
 
   doResetBoard: function () {
-    centralData.boardEdgeNode.innerHTML = "";
-    preparation.initializeGame();
+    centralData.lostPieces = [];
+    centralData.selectedTile = "";
+    centralData.availableTiles = [];
 
-    /*
     let blackCiv = centralData.blackCiv;
     let whiteCiv = centralData.whiteCiv;
 
@@ -1503,6 +1504,7 @@ const interface = {
     }
     for (tile of centralData.boardTilesArray) {
       tile.content = "";
+      tile.available = "";
     }
 
     preparation.setupBoard(
@@ -1519,7 +1521,6 @@ const interface = {
     };
 
     gamePlay.playerTurn = "white";
-    */
   },
 };
 
