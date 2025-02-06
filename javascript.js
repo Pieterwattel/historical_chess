@@ -5,8 +5,8 @@ const centralData = {
   availableTiles: [],
   boardSaveStates: [],
 
-  blackCiv: "",
-  whiteCiv: "zebras",
+  blackCiv: "twoBombs",
+  whiteCiv: "rooks",
 
   getTileObjXY: function (x, y) {
     let array = this.boardTilesArray;
@@ -596,51 +596,26 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    zebras: "KzKzKzKzzzRRbbee",
-    castling: "QK     RRRRRRRRR",
-
-    //pawnPromotion: "        PPPP    ",
-
     standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    america: "RNBbKBNRPPPPPPPP",
 
     french: " NQBBQN   P  P  ", // Bishop-heavy strategy
-    ww1: "PPPPPPPPPPPPPPPP", // Trench warfare, symmetrical
+    ww1: "PPPPPPPPeeeeeeee", // Trench warfare, symmetrical
 
-    mongols: "NNNKKNNNPNPNPNPN", // Nomadic cavalry dominance
+    mongols: "zNNNKNNzNN PP NN", // Nomadic cavalry dominance
     romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
     aztecs: " PQKQQP   PPPP  ", // Ritualistic battle lines
 
     french: " NQBBQN   P  P  ", // Bishop-heavy strategy
     sparta: " BQQKQB  PPPPPP", // Strong phalanx formation
 
-    vikings: "RBBKBBRPPPPPPPP", // Shield wall, heavy frontline
-    samurai: " NNQKQNNPPPPPPPP", // Honor-based cavalry
-    egyptians: "QQBBKBBQQPPPPPP ", // Pharaoh & divine influence
-    persians: "RNQKQNR PPPPPPPP", // Strategic, cavalry-driven
-    byzantines: "BNRKQRNBPPPPPPPP", // Eastern-Western hybrid
-    zulu: " NNKKNN PPPPPPPP", // Agile, fast-moving warriors
-    ottomans: "RNBKQBNRPPPPPPPP", // Elite Janissary focus
-    celts: "NQBBQNNPPPPPPPP", // Guerrilla tactics, druidic power
-    chinese: "BBQKQBBPPPPPPPP", // Strategic elephants, rigid lines
-
-    napoleon: " R B K Q B R PPPP ", // Artillery + disciplined army
-    huns: "NNNNNNNN PPPPPP ", // Pure cavalry, fast attacks
-    mayans: " P K P  QQQQQQ ", // Ritualistic center control
-    crusaders: "R KQK  R  PPPP  ", // Heavy knight-based force
-    templars: "  K Q K R RPPP  ", // Religious and militaristic
-    pirates: "    QK   RRRPPP ", // Ship formations, chaotic
-    redcoats: " RNKQKNR PPPPPP  ", // British line infantry
-    mongol_horde: "NNKKNNNN PPPPPP ", // Pure mounted archery dominance
-    spartacus: "   KQQQ   PPPPPP ", // Slave uprising, sudden power
-    attila: " NNQKQNN PPPPPPPP ", // Unpredictable barbarian charge
-    carthage: "  R QKQ R PPPPP  ", // Elephants & naval strategy
-    normans: " RNKQBNR PPPPPPPP ", // Knight-based feudal power
-    holy_roman: "B KQK  B  PPPP  ", // Church & state influence
-    cossacks: "NN KQ NN  PPPP  ", // Highly mobile raiders
-    ragnarok: "QQ K  QQ  PPPP  ", // Norse myth, end-of-days chaos
     other1: "R B  B RN N  N N",
     other2: "B N  N BN B  B N",
     other3: " KKKPPP  KKKPPP ",
+    other4: "KPPPPPPKPPPPPPPP",
+
+    twoBombs: "PPPPPPPPPPPbPbPP",
+    rooks: "RRRRRRRR",
   },
 
   update: function (oldTile, newTile) {
@@ -1365,7 +1340,9 @@ Object.assign(movementLogic, {
         [1, 2],
         [2, 2],
       ];
-      oldTile.content = "";
+      if (oldTile?.content) {
+        oldTile.content = "";
+      }
       tilesArray.forEach((coor) => {
         let x = newTile.x + coor[0];
         let y = newTile.y + coor[1];
@@ -1373,6 +1350,9 @@ Object.assign(movementLogic, {
         if (!(x < 0 || x > 7 || y < 0 || y > 7)) {
           let threatTile = centralData.getTileObjXY(x, y);
           if (threatTile && threatTile.node) {
+            if (threatTile.content.name == "bomb") {
+              this.bombDetonation("", threatTile);
+            }
             threatTile.content = "";
           }
         }
@@ -1447,8 +1427,6 @@ Object.assign(preparation, {
       t--;
     }
   },
-
-  resetBoard: function () {},
 });
 
 const interface = {
@@ -1470,9 +1448,6 @@ const interface = {
   },
 
   doResetBoard: function () {
-    for (tile in centralData.boardTilesArray) {
-      tile.content = "";
-    }
     let blackCiv = centralData.blackCiv;
     let whiteCiv = centralData.whiteCiv;
 
@@ -1485,6 +1460,9 @@ const interface = {
       let civs = Object.keys(pieces.placement);
       whiteCiv = civs[Math.floor(Math.random() * civs.length)];
       console.log(whiteCiv);
+    }
+    for (tile of centralData.boardTilesArray) {
+      tile.content = "";
     }
 
     preparation.setupBoard(
@@ -1499,6 +1477,8 @@ const interface = {
       black: pieces.placement[centralData.blackCiv],
       white: pieces.placement[centralData.whiteCiv],
     };
+
+    gamePlay.playerTurn = "white";
   },
 };
 
