@@ -141,7 +141,14 @@ Object.assign(board, {
       else {
         tileObj.node.innerHTML = "";
       }
+      //if the tileObj does not say "move" or "attack", remove those classes
+      if (tileObj.node.classList.contains("highlightMove")) {
+        tileObj.node.classList.remove("highlightMove");
+      } else if (tileObj.node.classList.contains("highlightAttack")) {
+        tileObj.node.classList.remove("highlightAttack");
+      }
     });
+    this.addHighlights();
   },
 
   appendTiles: function () {
@@ -645,13 +652,14 @@ Object.assign(pieces, {
     mongols: "zNNNKNNzNN PP NN", // Nomadic cavalry dominance
     romans: "RRPKKPRReePPPPee", // Legion-based symmetry
     aztecs: " PQKQQP   PPPP  ", // Ritualistic battle lines
-    ottomans: "cBPPPPBcRPPeePPR",
+    ottomans: "cBPPPPBcRPPPPPPR",
 
     other1: "R B  B RN N  N N",
     other2: "B N  N BN B  B N",
     other3: " KKKKKK PPPPPPPP",
     other4: "KPPPPPPKPPPPPPPP",
     other5: " NcbecN   NeNN ",
+    other6: "  cbbc    eeee  ",
   },
 
   update: function (oldTile, newTile) {
@@ -734,6 +742,7 @@ Object.assign(gamePlay, {
     this.addMoveToHistory(oldTile, newTile);
     centralData.selectedTile = "";
     board.removeHighlights();
+
     this.switchTurn();
 
     //save the move in history of moves
@@ -1412,11 +1421,13 @@ Object.assign(preparation, {
     if (!blackCiv) {
       let civs = Object.keys(pieces.placement);
       blackCiv = civs[Math.floor(Math.random() * civs.length)];
+      console.log("black:");
       console.log(blackCiv);
     }
     if (!whiteCiv) {
       let civs = Object.keys(pieces.placement);
       whiteCiv = civs[Math.floor(Math.random() * civs.length)];
+      console.log("white:");
       console.log(whiteCiv);
     }
 
@@ -1495,11 +1506,13 @@ const interface = {
     if (!blackCiv) {
       let civs = Object.keys(pieces.placement);
       blackCiv = civs[Math.floor(Math.random() * civs.length)];
+      console.log("black:");
       console.log(blackCiv);
     }
     if (!whiteCiv) {
       let civs = Object.keys(pieces.placement);
       whiteCiv = civs[Math.floor(Math.random() * civs.length)];
+      console.log("white:");
       console.log(whiteCiv);
     }
     for (tile of centralData.boardTilesArray) {
@@ -1582,4 +1595,55 @@ function makeMove(player) {
       gamePlay.checkTileAction(availableArray[randomTileIndex]);
     }
   }
+}
+
+function getValue(civName) {
+  let setup = pieces.placement[civName];
+  let acc = 0;
+
+  for (let i = setup.length - 1; i >= 0; i--) {
+    let symbol = setup.at(i);
+    switch (symbol) {
+      case "P":
+        acc += 1;
+        break;
+
+      case "R":
+        acc += 5;
+        break;
+
+      case "N":
+        acc += 3;
+        break;
+
+      case "B":
+        acc += 3;
+        break;
+
+      case "K":
+        acc += 2;
+        break;
+
+      case "Q":
+        acc += 9;
+        break;
+
+      case "e":
+        acc += 3;
+        break;
+
+      case "z":
+        acc += 5;
+        break;
+
+      case "c":
+        acc += 3;
+        break;
+
+      case "b":
+        acc += 3;
+        break;
+    }
+  }
+  console.log(`value of ${civName} is around ${acc} points`);
 }
