@@ -5,8 +5,8 @@ const centralData = {
   availableTiles: [],
   boardSaveStates: [],
 
-  blackCiv: "twoBombs",
-  whiteCiv: "rooks",
+  blackCiv: "cannons",
+  whiteCiv: "castling",
 
   getTileObjXY: function (x, y) {
     let array = this.boardTilesArray;
@@ -386,6 +386,26 @@ Object.assign(pieces, {
         firstMove: false,
       },
     },
+    //cannon
+    {
+      name: "cannon",
+      symbol: "c",
+      image: "./files/cannonBlack.svg",
+      player: "black",
+      movement: {
+        directions: [
+          [-1, 0],
+          [1, 0],
+        ],
+        stepAmount: 1,
+        jump: false,
+        attack: {
+          directions: [[0, 1]],
+          stepAmount: "continuous",
+        },
+        firstMove: false,
+      },
+    },
 
     // white pieces
     //rook
@@ -603,19 +623,15 @@ Object.assign(pieces, {
     ww1: "PPPPPPPPeeeeeeee", // Trench warfare, symmetrical
 
     mongols: "zNNNKNNzNN PP NN", // Nomadic cavalry dominance
-    romans: "RNRKKRNRPPPBBPPP", // Legion-based symmetry
+    romans: "RRPKKPRReePPPPee", // Legion-based symmetry
     aztecs: " PQKQQP   PPPP  ", // Ritualistic battle lines
-
-    french: " NQBBQN   P  P  ", // Bishop-heavy strategy
-    sparta: " BQQKQB  PPPPPP", // Strong phalanx formation
 
     other1: "R B  B RN N  N N",
     other2: "B N  N BN B  B N",
-    other3: " KKKPPP  KKKPPP ",
+    other3: " KKKKKK PPPPPPPP",
     other4: "KPPPPPPKPPPPPPPP",
-
-    twoBombs: "PPPPPPPPPPPbPbPP",
-    rooks: "RRRRRRRR",
+    cannons: "c c z  c c",
+    castling: "RK K   R",
   },
 
   update: function (oldTile, newTile) {
@@ -705,19 +721,17 @@ Object.assign(gamePlay, {
 
   placePiece: function (oldTile, newTile) {
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
-    let skipPlacement = this.additions.checkSpecialPlacementEvent(
-      oldTile,
-      newTile
-    );
+    this.additions.checkSpecialPlacementEvent(oldTile, newTile);
 
-    console.log(skipPlacement);
-    if (!skipPlacement) {
+    console.log(this.skipPlacement);
+    if (!this.skipPlacement) {
       newTile.content = {
         ...oldTile.content,
       };
 
       oldTile.content = "";
     }
+    this.skipPlacement = false;
   },
 
   doAttack: function (oldTile, newTile) {
@@ -777,13 +791,12 @@ Object.assign(gamePlay, {
     checkSpecialPlacementEvent: function (oldTile, newTile) {
       let piece = oldTile.content;
 
-      let skipPlacement =
-        movementLogic.special.castlingPlacement(
-          oldTile,
-          newTile,
-          piece,
-          gamePlay.playerTurn
-        ) ||
+      movementLogic.special.castlingPlacement(
+        oldTile,
+        newTile,
+        piece,
+        gamePlay.playerTurn
+      ) ||
         movementLogic.special.pawnPromotion(
           oldTile,
           newTile,
@@ -797,8 +810,6 @@ Object.assign(gamePlay, {
           tile.node.classList.remove("threatTile");
         }
       }
-
-      return skipPlacement;
     },
 
     checkSpecialAttackEvent: function (oldTile, newTile) {
@@ -819,6 +830,11 @@ Object.assign(gamePlay, {
 
       if (oldTile.content.name == "bomb" || newTile.content.name == "bomb") {
         movementLogic.special.bombDetonation(oldTile, newTile);
+      }
+
+      if (oldTile.content.name == "cannon") {
+        console.log("yas");
+        gamePlay.skipPlacement = true;
       }
     },
 
@@ -888,6 +904,8 @@ Object.assign(gamePlay, {
 
   playerTurn: "white",
   otherPlayer: "black",
+
+  skipPlacement: false,
 });
 
 Object.assign(movementLogic, {
@@ -928,9 +946,13 @@ Object.assign(movementLogic, {
   },
 
   getStepAmountAtk: function (piece) {
-    return !piece.hasMoved && piece.movement.firstMove?.attack?.stepAmount
-      ? piece.movement.firstMove.attack.stepAmount
-      : Number(piece.movement.stepAmount) || true;
+    if (!piece.hasMoved && piece.movement.firstMove?.attack?.stepAmount) {
+      return piece.movement.firstMove.attack.stepAmount;
+    } else if (piece.movement.attack?.stepAmount) {
+      return true;
+    } else {
+      return true;
+    }
   },
 
   calcMovement: function (movementData, tileObj, stepAmount) {
@@ -1234,9 +1256,8 @@ Object.assign(movementLogic, {
     },
 
     castlingPlacement: function (oldTile, newTile, piece, playerTurn) {
-      let skipPlacement = false;
       if (piece.name != "king") {
-        return skipPlacement;
+        return;
       }
 
       //select first row
@@ -1255,7 +1276,7 @@ Object.assign(movementLogic, {
         // first checking of the king is adjacent to the corner piece
         oldTile.content = newTile.content;
         newTile.content = { ...piece };
-        skipPlacement = true;
+        gamePlay.skipPlacement = true;
       } else if (oldTile.x - newTile.x == 2) {
         let cornerPieceNewTile = centralData.getTileObjXY(
           oldTile.x - 1,
@@ -1272,7 +1293,7 @@ Object.assign(movementLogic, {
         // first checking of the king is adjacent to the corner piece
         oldTile.content = newTile.content;
         newTile.content = { ...piece };
-        skipPlacement = true;
+        gamePlay.skipPlacement = true;
       } else if (oldTile.x - newTile.x == -2) {
         let cornerPieceNewTile = centralData.getTileObjXY(
           oldTile.x + 1,
@@ -1283,8 +1304,6 @@ Object.assign(movementLogic, {
         };
         rightCornerTile.content = false;
       }
-
-      return skipPlacement;
     },
 
     pawnPromotion: function (oldTile, newTile, piece, playerTurn) {
