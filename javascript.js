@@ -966,13 +966,16 @@ Object.assign(movementLogic, {
   },
 
   getStepAmountAtk: function (piece) {
+    console.log("hm");
     if (!piece.hasMoved && piece.movement.firstMove?.attack?.stepAmount) {
       return piece.movement.firstMove.attack.stepAmount;
     } else if (piece.movement.attack?.stepAmount) {
-      return true;
+      return piece.movement.attack.stepAmount;
     } else if (Number(piece.movement.stepAmount)) {
+      console.log("yes");
       return piece.movement.stepAmount;
     } else {
+      console.log("npo");
       return true;
     }
   },
