@@ -6,6 +6,8 @@ const centralData = {
   boardSaveStates: [],
   blackCiv: "",
   whiteCiv: "",
+  blackCivSetup: "",
+  whiteCivSetup: "",
   civsTop: document.getElementById("civsTop"),
   civsBottom: document.getElementById("civsBottom"),
 
@@ -747,6 +749,8 @@ Object.assign(gamePlay, {
     centralData.selectedTile = "";
     board.removeHighlights();
 
+    this.checkWinConditions();
+
     this.switchTurn();
 
     //save the move in history of moves
@@ -793,7 +797,12 @@ Object.assign(gamePlay, {
     }
   },
 
-  checkWinCondition: function () {},
+  checkWinConditions: function () {
+    let blackStartedWithKing = centralData.blackCivSetup.includes("K");
+    let whiteStartedWithKing = centralData.whiteCivSetup.includes("K");
+    console.log(blackStartedWithKing);
+    console.log(whiteStartedWithKing);
+  },
 
   additions: {
     checkSpecialStartEvent: function (clickedTile) {
@@ -1420,7 +1429,6 @@ Object.assign(preparation, {
 
     let blackCiv = centralData.blackCiv;
     let whiteCiv = centralData.whiteCiv;
-    console.log(blackCiv);
 
     if (!blackCiv) {
       let civs = Object.entries(pieces.placement);
@@ -1457,6 +1465,8 @@ Object.assign(preparation, {
   // iterates at equal pace through the tiles on the board, and
   // the order of pieces.placement, and connects the 2
   setupBoard: function (blackSetup, whiteSetup) {
+    centralData.blackCivSetup = blackSetup;
+    centralData.whiteCivSetup = whiteSetup;
     //setup black pieces
     let i = 0;
     let t = 0;
