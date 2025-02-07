@@ -800,8 +800,33 @@ Object.assign(gamePlay, {
   checkWinConditions: function () {
     let blackStartedWithKing = centralData.blackCivSetup.includes("K");
     let whiteStartedWithKing = centralData.whiteCivSetup.includes("K");
-    console.log(blackStartedWithKing);
-    console.log(whiteStartedWithKing);
+
+    if (whiteStartedWithKing || blackStartedWithKing) {
+      let blackHasKing = false;
+      let whiteHasKing = false;
+      centralData.boardTilesArray.forEach((tile) => {
+        let piece = tile.content;
+        if (piece.name == "king" && piece.player == "black") {
+          blackHasKing = true;
+        }
+
+        if (piece.name == "king" && piece.player == "white") {
+          whiteHasKing = true;
+        }
+      });
+      if (
+        !blackHasKing &&
+        blackStartedWithKing &&
+        !whiteHasKing &&
+        whiteStartedWithKing
+      ) {
+        interface.showGameConclusionPopup("draw");
+      } else if (!blackHasKing && blackStartedWithKing) {
+        interface.showGameConclusionPopup("white");
+      } else if (!whiteHasKing && whiteStartedWithKing) {
+        interface.showGameConclusionPopup("black");
+      }
+    }
   },
 
   additions: {
