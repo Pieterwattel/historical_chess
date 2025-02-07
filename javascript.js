@@ -4,8 +4,8 @@ const centralData = {
   selectedTile: "",
   availableTiles: [],
   boardSaveStates: [],
-  blackCiv: "bbbbbbbb",
-  whiteCiv: "PPcccccc        ",
+  blackCiv: "",
+  whiteCiv: "",
   civsTop: document.getElementById("civsTop"),
   civsBottom: document.getElementById("civsBottom"),
 
@@ -661,8 +661,9 @@ Object.assign(pieces, {
     spreadOut2: "B N  N BN B  B N",
     crusade: " KKKKKK PPPPPPPP",
     defensiveLine: "KPPPPPPKPPPPPPPP",
-    other5: " NcbzcN   NeeN ",
-    other6: "  cbbc    eeee  ",
+    other1: " NcbzcN   NeeN ",
+    other2: "  cbbc    eeee  ",
+    other3: "R  bQ  R ePPPPe ",
   },
 
   update: function (oldTile, newTile) {
@@ -791,6 +792,8 @@ Object.assign(gamePlay, {
         this.otherPlayer = "black";
     }
   },
+
+  checkWinCondition: function () {},
 
   additions: {
     checkSpecialStartEvent: function (clickedTile) {
@@ -1592,6 +1595,40 @@ const interface = {
       option.value = j;
     }
     */
+  },
+
+  showGameConclusionPopup(winner) {
+    let popup = document.createElement("div");
+    popup.setAttribute("id", "popup");
+    popup.setAttribute("class", "gameConclusion");
+
+    if (winner == "draw") {
+      popup.textContent = "DRAW";
+    } else {
+      popup.textContent = `${winner.toUpperCase()} WON`;
+    }
+
+    console.log(popup);
+    board.boardEdgeNode.appendChild(popup);
+
+    let closeBtn = document.createElement("button");
+    closeBtn.textContent = "close";
+    popup.appendChild(closeBtn);
+
+    closeBtn.addEventListener("click", () => {
+      closePopup();
+    });
+
+    let popupOverlay = document.createElement("div");
+    popupOverlay.setAttribute("id", "popupOverlay");
+    document.body.appendChild(popupOverlay);
+
+    //and the mechanic to place the chosen piece (again, I'm not completely happy with this code)
+    function closePopup() {
+      popup.remove();
+      popupOverlay.remove();
+      board.update();
+    }
   },
 };
 

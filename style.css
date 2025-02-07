@@ -6,7 +6,7 @@ html {
   align-content: center;
   justify-content: center;
   background-image: url(./files/bg1.jpg);
-  background-size: 200vh;
+  background-size: 230vh;
 }
 
 #centralContainer {
@@ -115,6 +115,19 @@ html {
   gap: 0.8rem;
 }
 
+#popup.gameConclusion {
+  font-size: 5vh;
+  font-weight: 700;
+  font-family: "Courier New", Courier, monospace;
+  flex-direction: column;
+  background-color: rgba(100, 100, 100, 0.5);
+  box-shadow: inset 0 0 10px black;
+}
+
+#popup.gameConclusion button {
+  border-radius: 0.5em;
+}
+
 #popup img {
   height: min(10vw, 10vh);
   width: min(10vw, 10vh);
@@ -153,6 +166,9 @@ html {
 button,
 select {
   background-color: rgb(127, 145, 122);
+  max-width: fit-content;
+  padding-left: 9px;
+  padding-right: 9px;
 }
 button:hover,
 select:hover {
