@@ -1186,11 +1186,10 @@ Object.assign(movementLogic, {
           !Boolean(leftCornerTile.content.hasMoved) &&
           Boolean(leftCornerTile.content)
         ) {
-          console.log("yes");
           //if piece in right corner has NOT moved
 
           //check all tiles from the left until you find a king
-          for (let x = 0; x >= 6; x++) {
+          for (let x = 1; x <= 6; x++) {
             let currentTile = centralData.getTileObjXY(x, y);
             if (
               currentTile.content.name != "king" &&
