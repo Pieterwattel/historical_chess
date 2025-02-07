@@ -5,7 +5,7 @@ const centralData = {
   availableTiles: [],
   boardSaveStates: [],
   blackCiv: "",
-  whiteCiv: "",
+  whiteCiv: "RK K   R        ",
   civsTop: document.getElementById("civsTop"),
   civsBottom: document.getElementById("civsBottom"),
 
@@ -1184,13 +1184,13 @@ Object.assign(movementLogic, {
         //check left castling availability
         if (
           !Boolean(leftCornerTile.content.hasMoved) &&
-          Boolean(leftCornerTile.content) &&
-          leftCornerTile.content.player == gamePlay.playerTurns
+          Boolean(leftCornerTile.content)
         ) {
-          //if piece in left corner has NOT moved
+          console.log("yes");
+          //if piece in right corner has NOT moved
 
           //check all tiles from the left until you find a king
-          for (let x = 1; x <= 6; x++) {
+          for (let x = 0; x >= 6; x++) {
             let currentTile = centralData.getTileObjXY(x, y);
             if (
               currentTile.content.name != "king" &&
@@ -1208,8 +1208,7 @@ Object.assign(movementLogic, {
 
             if (currentTile.content.name == "king") {
               //now we have found a king, with all empty tiles on left side,
-              //and a piece in the left corner that has not moved              console.log(currentTile);
-
+              //and a piece in the left corner that has not moved
               let king = currentTile.content;
               //if that king has not moved yet
               if (!Boolean(king.hasMoved)) {
@@ -1217,14 +1216,13 @@ Object.assign(movementLogic, {
                   currentTile.x - 2,
                   currentTile.y
                 );
-                //get the adjacent corner tile, when the king is next to the corner piece
+
                 if (!castleTile) {
                   castleTile = centralData.getTileObjXY(
-                    currentTile.x - 1,
+                    currentTile.x + 1,
                     currentTile.y
                   );
                 }
-
                 castleTile.available = "move";
               }
               break;
@@ -1426,13 +1424,20 @@ Object.assign(preparation, {
       let civs = Object.entries(pieces.placement);
       blackCiv = civs[Math.floor(Math.random() * civs.length)];
       console.log("black:");
-      console.log(blackCiv);
+      console.log(blackCiv[0]);
+    } else {
+      //make it possible to change the setup variable directly for debugging
+      blackCiv = [0, centralData.blackCiv];
     }
+
     if (!whiteCiv) {
       let civs = Object.entries(pieces.placement);
       whiteCiv = civs[Math.floor(Math.random() * civs.length)];
       console.log("white:");
       console.log(whiteCiv);
+    } else {
+      //make it possible to change the setup variable directly for debugging
+      whiteCiv = [0, centralData.whiteCiv];
     }
 
     this.setupBoard(blackCiv[1], whiteCiv[1]);
