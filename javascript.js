@@ -57,7 +57,6 @@ const centralData = {
   },
 
   saveBoardState: function (boardArray) {
-    console.log(boardArray);
     this.boardSaveStates.push(JSON.parse(JSON.stringify(boardArray)));
   },
 };
@@ -735,6 +734,7 @@ Object.assign(gamePlay, {
     let oldTile = this.selectedTile;
     let newTile = clickedTile;
     //either move to the tile
+
     if (newTile.available == "move") {
       this.placePiece(oldTile, newTile);
     } else if (
@@ -744,6 +744,7 @@ Object.assign(gamePlay, {
       this.doAttack(oldTile, newTile);
       this.placePiece(oldTile, newTile);
     }
+
     pieces.update(oldTile, newTile);
     this.addMoveToHistory(oldTile, newTile);
     centralData.selectedTile = "";
@@ -825,6 +826,27 @@ Object.assign(gamePlay, {
         interface.showGameConclusionPopup("white");
       } else if (!whiteHasKing && whiteStartedWithKing) {
         interface.showGameConclusionPopup("black");
+      }
+    } else {
+      let whitePieceAmount = 0;
+      let blackPieceAmount = 0;
+      centralData.boardTilesArray.forEach((tile) => {
+        let piece = tile.content;
+
+        if (piece?.player == "black" && piece.name != "elephant") {
+          blackPieceAmount++;
+        }
+
+        if (piece?.player == "white" && piece.name != "elephant") {
+          whitePieceAmount++;
+        }
+      });
+      if (whitePieceAmount == 0 && blackPieceAmount == 0) {
+        interface.showGameConclusionPopup("draw");
+      } else if (whitePieceAmount == 0) {
+        interface.showGameConclusionPopup("black");
+      } else if (blackPieceAmount == 0) {
+        interface.showGameConclusionPopup("white");
       }
     }
   },
@@ -1778,3 +1800,15 @@ function getValue(civName) {
   }
   console.log(`value of ${civName} is around ${acc} points`);
 }
+
+const handler = {
+  set(target, prop, value) {
+    console.log(`Property ${prop} changed from ${target[prop]} to ${value}`);
+
+    // Capture stack trace
+    console.log(new Error().stack);
+
+    target[prop] = value;
+    return true;
+  },
+};
