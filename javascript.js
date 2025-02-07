@@ -4,8 +4,8 @@ const centralData = {
   selectedTile: "",
   availableTiles: [],
   boardSaveStates: [],
-  blackCiv: "",
-  whiteCiv: "RK K   R        ",
+  blackCiv: "bbbbbbbb",
+  whiteCiv: "PPcccccc        ",
   civsTop: document.getElementById("civsTop"),
   civsBottom: document.getElementById("civsBottom"),
 
@@ -1385,7 +1385,7 @@ Object.assign(movementLogic, {
         [1, 2],
         [2, 2],
       ];
-      if (oldTile?.content) {
+      if (oldTile?.content && oldTile.content.name != "cannon") {
         oldTile.content = "";
       }
       tilesArray.forEach((coor) => {
@@ -1394,7 +1394,7 @@ Object.assign(movementLogic, {
 
         if (!(x < 0 || x > 7 || y < 0 || y > 7)) {
           let threatTile = centralData.getTileObjXY(x, y);
-          if (threatTile && threatTile.node) {
+          if (threatTile.content) {
             if (threatTile.content.name == "bomb") {
               this.bombDetonation("", threatTile);
             }
