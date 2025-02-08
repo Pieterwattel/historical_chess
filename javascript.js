@@ -1653,6 +1653,7 @@ const interface = {
     };
 
     gamePlay.playerTurn = "white";
+    gamePlay.otherPlayer = "black";
   },
 
   addSetupOptions: function () {
