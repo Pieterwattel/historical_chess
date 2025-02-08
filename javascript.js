@@ -10,6 +10,8 @@ const centralData = {
   whiteCivSetup: "",
   civsTop: document.getElementById("civsTop"),
   civsBottom: document.getElementById("civsBottom"),
+  blackCivDisplay: document.getElementById("blackCivDisplay"),
+  whiteCivDisplay: document.getElementById("whiteCivDisplay"),
 
   getTileObjXY: function (x, y) {
     let array = this.boardTilesArray;
@@ -663,7 +665,7 @@ Object.assign(pieces, {
     crusade: " KKKKKK PPPPPPPP",
     defensiveLine: "KPPPPPPKPPPPPPPP",
     other1: " NcbzcN   NeeN ",
-    other2: "  cbbc    eeee  ",
+    other2: "cRQRc   PPPPP   ",
     other3: "R  bQ  R ePPPPe ",
   },
 
@@ -1642,6 +1644,9 @@ const interface = {
       pieces.placement[blackCiv],
       pieces.placement[whiteCiv]
     );
+
+    centralData.blackCivDisplay.textContent = blackCiv;
+    centralData.whiteCivDisplay.textContent = whiteCiv;
 
     // Call setupBoard on the preparation object
     board.update(); // Update the board
