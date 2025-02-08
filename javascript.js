@@ -1614,6 +1614,13 @@ const interface = {
   },
 
   doResetBoard: function () {
+    console.log(centralData.boardSaveStates.length);
+    if (
+      centralData.boardSaveStates.length != 0 &&
+      !confirm("You will lose the current game, are you sure?")
+    ) {
+      return;
+    }
     centralData.lostPieces = [];
     centralData.selectedTile = "";
     centralData.availableTiles = [];
