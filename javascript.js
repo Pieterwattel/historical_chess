@@ -650,7 +650,7 @@ Object.assign(pieces, {
 
     france: " NQBBQN   P  P  ", // Bishop-heavy strategy
     india1: "PNBQKBNPPePPPPeP",
-    india2: "PPPPPPPPePePPePe", // Trench warfare, symmetrical
+    india2: "PPPPbPPPePePPePe", // Trench warfare, symmetrical
 
     mongols: "zNNNKNNzNN PP NN", // Nomadic cavalry dominance
     romans: "RRPKKPRReePPPPee", // Legion-based symmetry
@@ -678,6 +678,45 @@ Object.assign(pieces, {
     } else {
       newTile.content.hasMoved += 1;
     }
+  },
+
+  movementSoundArray: [
+    "./files/sounds/1b.wav",
+    "./files/sounds/2b.wav",
+    "./files/sounds/3b.wav",
+    "./files/sounds/4b.wav",
+  ],
+
+  attackSoundArray: [
+    "./files/sounds/1a.wav",
+    "./files/sounds/2a.wav",
+    "./files/sounds/3a.wav",
+  ],
+
+  previousAudio: "",
+  prePreviousAudio: "",
+
+  playMovementSound: function () {
+    let audio = true;
+    const audioIndex = Math.floor(
+      Math.random() * this.movementSoundArray.length
+    );
+
+    audio = new Audio(this.movementSoundArray[audioIndex]);
+
+    audio.play();
+    this.prePreviousAudio = this.previousAudio;
+    this.previousAudio = audio;
+  },
+
+  playAttackSound: function () {
+    console.log("yes");
+    let audio = true;
+    const audioIndex = Math.floor(Math.random() * this.attackSoundArray.length);
+
+    audio = new Audio(this.attackSoundArray[audioIndex]);
+
+    audio.play();
   },
 });
 
@@ -737,12 +776,16 @@ Object.assign(gamePlay, {
 
     if (newTile.available == "move") {
       this.placePiece(oldTile, newTile);
+
+      pieces.playMovementSound();
     } else if (
       //or attack the tile
       newTile.available == "attack"
     ) {
       this.doAttack(oldTile, newTile);
       this.placePiece(oldTile, newTile);
+
+      pieces.playAttackSound();
     }
 
     pieces.update(oldTile, newTile);
@@ -799,6 +842,7 @@ Object.assign(gamePlay, {
   },
 
   checkWinConditions: function () {
+    console.log("winConditionsChecked");
     let blackStartedWithKing = centralData.blackCivSetup.includes("K");
     let whiteStartedWithKing = centralData.whiteCivSetup.includes("K");
 
@@ -827,27 +871,29 @@ Object.assign(gamePlay, {
       } else if (!whiteHasKing && whiteStartedWithKing) {
         interface.showGameConclusionPopup("black");
       }
-    } else {
-      let whitePieceAmount = 0;
-      let blackPieceAmount = 0;
-      centralData.boardTilesArray.forEach((tile) => {
-        let piece = tile.content;
+    }
 
-        if (piece?.player == "black" && piece.name != "elephant") {
-          blackPieceAmount++;
-        }
+    let whitePieceAmount = 0;
+    let blackPieceAmount = 0;
+    centralData.boardTilesArray.forEach((tile) => {
+      let piece = tile.content;
 
-        if (piece?.player == "white" && piece.name != "elephant") {
-          whitePieceAmount++;
-        }
-      });
-      if (whitePieceAmount == 0 && blackPieceAmount == 0) {
-        interface.showGameConclusionPopup("draw");
-      } else if (whitePieceAmount == 0) {
-        interface.showGameConclusionPopup("black");
-      } else if (blackPieceAmount == 0) {
-        interface.showGameConclusionPopup("white");
+      if (piece?.player == "black" && piece.name != "elephant") {
+        blackPieceAmount++;
       }
+
+      if (piece?.player == "white" && piece.name != "elephant") {
+        whitePieceAmount++;
+      }
+    });
+    console.log(whitePieceAmount);
+    console.log(blackPieceAmount);
+    if (whitePieceAmount == 0 && blackPieceAmount == 0) {
+      interface.showGameConclusionPopup("draw");
+    } else if (whitePieceAmount == 0) {
+      interface.showGameConclusionPopup("black");
+    } else if (blackPieceAmount == 0) {
+      interface.showGameConclusionPopup("white");
     }
   },
 
@@ -1599,6 +1645,8 @@ const interface = {
 
     // Call setupBoard on the preparation object
     board.update(); // Update the board
+
+    centralData.boardSaveStates = [];
 
     centralData.history.startPlacement = {
       black: pieces.placement[centralData.blackCiv],
