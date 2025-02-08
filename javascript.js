@@ -1528,8 +1528,7 @@ Object.assign(preparation, {
     if (!blackCiv) {
       let civs = Object.entries(pieces.placement);
       blackCiv = civs[Math.floor(Math.random() * civs.length)];
-      console.log("black:");
-      console.log(blackCiv[0]);
+      centralData.blackCivDisplay.textContent = blackCiv[0];
     } else {
       //make it possible to change the setup variable directly for debugging
       blackCiv = [0, centralData.blackCiv];
@@ -1538,8 +1537,7 @@ Object.assign(preparation, {
     if (!whiteCiv) {
       let civs = Object.entries(pieces.placement);
       whiteCiv = civs[Math.floor(Math.random() * civs.length)];
-      console.log("white:");
-      console.log(whiteCiv);
+      centralData.whiteCivDisplay.textContent = whiteCiv[0];
     } else {
       //make it possible to change the setup variable directly for debugging
       whiteCiv = [0, centralData.whiteCiv];
@@ -1626,14 +1624,10 @@ const interface = {
     if (!blackCiv) {
       let civs = Object.keys(pieces.placement);
       blackCiv = civs[Math.floor(Math.random() * civs.length)];
-      console.log("black:");
-      console.log(blackCiv);
     }
     if (!whiteCiv) {
       let civs = Object.keys(pieces.placement);
       whiteCiv = civs[Math.floor(Math.random() * civs.length)];
-      console.log("white:");
-      console.log(whiteCiv);
     }
     for (tile of centralData.boardTilesArray) {
       tile.content = "";
