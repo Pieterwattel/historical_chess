@@ -664,6 +664,7 @@ Object.assign(pieces, {
     spreadOut2: "B N  N BN B  B N",
     crusade: " KKKKKK PPPPPPPP",
     defensiveLine: "KPPPPPPKPPPPPPPP",
+    animalKingdom: " NzzzzN  NeeeeN ",
     other1: " NcbzcN   NeeN ",
     other2: "cRQRc   PPPPP   ",
     other3: "R  bQ  R ePPPPe ",
