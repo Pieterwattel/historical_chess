@@ -870,11 +870,11 @@ Object.assign(gamePlay, {
       let whiteHasKing = false;
       centralData.boardTilesArray.forEach((tile) => {
         let piece = tile.content;
-        if (piece.name == "king" && piece.player == "black") {
+        if (piece?.name == "king" && piece?.player == "black") {
           blackHasKing = true;
         }
 
-        if (piece.name == "king" && piece.player == "white") {
+        if (piece?.name == "king" && piece?.player == "white") {
           whiteHasKing = true;
         }
       });
