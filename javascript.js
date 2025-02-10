@@ -725,7 +725,6 @@ Object.assign(pieces, {
   },
 
   playAttackSound: function () {
-    console.log("yes");
     let audio = true;
     const audioIndex = Math.floor(Math.random() * this.attackSoundArray.length);
 
@@ -735,7 +734,6 @@ Object.assign(pieces, {
   },
 
   playUndoSound: function () {
-    console.log("yes");
     let audio = true;
     const audioIndex = Math.floor(Math.random() * this.undoSoundArray.length);
 
@@ -751,7 +749,6 @@ Object.assign(gamePlay, {
     let selectedTile = this.selectedTile;
     // deselect the piece if clicked twice
     if (clickedTileObj == selectedTile) {
-      console.log("if1");
       this.deselectTile(clickedTileObj);
       return;
     }
@@ -770,7 +767,6 @@ Object.assign(gamePlay, {
       //also re-initiate the turn if this some other piece of the current playerTurn's
       clickedTileObj?.content?.player == this.playerTurn
     ) {
-      console.log(this.selectedTile);
       if (this.selectedTile) {
         this.deselectTile(this.selectedTile);
       }
@@ -830,7 +826,6 @@ Object.assign(gamePlay, {
     //important to make a new object, or else the hasMoved property is copied to other pieces (somehow)
     this.additions.checkSpecialPlacementEvent(oldTile, newTile);
 
-    console.log(this.skipPlacement);
     if (!this.skipPlacement) {
       newTile.content = {
         ...oldTile.content,
@@ -867,7 +862,6 @@ Object.assign(gamePlay, {
   },
 
   checkWinConditions: function () {
-    console.log("winConditionsChecked");
     let blackStartedWithKing = centralData.blackCivSetup.includes("K");
     let whiteStartedWithKing = centralData.whiteCivSetup.includes("K");
 
@@ -911,8 +905,6 @@ Object.assign(gamePlay, {
         whitePieceAmount++;
       }
     });
-    console.log(whitePieceAmount);
-    console.log(blackPieceAmount);
     if (whitePieceAmount == 0 && blackPieceAmount == 0) {
       interface.showGameConclusionPopup("draw");
     } else if (whitePieceAmount == 0) {
@@ -967,7 +959,6 @@ Object.assign(gamePlay, {
         );
 
       if (piece.name == "bomb") {
-        console.log("yes");
         for (let tile of centralData.boardTilesArray) {
           tile.node.classList.remove("threatTile");
         }
@@ -995,7 +986,6 @@ Object.assign(gamePlay, {
       }
 
       if (oldTile.content.name == "cannon") {
-        console.log("yas");
         gamePlay.skipPlacement = true;
       }
     },
@@ -1046,7 +1036,6 @@ Object.assign(gamePlay, {
           gamePlay.otherPlayer
         );
         newTile.content = chosenPiece;
-        console.log(newTile);
         popup.remove();
         popupOverlay.remove();
         board.update();
@@ -1104,7 +1093,6 @@ Object.assign(movementLogic, {
   },
 
   getStepAmountAtk: function (piece) {
-    console.log("hm");
     if (!piece.hasMoved && piece.movement.firstMove?.attack?.stepAmount) {
       return piece.movement.firstMove.attack.stepAmount;
     } else if (piece.movement.attack?.stepAmount) {
@@ -1298,11 +1286,9 @@ Object.assign(movementLogic, {
     castlingStart: function (clickedTile, tileX, tileY, piece, playerTurn) {
       let y = 0;
       if (piece.name != "king" || Boolean(piece.hasMoved)) {
-        console.log("noCastle");
         //no castling
         return;
       } else {
-        console.log("castling");
         if (playerTurn == "white") {
           y = 7;
         } else {
@@ -1373,8 +1359,6 @@ Object.assign(movementLogic, {
               currentTile.content.name != "king" &&
               Boolean(currentTile.content)
             ) {
-              console.log(currentTile);
-              console.log("notEmpty");
               break;
             }
             //prevent this from triggering to another king than the one you clicked
@@ -1474,8 +1458,6 @@ Object.assign(movementLogic, {
         y = 7;
       }
 
-      console.log(y);
-      console.log(newTile.y);
       if (newTile.y == y) {
         if (active) {
           oldTile.content = centralData.getPieceFromSymbolAndColor(
@@ -1638,7 +1620,6 @@ const interface = {
   },
 
   doResetBoard: function () {
-    console.log(centralData.boardSaveStates.length);
     if (
       centralData.boardSaveStates.length != 0 &&
       !confirm("You will lose the current game, are you sure?")
@@ -1689,7 +1670,6 @@ const interface = {
 
   addSetupOptions: function () {
     let setups = Object.entries(pieces.placement);
-    console.log(this);
 
     let setupSelectionBlack = document.getElementById("setupSelection1");
     let setupSelectionWhite = document.getElementById("setupSelection2");
@@ -1744,7 +1724,6 @@ const interface = {
       popup.textContent = `${winner.toUpperCase()} WON`;
     }
 
-    console.log(popup);
     board.boardEdgeNode.appendChild(popup);
 
     let closeBtn = document.createElement("button");
