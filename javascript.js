@@ -684,16 +684,28 @@ Object.assign(pieces, {
   },
 
   movementSoundArray: [
-    "./files/sounds/1b.wav",
-    "./files/sounds/2b.wav",
-    "./files/sounds/3b.wav",
-    "./files/sounds/4b.wav",
+    "./files/sounds/1m.wav",
+    "./files/sounds/2m.wav",
+    "./files/sounds/3m.wav",
+    "./files/sounds/4m.wav",
+    "./files/sounds/5m.wav",
+    "./files/sounds/6m.wav",
+    "./files/sounds/7m.wav",
   ],
 
   attackSoundArray: [
     "./files/sounds/1a.wav",
     "./files/sounds/2a.wav",
     "./files/sounds/3a.wav",
+    "./files/sounds/4a.wav",
+    "./files/sounds/5a.wav",
+  ],
+
+  undoSoundArray: [
+    "./files/sounds/1u.wav",
+    "./files/sounds/2u.wav",
+    "./files/sounds/3u.wav",
+    "./files/sounds/4u.wav",
   ],
 
   previousAudio: "",
@@ -716,6 +728,16 @@ Object.assign(pieces, {
     console.log("yes");
     let audio = true;
     const audioIndex = Math.floor(Math.random() * this.attackSoundArray.length);
+
+    audio = new Audio(this.attackSoundArray[audioIndex]);
+
+    audio.play();
+  },
+
+  playUndoSound: function () {
+    console.log("yes");
+    let audio = true;
+    const audioIndex = Math.floor(Math.random() * this.undoSoundArray.length);
 
     audio = new Audio(this.attackSoundArray[audioIndex]);
 
@@ -1610,6 +1632,7 @@ const interface = {
       centralData.boardTilesArray[index].content = tile.content;
       centralData.boardTilesArray[index].available = "";
     });
+    pieces.playUndoSound();
     board.update();
     gamePlay.switchTurn();
   },
