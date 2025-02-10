@@ -739,7 +739,7 @@ Object.assign(pieces, {
     let audio = true;
     const audioIndex = Math.floor(Math.random() * this.undoSoundArray.length);
 
-    audio = new Audio(this.attackSoundArray[audioIndex]);
+    audio = new Audio(this.undoSoundArray[audioIndex]);
 
     audio.play();
   },
