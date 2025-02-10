@@ -1459,14 +1459,7 @@ Object.assign(movementLogic, {
       }
 
       if (newTile.y == y) {
-        if (active) {
-          oldTile.content = centralData.getPieceFromSymbolAndColor(
-            "Q",
-            gamePlay.playerTurn
-          );
-        } else {
-          gamePlay.additions.pawnPromotionPopup(newTile);
-        }
+        gamePlay.additions.pawnPromotionPopup(newTile);
       }
     },
 
