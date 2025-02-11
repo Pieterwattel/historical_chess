@@ -660,6 +660,7 @@ Object.assign(pieces, {
     ottomans: "PBP  PBcRPPPPPPR",
     rome: "BccBKbBBPPPPPPPP",
     persia: "PzePRNPKPzePBNPe",
+    china: "P bKcbcP P PP P ",
 
     spreadOut1: "R B  B RN N  N N",
     spreadOut2: "B N  N BN B  B N",
