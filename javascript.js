@@ -655,10 +655,10 @@ Object.assign(pieces, {
     india2: "PPPPbPPPePePPePe", // Trench warfare, symmetrical
 
     mongols: "zNNNKNNzNN PP NN", // Nomadic cavalry dominance
-    romans: "RRPKKPRReePPPPee", // Legion-based symmetry
+    romanEmpire: "RRPKKPRReePPPPee", // Legion-based symmetry
     aztecs: " PQKQQP   PPPP  ", // Ritualistic battle lines
     ottomans: "PBP  PBcRPPPPPPR",
-    rome: "BccBKbBBPPPPPPPP",
+    papacy: "BccBKbBBPPPPPPPP",
     persia: "PzePRNPKPzePBNPe",
     china: "PBbKcbcP PPPPPP ",
 
