@@ -647,16 +647,16 @@ Object.assign(pieces, {
   ],
 
   placement: {
-    standard: "RNBQKBNRPPPPPPPP", // Classic chess setup
+    standard: "RNBQKBNRPPPPPPPP",
     america: "RNBbKBNRPPPPPPPP",
 
-    france: " NQBBQN   P  P  ", // Bishop-heavy strategy
+    france: " NQBBQN   P  P  ",
     india1: "PNBQKBNPPePPPPeP",
-    india2: "PPPPbPPPePePPePe", // Trench warfare, symmetrical
+    india2: "PPPPbPPPePePPePe",
 
-    mongols: "zNNNKNNzNN PP NN", // Nomadic cavalry dominance
-    romanEmpire: "RRPKKPRReePPPPee", // Legion-based symmetry
-    aztecs: " PQKQQP   PPPP  ", // Ritualistic battle lines
+    mongols: "zNNNKNNzNN PP NN",
+    romanEmpire: "RRPKKPRReePPPPee",
+    aztecs: " PQKQQP   PPPP  ",
     ottomans: "PBP  PBcRPPPPPPR",
     papacy: "BccBKbBBPPPPPPPP",
     persia: "PzePRNPKPzePBNPe",
