@@ -21,7 +21,7 @@ html {
   display: flex;
 
   background-image: url("./files/chessBgWood.jpg");
-
+  backdrop-filter: blur(2px);
   display: grid;
   grid-template-rows: repeat(8, 1fr);
   grid-template-columns: repeat(8, 1fr);
